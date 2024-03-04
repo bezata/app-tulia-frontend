@@ -3,12 +3,14 @@ import React from "react";
 import { IMainLayout } from "./IMainLayout";
 import { ThemeProvider } from "../ThemeProvider/ThemeProvider";
 import Header from "../Header/Header";
+import Footer from "../Footer/Footer";
 
 const MainLayout: React.FC<IMainLayout> = ({ children }) => {
   return (
     <>
       {/* NOTE: header section */}
       <Header />
+      {/* NOTE: main section */}
       <main className="container mx-auto">
         <ThemeProvider
           attribute="class"
@@ -20,6 +22,8 @@ const MainLayout: React.FC<IMainLayout> = ({ children }) => {
           {children}
         </ThemeProvider>
       </main>
+      {/* NOTE: footer section */}
+      <Footer />
     </>
   );
 };

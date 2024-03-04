@@ -24,7 +24,7 @@ const socialMediaLinks: SocialMediaLink[] = [
 
 const Footer = () => {
   return (
-    <footer className="w-full border-0 border-y text-white py-4 px-8 text-xs">
+    <footer className="w-full border-0 border-y-[.2px] border-purple-900/40 shadow-2xl shadow-blue-400/80 text-white py-4 px-14 text-xs">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           {socialMediaLinks.map((link, index) => (

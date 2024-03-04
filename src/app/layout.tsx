@@ -6,6 +6,7 @@ import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { chains, connectors, tuliaConfig } from "@/utils/tuliaConfig";
 import MainLayout from "@/components/MainLayout/MainLayout";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <MainLayout>{children}</MainLayout>
+        <Toaster />
       </body>
     </html>
   );

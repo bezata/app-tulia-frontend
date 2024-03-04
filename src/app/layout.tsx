@@ -5,6 +5,7 @@ import { WagmiConfig } from "wagmi";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { chains, connectors, tuliaConfig } from "@/utils/tuliaConfig";
+import MainLayout from "@/components/MainLayout/MainLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <MainLayout>{children}</MainLayout>
+      </body>
     </html>
   );
 }

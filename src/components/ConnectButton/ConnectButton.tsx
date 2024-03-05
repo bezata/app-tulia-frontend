@@ -1,6 +1,6 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
-import { Button } from './button';
+import { Button } from '../ui/button';
 import {
   useConnectModal,
   useAccountModal,

@@ -1,21 +1,15 @@
-"use client";
-import React from "react";
+'use client';
+import React from 'react';
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import IHeader from "./IHeader";
-import ConnectButtonCustom from '@/components/ui/connectbutton';
+} from '@/components/ui/navigation-menu';
+import Link from 'next/link';
+import Image from 'next/image';
+import IHeader from './IHeader';
+import CustomConnectButton from '@/components/ConnectButton/ConnectButton';
 
 const navigationMenuItems: IHeader.INavigation[] = [
   {
@@ -70,7 +64,7 @@ const Header = () => {
           </NavigationMenu>
         </div>
         <div className="basis-2/12 flex justify-end">
-          <ConnectButtonCustom />
+          <CustomConnectButton />
         </div>
       </div>
     </div>

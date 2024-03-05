@@ -15,24 +15,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import IHeader from "./IHeader";
+import ConnectButtonCustom from '@/components/ui/connectbutton';
 
 const navigationMenuItems: IHeader.INavigation[] = [
   {
-    title: "Swap",
-    slug: "/",
+    title: 'Swap',
+    slug: '/',
   },
   {
-    title: "P2P",
-    slug: "/peer-to-peer",
+    title: 'Open Market Lending',
+    slug: '/peer-to-peer',
   },
   {
-    title: "Aave",
-    slug: "/aave",
+    title: 'Decentralized Lending',
+    slug: '/aave',
   },
   {
-    title: "Docs",
-    slug: "https://www.linkedin.com/company/tulias/",
-    target: "_blank",
+    title: 'Docs',
+    slug: 'https://www.linkedin.com/company/tulias/',
+    target: '_blank',
   },
 ];
 
@@ -69,9 +70,7 @@ const Header = () => {
           </NavigationMenu>
         </div>
         <div className="basis-2/12 flex justify-end">
-          <Button variant={"outline"} className="hover:bg-violet-500/30">
-            Connect Wallet
-          </Button>
+          <ConnectButtonCustom />
         </div>
       </div>
     </div>

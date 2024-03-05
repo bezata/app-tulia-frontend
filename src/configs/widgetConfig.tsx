@@ -23,14 +23,6 @@ export const Widget = () => {
             },
             grey: {},
           },
-          shape: {},
-          typography: {},
-        },
-        hiddenUI: ['appearance'],
-
-        variant: 'expandable',
-        languages: {
-          default: 'en',
         },
       }}
     />

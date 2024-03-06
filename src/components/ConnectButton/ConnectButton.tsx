@@ -1,3 +1,4 @@
+'use client';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
 import { Button } from '../ui/button';
@@ -6,7 +7,6 @@ import {
   useAccountModal,
   useChainModal,
 } from '@rainbow-me/rainbowkit';
-
 const CustomConnectButton = () => {
   const { openConnectModal } = useConnectModal();
   const { openAccountModal } = useAccountModal();

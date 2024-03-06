@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/drawer';
 import { Button } from '../ui/button';
 import { MenuIcon } from 'lucide-react';
+// import SocialAuth from '../ConnectButton/SocialAuth';
 
 const navigationMenuItems: IHeader.INavigation[] = [
   {
@@ -130,6 +131,8 @@ const Header = () => {
         </div>
         <div className="basis-2/12 flex justify-end">
           <CustomConnectButton />
+          {/* Will be used on testnet */}
+          {/* <SocialAuth /> */}
         </div>
       </div>
     </div>

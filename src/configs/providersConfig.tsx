@@ -15,6 +15,15 @@ import {
 import { arbitrum, mainnet, optimism, polygon, sepolia } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
+import { http, createConfig } from 'wagmi';
+
+export const wagmiConfig = createConfig({
+  chains: [mainnet, sepolia],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+  },
+});
 
 const { wallets } = getDefaultWallets();
 

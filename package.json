@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@lifi/wallet-management": "^2.6.0",
-    "@lifi/widget": "^2.10.1",
+    "@lifi/widget": "3.0.0-alpha.31",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-navigation-menu": "^1.1.4",
     "@radix-ui/react-slot": "^1.0.2",

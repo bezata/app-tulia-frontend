@@ -1,10 +1,9 @@
-import dynamic from 'next/dynamic';
-// export const WidgetPage = dynamic(
-//   () => import('../configs/widgetConfig').then(module => module.Widget) as any,
-//   {
-//     ssr: false,
-//   }
-// );
+import { TuliaSwap } from '@/configs/widgetConfig';
+
 export default function Home() {
-  return <div>{/* <WidgetPage /> */}</div>;
+  return (
+    <div>
+      <TuliaSwap />
+    </div>
+  );
 }

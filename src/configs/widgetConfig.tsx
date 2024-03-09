@@ -1,0 +1,112 @@
+'use client';
+import {
+  LiFiWidget,
+  useWidgetEvents,
+  WidgetConfig,
+  WidgetEvent,
+  WidgetWalletConfig,
+} from '@lifi/widget';
+import { useEffect, useMemo, useState } from 'react';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+
+interface Token {
+  chainId: number;
+  address: `0x${string}`;
+  symbol: string;
+  name: string;
+  decimals: number;
+}
+
+export interface SwapWidgetProps {
+  config?: Omit<
+    WidgetConfig,
+    | 'integrator'
+    | 'chains'
+    | 'tokens'
+    | 'walletConfig'
+    | 'variant'
+    | 'subvariant'
+    | 'containerStyle'
+  >;
+  onSuccess?: () => void;
+  className?: string;
+}
+
+export const TuliaSwap = (props: SwapWidgetProps) => {
+  const { config, onSuccess, className } = props;
+
+  const walletConfig = useWidgetWalletConfig();
+
+  const widgetConfig: WidgetConfig = useMemo(
+    () => ({
+      integrator: 'Tulia',
+      walletConfig,
+      variant: 'expandable',
+      subvariant: 'default',
+      containerStyle: {
+        borderRadius: '16px',
+        display: 'flex',
+        maxWidth: 392,
+        boxShadow: '0px 4px 8px rgba(125, 44, 197, 0.06)',
+        backgroundColor: '#082D5A',
+      },
+      theme: {
+        palette: {
+          primary: { main: '#082D5A' },
+          secondary: { main: '#00000' },
+          background: {
+            paper: '#010E2E',
+            default: '#010E2E',
+          },
+          grey: {},
+        },
+        shape: {},
+        typography: {},
+      },
+
+      ...config,
+    }),
+    [config, walletConfig]
+  );
+
+  const widgetEvents = useWidgetEvents();
+
+  useEffect(() => {
+    widgetEvents.on(
+      WidgetEvent.RouteExecutionCompleted,
+      (route: { fromToken: Token; toToken: Token }) => {
+        if (
+          (!config?.toChain || route.toToken.chainId === config.toChain) &&
+          (!config?.toToken ||
+            route.toToken.address.toLowerCase() ===
+              config.toToken.toLowerCase())
+        ) {
+          onSuccess?.();
+        }
+      }
+    );
+
+    return () => widgetEvents.all.clear();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [widgetEvents]);
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
+
+  return (
+    <div className={className}>
+      {isMounted && <LiFiWidget integrator="Tulia" config={widgetConfig} />}
+    </div>
+  );
+};
+
+const useWidgetWalletConfig = () => {
+  const { openConnectModal } = useConnectModal();
+
+  const walletConfig: WidgetWalletConfig = useMemo(
+    () => ({ onConnect: () => openConnectModal && openConnectModal() }),
+    [openConnectModal]
+  );
+
+  return walletConfig;
+};

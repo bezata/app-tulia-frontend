@@ -1,0 +1,163 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_simpleInterestModel",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_compoundInterestModel",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_loanImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_poolOrganizer",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "lender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
+      }
+    ],
+    "name": "TuliaPoolCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "compoundInterestModel",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "loanToken",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IERC20Upgradeable",
+        "name": "assetToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "loanAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "interestRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "useCompoundInterest",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "repaymentPeriod",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "erc4626Implementation",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "adminAddress",
+        "type": "address"
+      }
+    ],
+    "name": "createTuliaPool",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "loanImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "poolOrganizer",
+    "outputs": [
+      {
+        "internalType": "contract IPoolOrganizer",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "simpleInterestModel",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

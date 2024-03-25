@@ -45,12 +45,14 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
           Open Market Lending
         </h2>
         <p className="text-sm text-gray-500 mb-4 flex items-center">
+          {/* TODO: DCSELEK: Guzel bir aciklama ? */}
           <HelpCircle className="w-4 h-4 inline-block mr-1" />
           This is the open market lending page.Here you can see all the lending
           requests.
         </p>
       </div>
       <SectionSelector />
+      {/* TODO: DCSELEK: Convert component to this dialog */}
       {section && (
         <Dialog>
           <DialogTrigger>

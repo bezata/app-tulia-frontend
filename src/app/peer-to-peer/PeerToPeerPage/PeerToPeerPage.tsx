@@ -7,6 +7,14 @@ import { setExample, setSection } from '@/lib/features/example/exampleSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { HelpCircle, Landmark, PlusCircle } from 'lucide-react';
 import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 const PeerToPeerPage = ({ data }: { data: any }) => {
   const { section } = useAppSelector(state => state.example);
@@ -44,12 +52,62 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
       </div>
       <SectionSelector />
       {section && (
-        <Button
-          variant="outline"
-          className="mb-4 capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
-        >
-          {section} Request <PlusCircle className="w-4 h-4 inline-block ml-2" />
-        </Button>
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              variant="outline"
+              className="mb-4 capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+            >
+              {section} Request{' '}
+              <PlusCircle className="w-4 h-4 inline-block ml-2" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {section === 'barrow'
+                  ? 'Add Barrow Request'
+                  : 'Add Lend Request'}
+              </DialogTitle>
+              <DialogDescription>
+                Here you can add a new {section} request.
+              </DialogDescription>
+              {/* //form */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <label htmlFor="coin" className="text-sm text-gray-500">
+                    Coin
+                  </label>
+                  <select
+                    name="coin"
+                    id="coin"
+                    className="border border-gray-300 rounded-md p-2"
+                  >
+                    <option value="ETH">ETH</option>
+                    <option value="BTC">BTC</option>
+                  </select>
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="amount" className="text-sm text-gray-500">
+                    Amount
+                  </label>
+                  <input
+                    type="number"
+                    name="amount"
+                    id="amount"
+                    className="border border-gray-300 rounded-md p-2"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-end gap-4">
+                <Button variant="outline" className="border-tulia_primary">
+                  Cancel
+                </Button>
+                <Button className="bg-tulia_primary/50">Submit</Button>
+              </div>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       )}
       {section === null && (
         <h2 className="text-md font-light mb-4 ">

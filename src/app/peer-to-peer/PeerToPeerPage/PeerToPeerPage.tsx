@@ -3,7 +3,7 @@ import { PeerToPeerTable } from '@/components/PeerToPeerTable/PeerToPeerTable';
 import { columns, ILandingData } from '@/components/PeerToPeerTable/columns';
 import SectionSelector from '@/components/SectionSelector/SectionSelector';
 import { Button } from '@/components/ui/button';
-import { setExample, setSection } from '@/lib/features/example/exampleSlice';
+import { setSection } from '@/lib/features/example/exampleSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { HelpCircle, Landmark, PlusCircle } from 'lucide-react';
 import React from 'react';

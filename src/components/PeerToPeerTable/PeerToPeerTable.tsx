@@ -59,7 +59,7 @@ export function PeerToPeerTable<TData, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className={`${row.original.type === 'barrow' ? 'bg-tulia_primary/10' : ''} hover:bg-tulia_primary/30 transition-colors ease-in-out duration-200`}
+                className={`${(row.original as { type: 'barrow' | 'lend' | null }).type === 'barrow' ? 'bg-tulia_primary/10' : ''} hover:bg-tulia_primary/30 transition-colors ease-in-out duration-200`}
               >
                 {row.getVisibleCells().map(cell => (
                   <TableCell key={cell.id}>

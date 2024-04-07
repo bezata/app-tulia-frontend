@@ -28,8 +28,8 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
   }, []);
 
   React.useEffect(() => {
-    if (section === 'barrow') {
-      setFilteredData(data.filter((item: any) => item.type === 'barrow'));
+    if (section === 'borrow') {
+      setFilteredData(data.filter((item: any) => item.type === 'borrow'));
     } else if (section === 'lend') {
       setFilteredData(data.filter((item: any) => item.type === 'lend'));
     } else {
@@ -67,8 +67,8 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                {section === 'barrow'
-                  ? 'Add Barrow Request'
+                {section === 'borrow'
+                  ? 'Add Borrow Request'
                   : 'Add Lend Request'}
               </DialogTitle>
               <DialogDescription>

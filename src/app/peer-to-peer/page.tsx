@@ -11,7 +11,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '2',
@@ -27,7 +27,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 300,
       created_at: '2021-01-03',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '4',
@@ -44,7 +44,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '6',
@@ -60,7 +60,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 300,
       created_at: '2021-01-03',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '8',
@@ -76,7 +76,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '10',
@@ -92,7 +92,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 300,
       created_at: '2021-01-03',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '12',
@@ -108,7 +108,7 @@ async function getData(): Promise<ILandingData[]> {
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'barrow',
+      type: 'borrow',
     },
     {
       landing_id: '14',

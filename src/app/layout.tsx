@@ -5,6 +5,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import MainLayout from '@/components/MainLayout/MainLayout';
 import { Toaster } from '@/components/ui/sonner';
 import { Providers } from '@/configs/providersConfig';
+import StoreProvider from './StoreProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,10 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          <MainLayout>{children}</MainLayout>
-          <Toaster />
-        </Providers>
+        <StoreProvider>
+          <Providers>
+            <MainLayout>{children}</MainLayout>
+            <Toaster />
+          </Providers>
+        </StoreProvider>
       </body>
     </html>
   );

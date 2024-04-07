@@ -13,6 +13,7 @@ export type ILandingData = {
   coin: string;
   amount: number;
   created_at: string;
+  type: 'barrow' | 'lend';
 };
 
 export const columns: ColumnDef<ILandingData>[] = [
@@ -44,6 +45,10 @@ export const columns: ColumnDef<ILandingData>[] = [
   {
     accessorKey: 'created_at',
     header: 'Date',
+  },
+  {
+    accessorKey: 'type',
+    header: 'Type',
   },
   {
     accessorKey: 'actions',

@@ -7,18 +7,18 @@ import BtcIcon from '../../../public/BtcIcon';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type ILandingData = {
-  landing_id: string;
+export type ILendingData = {
+  lending_id: string;
   wallet_address: string;
   coin: string;
   amount: number;
   created_at: string;
-  type: 'borrow' | 'lend';
+  type: 'lend';
 };
 
-export const columns: ColumnDef<ILandingData>[] = [
+export const columns: ColumnDef<ILendingData>[] = [
   {
-    accessorKey: 'landing_id',
+    accessorKey: 'lending_id',
     header: 'Loan ID',
   },
   {
@@ -60,7 +60,7 @@ export const columns: ColumnDef<ILandingData>[] = [
           variant={'outline'}
           className="hover:bg-tulia_primary/30"
           onClick={() => {
-            alert(`You clicked on row ${row.original.landing_id}`);
+            alert(`You clicked on row ${row.original.lending_id}`);
           }}
         >
           View

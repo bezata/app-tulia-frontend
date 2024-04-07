@@ -1,20 +1,20 @@
 import React from 'react';
 import PeerToPeerPage from './PeerToPeerPage/PeerToPeerPage';
-import { ILandingData } from '@/components/PeerToPeerTable/columns';
+import { ILendingData } from '@/components/PeerToPeerTable/columns';
 
-async function getData(): Promise<ILandingData[]> {
+async function getData(): Promise<ILendingData[]> {
   // Fetch data from your API here.
   return [
     {
-      landing_id: '1',
+      lending_id: '1',
       wallet_address: '0x1234',
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '2',
+      lending_id: '2',
       wallet_address: '0x5678',
       coin: 'BTC',
       amount: 200,
@@ -22,15 +22,15 @@ async function getData(): Promise<ILandingData[]> {
       type: 'lend',
     },
     {
-      landing_id: '3',
+      lending_id: '3',
       wallet_address: '0x9101',
       coin: 'ETH',
       amount: 300,
       created_at: '2021-01-03',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '4',
+      lending_id: '4',
       wallet_address: '0x1121',
       coin: 'BTC',
       amount: 400,
@@ -39,15 +39,15 @@ async function getData(): Promise<ILandingData[]> {
     },
     //add 10 more data
     {
-      landing_id: '5',
+      lending_id: '5',
       wallet_address: '0x1234',
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '6',
+      lending_id: '6',
       wallet_address: '0x5678',
       coin: 'BTC',
       amount: 200,
@@ -55,15 +55,15 @@ async function getData(): Promise<ILandingData[]> {
       type: 'lend',
     },
     {
-      landing_id: '7',
+      lending_id: '7',
       wallet_address: '0x9101',
       coin: 'ETH',
       amount: 300,
       created_at: '2021-01-03',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '8',
+      lending_id: '8',
       wallet_address: '0x1121',
       coin: 'BTC',
       amount: 400,
@@ -71,15 +71,15 @@ async function getData(): Promise<ILandingData[]> {
       type: 'lend',
     },
     {
-      landing_id: '9',
+      lending_id: '9',
       wallet_address: '0x1234',
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '10',
+      lending_id: '10',
       wallet_address: '0x5678',
       coin: 'BTC',
       amount: 200,
@@ -87,15 +87,15 @@ async function getData(): Promise<ILandingData[]> {
       type: 'lend',
     },
     {
-      landing_id: '11',
+      lending_id: '11',
       wallet_address: '0x9101',
       coin: 'ETH',
       amount: 300,
       created_at: '2021-01-03',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '12',
+      lending_id: '12',
       wallet_address: '0x1121',
       coin: 'BTC',
       amount: 400,
@@ -103,15 +103,15 @@ async function getData(): Promise<ILandingData[]> {
       type: 'lend',
     },
     {
-      landing_id: '13',
+      lending_id: '13',
       wallet_address: '0x1234',
       coin: 'ETH',
       amount: 100,
       created_at: '2021-01-01',
-      type: 'borrow',
+      type: 'lend',
     },
     {
-      landing_id: '14',
+      lending_id: '14',
       wallet_address: '0x5678',
       coin: 'BTC',
       amount: 200,

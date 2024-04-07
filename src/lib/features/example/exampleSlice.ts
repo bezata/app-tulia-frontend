@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ExampleInitialState {
   example: string;
-  section: 'borrow' | 'lend' | null;
+  section: 'lend' | null;
 }
 
 const initialState: ExampleInitialState = {
@@ -17,7 +17,7 @@ const exampleSlice = createSlice({
     setExample: (state, action: PayloadAction<string>) => {
       state.example = action.payload;
     },
-    setSection: (state, action: PayloadAction<'borrow' | 'lend' | null>) => {
+    setSection: (state, action: PayloadAction<'lend' | null>) => {
       state.section = action.payload;
     },
   },

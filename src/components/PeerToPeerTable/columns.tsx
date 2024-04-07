@@ -13,7 +13,7 @@ export type ILandingData = {
   coin: string;
   amount: number;
   created_at: string;
-  type: 'barrow' | 'lend';
+  type: 'borrow' | 'lend';
 };
 
 export const columns: ColumnDef<ILandingData>[] = [

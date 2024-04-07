@@ -3,21 +3,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_simpleInterestModel",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_compoundInterestModel",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_loanImplementation",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
         "name": "_poolOrganizer",
         "type": "address"
       }
@@ -41,42 +26,48 @@
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "borrower",
+        "name": "vault",
         "type": "address"
       }
     ],
-    "name": "TuliaPoolCreated",
+    "name": "PoolCreated",
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "compoundInterestModel",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
+        "indexed": true,
         "internalType": "address",
-        "name": "",
+        "name": "vault",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "assetToken",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "VaultCreated",
+    "type": "event"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "borrower",
+        "name": "lender",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "loanToken",
+        "name": "loanTokenAddress",
         "type": "address"
       },
       {
-        "internalType": "contract IERC20Upgradeable",
+        "internalType": "contract IERC20",
         "name": "assetToken",
         "type": "address"
       },
@@ -91,47 +82,30 @@
         "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "useCompoundInterest",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "collateralAmount",
-        "type": "uint256"
-      },
-      {
         "internalType": "uint256",
         "name": "repaymentPeriod",
         "type": "uint256"
       },
       {
-        "internalType": "address",
-        "name": "erc4626Implementation",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "adminAddress",
+        "internalType": "contract IInterestModel",
+        "name": "interestModel",
         "type": "address"
       }
     ],
     "name": "createTuliaPool",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "loanImplementation",
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "poolAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "vaultAddress",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -148,11 +122,17 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "simpleInterestModel",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "vaults",
+    "outputs": [
+      {
+        "internalType": "contract TuliaVault",
         "name": "",
         "type": "address"
       }

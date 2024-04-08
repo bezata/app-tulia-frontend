@@ -7,8 +7,6 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { HelpCircle, Landmark, PlusCircle } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
-import { useWriteContract, useAccount } from 'wagmi';
-import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import {
   Dialog,
   DialogContent,
@@ -17,14 +15,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useCreateTuliaPool } from '@/lens/lens';
 
 const PeerToPeerPage = ({ data }: { data: any }) => {
-  const userAddress = useAccount();
-  const { writeContract } = useWriteContract();
   const { section } = useAppSelector(state => state.example);
   const [filteredData, setFilteredData] = React.useState<ILendingData[]>(data);
   const dispatch = useAppDispatch();
-  const [coinAmount, setCoinAmount] = useState('');
+  const [coinAmount, setCoinAmount] = useState<string>('');
+  const createTuliaPool = useCreateTuliaPool();
 
   React.useEffect(() => {
     return () => {
@@ -39,6 +37,14 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
       return setFilteredData(data);
     }
   }, [section, data]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const onlyNumbers = /^[0-9]*$/;
+    if (onlyNumbers.test(e.target.value) || e.target.value === '') {
+      setCoinAmount(e.target.value);
+    }
+  };
 
   return (
     <div className="container mx-auto py-10">
@@ -62,22 +68,6 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
           <Button
             variant="outline"
             className="mb-4 capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
-            onClick={() =>
-              writeContract({
-                abi: TuliaPoolFactoryABI,
-                address: '0xB3b056aDf6Fa30D538a9D267E5092EDD835fC9FF',
-                functionName: 'createTuliaPool',
-                args: [
-                  userAddress?.address as any,
-                  '0x0DC33D4A2aB60E5F06AeaBAC71198CD99Bee1a64',
-                  '0x0DC33D4A2aB60E5F06AeaBAC71198CD99Bee1a64',
-                  coinAmount as any,
-                  1 as any,
-                  1 as any,
-                  '0x1460469138cB9D1A71809db6518FBBC10731D35c',
-                ],
-              })
-            }
           >
             Lending Request <PlusCircle className="w-4 h-4 inline-block ml-2" />
           </Button>
@@ -115,13 +105,7 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
                   name="amount"
                   id="amount"
                   onChange={e => {
-                    const onlyNumbers = /^[0-9]*$/;
-                    if (
-                      onlyNumbers.test(e.target.value) ||
-                      e.target.value === ''
-                    ) {
-                      setCoinAmount(e.target.value);
-                    }
+                    handleChange(e);
                   }}
                   className="border border-gray-300 rounded-md p-2"
                 />
@@ -131,7 +115,12 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
               <Button variant="outline" className="border-tulia_primary">
                 Cancel
               </Button>
-              <Button className="bg-tulia_primary/50">Submit</Button>
+              <Button
+                className="bg-tulia_primary/50"
+                onClick={() => createTuliaPool(coinAmount)}
+              >
+                Submit
+              </Button>
             </div>
           </DialogHeader>
         </DialogContent>

@@ -5,11 +5,10 @@ import { Button } from '@/components/ui/button';
 import { setSection } from '@/lib/features/example/exampleSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { HelpCircle, Landmark, PlusCircle } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
-import { useWriteContract, useAccount, useReadContract } from 'wagmi';
+import { useWriteContract, useAccount } from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
-import { PoolOrganizerABI } from '@/lens/abi/PoolOrganizer';
 import {
   Dialog,
   DialogContent,
@@ -31,7 +30,7 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
     return () => {
       dispatch(setSection(null));
     };
-  }, []);
+  }, [dispatch]);
 
   React.useEffect(() => {
     if (section === 'lend') {
@@ -39,13 +38,7 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
     } else {
       return setFilteredData(data);
     }
-  }, [section]);
-
-  const getAllPools = useReadContract({
-    abi: PoolOrganizerABI,
-    address: '0x93C992e88098F439a81696259987194dDA8f7F4F',
-    functionName: 'getAllPoolAddresses',
-  });
+  }, [section, data]);
 
   return (
     <div className="container mx-auto py-10">
@@ -122,7 +115,7 @@ const PeerToPeerPage = ({ data }: { data: any }) => {
                   name="amount"
                   id="amount"
                   onChange={e => {
-                    const onlyNumbers = /^[0-9]*$/; // Regular expression for only numbers
+                    const onlyNumbers = /^[0-9]*$/;
                     if (
                       onlyNumbers.test(e.target.value) ||
                       e.target.value === ''

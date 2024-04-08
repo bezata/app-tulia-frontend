@@ -95,6 +95,7 @@ function StatusList({
   setOpen: (open: boolean) => void;
   setSelectedCurrency: (currency: ILendRequest.CryptoCurrency | null) => void;
 }) {
+  //NOTE: neden disabled amk???
   return (
     <Command>
       <CommandInput placeholder="Filter currency..." />

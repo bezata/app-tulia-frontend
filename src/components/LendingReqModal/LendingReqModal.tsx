@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -81,13 +82,15 @@ const LendingReqModal = () => {
             </div>
           </div>
           <div className="flex justify-end gap-4 mt-4">
-            <Button
-              variant="outline"
-              className="border-tulia_primary"
-              type="button"
-            >
-              Cancel
-            </Button>
+            <DialogClose>
+              <Button
+                variant="outline"
+                className="border-tulia_primary"
+                type="button"
+              >
+                Cancel
+              </Button>
+            </DialogClose>
             <Button type="submit" className="bg-tulia_primary/50">
               Submit
             </Button>

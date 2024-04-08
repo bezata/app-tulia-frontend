@@ -1,29 +1,62 @@
 'use client';
 import { useReadContract } from 'wagmi';
 import { PoolOrganizerABI } from './abi/PoolOrganizer';
-import { useWriteContract, useAccount } from 'wagmi';
+import { useWriteContract, useAccount, useReadContracts } from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
+import { useEffect, useState } from 'react';
 
 export const useGetAllPools = () => {
-  const getAllPools = useReadContract({
+  const { data: allPoolAddresses } = useReadContract({
     abi: PoolOrganizerABI,
     address: '0xE103DA4c880fc64624B4f1140404b15678Ff68d1',
     functionName: 'getAllPoolAddresses',
   });
 
-  return getAllPools;
+  return allPoolAddresses as string[] | undefined;
 };
 
-export const useGetPoolDetails = () => {
-  const getPoolDetails = useReadContract({
+export const useGetTotalPoolCount = () => {
+  const { data: totalPoolCount } = useReadContract({
+    abi: PoolOrganizerABI,
+    address: '0xE103DA4c880fc64624B4f1140404b15678Ff68d1',
+    functionName: 'getTotalPools',
+  });
+
+  return totalPoolCount as number | undefined;
+};
+
+export const useGetPoolDetails = (poolAddress: string) => {
+  const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
     address: '0xE103DA4c880fc64624B4f1140404b15678Ff68d1',
     functionName: 'getPoolDetails',
+    args: [poolAddress as any],
   });
 
-  console.log(getPoolDetails);
+  return poolDetails as any;
+};
 
-  return getPoolDetails;
+export const useGetAllPoolDetails = () => {
+  const allPoolAddresses = useGetAllPools();
+  const [contractReadsConfig, setContractReadsConfig] = useState([]);
+
+  useEffect(() => {
+    if (allPoolAddresses && allPoolAddresses.length > 0) {
+      const config = allPoolAddresses.map(address => ({
+        address: '0xE103DA4c880fc64624B4f1140404b15678Ff68d1',
+        abi: PoolOrganizerABI,
+        functionName: 'getPoolDetails',
+        args: [address],
+      }));
+      setContractReadsConfig(config as any);
+    }
+  }, [allPoolAddresses]);
+
+  const { data: allPoolDetails } = useReadContracts({
+    contracts: contractReadsConfig,
+  });
+
+  return allPoolDetails;
 };
 
 export const useCreateTuliaPool = () => {
@@ -46,6 +79,5 @@ export const useCreateTuliaPool = () => {
       ],
     });
   };
-
   return createTuliaPool;
 };

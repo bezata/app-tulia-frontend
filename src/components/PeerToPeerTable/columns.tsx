@@ -33,6 +33,7 @@ export const columns: ColumnDef<ILendingData>[] = [
         <div className="flex items-center gap-2">
           {row.original.coin === 'ETH' && <EthIcon width={24} height={24} />}
           {row.original.coin === 'BTC' && <BtcIcon width={24} height={24} />}
+          {row.original.coin === 'TUL' && <BtcIcon width={24} height={24} />}
           <span>{row.original.coin}</span>
         </div>
       );

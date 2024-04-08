@@ -10,7 +10,6 @@ import { useGetAllPoolDetails, useGetTotalPoolCount } from '@/lens/lens';
 import { PoolDetail } from './IPeerToPeer';
 import LendingReqModal from '@/components/LendingReqModal/LendingReqModal';
 
-
 const PeerToPeerPage = () => {
   const allPoolDetails = useGetAllPoolDetails();
   const [data, setData] = useState<ILendingData[]>([]);
@@ -41,8 +40,7 @@ const PeerToPeerPage = () => {
   }, [allPoolDetails, totalPoolCount]);
 
   React.useEffect(() => {
-    if (totalPoolCount)
-    setPoolCount(totalPoolCount);
+    if (totalPoolCount) setPoolCount(totalPoolCount);
   }, [totalPoolCount]);
 
   const { section } = useAppSelector(state => state.example);
@@ -77,11 +75,11 @@ const PeerToPeerPage = () => {
           requests.
         </p>
       </div>
-      <div className='mb-4'>
-      <LendingReqModal />
+      <div className="mb-4">
+        <LendingReqModal />
       </div>
       <h2 className="text-md font-light mb-4 ">
-        All Lending Requests (Total: {totalPoolCount})
+        All Lending Requests (Total: {poolCount})
       </h2>
 
       <PeerToPeerTable columns={columns} data={filteredData} />

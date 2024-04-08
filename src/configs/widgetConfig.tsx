@@ -52,7 +52,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       },
       theme: {
         palette: {
-          primary: { main: 'rgb(58,24,100)' }, //BUTTONS
+          primary: { main: 'rgb(24,3,73)' }, //BUTTONS
           secondary: { main: 'rgba(125, 44, 197, 0.06)' },
           background: {
             paper: '#66000000', // INSIDE THE BOXES

@@ -71,7 +71,7 @@ const PeerToPeerPage = () => {
           Open Market Lending
         </h2>
         <p className="text-sm text-gray-500 mb-4 flex items-center">
-          {/* TODO: DCSELEK: Guzel bir aciklama ? */}
+          {/* TODO: DCSELEK: Guzel bir aciklama ? Tekin bakmali */}
           <HelpCircle className="w-4 h-4 inline-block mr-1" />
           This is the open market lending page.Here you can see all the lending
           requests.

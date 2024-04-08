@@ -37,12 +37,12 @@ export const useCreateTuliaPool = () => {
       functionName: 'createTuliaPool',
       args: [
         userAddress?.address as any,
-        '0x0DC33D4A2aB60E5F06AeaBAC71198CD99Bee1a64',
-        '0x0DC33D4A2aB60E5F06AeaBAC71198CD99Bee1a64',
+        '0xe083B68240A9f44369b7F1fA25F4DD97c3eCc754',
+        '0xe083B68240A9f44369b7F1fA25F4DD97c3eCc754',
         coinAmount as any,
         1 as any,
         1 as any,
-        '0x1460469138cB9D1A71809db6518FBBC10731D35c',
+        '0xB27Ad4200C613d7667699Eb1eC7B622d6Fcd260B',
       ],
     });
   };

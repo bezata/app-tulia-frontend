@@ -47,16 +47,16 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
         borderRadius: '16px',
         display: 'flex',
         maxWidth: 392,
-        boxShadow: '0px 4px 8px rgba(125, 44, 197, 0.06)',
-        backgroundColor: '#082D5A',
+        boxShadow: '14px 22px 48px rgba(125, 44, 197, 0.06)',
+        backgroundColor: 'rgba(125, 44, 197, 0.06)',
       },
       theme: {
         palette: {
-          primary: { main: '#082D5A' },
-          secondary: { main: '#00000' },
+          primary: { main: 'rgb(58,24,100)' }, //BUTTONS
+          secondary: { main: 'rgba(125, 44, 197, 0.06)' },
           background: {
-            paper: '#010E2E',
-            default: '#010E2E',
+            paper: '#66000000', // INSIDE THE BOXES
+            default: '#66000000', // OUTSIDE THE BOXES
           },
           grey: {},
         },

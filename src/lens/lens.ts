@@ -1,7 +1,13 @@
 'use client';
-import { useReadContract } from 'wagmi';
 import { PoolOrganizerABI } from './abi/PoolOrganizer';
-import { useWriteContract, useAccount, useReadContracts } from 'wagmi';
+import {
+  useWriteContract,
+  useAccount,
+  useReadContracts,
+  useReadContract,
+  useSignMessage,
+  useAccountEffect,
+} from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import { useEffect, useState } from 'react';
 
@@ -13,6 +19,17 @@ export const useGetAllPools = () => {
   });
 
   return allPoolAddresses as string[] | undefined;
+};
+
+export const useSignit = () => {
+  const { signMessage } = useSignMessage();
+
+  useAccountEffect({
+    onConnect(data) {
+      signMessage({ message: 'OROSBU' });
+    },
+    onDisconnect() {},
+  });
 };
 
 export const useGetTotalPoolCount = () => {

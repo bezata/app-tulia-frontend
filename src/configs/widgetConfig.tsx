@@ -5,6 +5,7 @@ import {
   WidgetConfig,
   WidgetEvent,
   WidgetWalletConfig,
+  HiddenUI,
 } from '@lifi/widget';
 import { useEffect, useMemo, useState } from 'react';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
@@ -43,6 +44,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       walletConfig,
       variant: 'expandable',
       subvariant: 'default',
+      hiddenUI: [HiddenUI.Appearance, HiddenUI.Language, HiddenUI.PoweredBy],
       containerStyle: {
         borderRadius: '16px',
         display: 'flex',

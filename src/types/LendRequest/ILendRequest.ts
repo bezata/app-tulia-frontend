@@ -4,6 +4,7 @@ export enum InterestModal {
     Compound = 'Compound',
     Simple = 'Simple',
     MarketBased = 'MarketBased',
+    FlashLoan = 'FlashLoan',
 }
 
 declare namespace ILendRequest {
@@ -12,8 +13,8 @@ declare namespace ILendRequest {
         barrowCoin: CryptoCurrency;
         loanAmount: number;
         interestModal: InterestModal;
-        publishDate: Date;
         endDate: Date;
+        interestRate: number;
     }
 
     type CryptoCurrency = {

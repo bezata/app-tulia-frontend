@@ -108,7 +108,7 @@ const LendingReqModal = () => {
                   />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <Label htmlFor="lendCoin">borrow Coin</Label>
+                  <Label htmlFor="lendCoin">Borrow Coin</Label>
                   <ComboBoxResponsive
                     setValue={form.setValue}
                     mode="barrow"
@@ -264,7 +264,7 @@ const LendingReqModal = () => {
                   )}
                 />
                 {/* calendars */}
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="endDate"
                   render={({ field }) => (
@@ -303,7 +303,7 @@ const LendingReqModal = () => {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
               </div>
               <div className="md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
                 <div className="flex flex-col gap-4">

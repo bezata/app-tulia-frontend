@@ -44,7 +44,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       walletConfig,
       variant: 'expandable',
       subvariant: 'default',
-      hiddenUI: [HiddenUI.Appearance, HiddenUI.Language, HiddenUI.PoweredBy],
+      hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
       containerStyle: {
         borderRadius: '16px',
         display: 'flex',
@@ -61,7 +61,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
             paper: '#66000000', // INSIDE THE BOXES
             default: '#66000000', // OUTSIDE THE BOXES
           },
-          grey: {},
+          grey: { 800: '#180349' },
         },
         shape: {},
         typography: {},

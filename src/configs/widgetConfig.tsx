@@ -52,6 +52,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
         boxShadow: '14px 22px 48px rgba(125, 44, 197, 0.06)',
         backgroundColor: 'rgba(125, 44, 197, 0.06)',
       },
+
       theme: {
         palette: {
           primary: { main: 'rgb(24,3,73)' }, //BUTTONS
@@ -106,7 +107,11 @@ const useWidgetWalletConfig = () => {
   const { openConnectModal } = useConnectModal();
 
   const walletConfig: WidgetWalletConfig = useMemo(
-    () => ({ onConnect: () => openConnectModal && openConnectModal() }),
+    () => ({
+      onConnect: async () => {
+        openConnectModal?.();
+      },
+    }),
     [openConnectModal]
   );
 

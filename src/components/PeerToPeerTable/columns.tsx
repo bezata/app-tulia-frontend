@@ -4,6 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '../ui/button';
 import EthIcon from '../../../public/EthIcon';
 import BtcIcon from '../../../public/BtcIcon';
+import LendingViewModal from '../LendingViewModal/LendingViewModal';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -55,18 +56,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     accessorKey: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      return (
-        <Button
-          size="sm"
-          variant={'outline'}
-          className="hover:bg-tulia_primary/30"
-          onClick={() => {
-            alert(`You clicked on row ${row.original.lending_id}`);
-          }}
-        >
-          View
-        </Button>
-      );
+      return <LendingViewModal row={row} />;
     },
   },
 ];

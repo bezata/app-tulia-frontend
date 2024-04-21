@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, CalendarDays } from 'lucide-react';
+import { PlusCircle, CalendarDays, CodeIcon } from 'lucide-react';
 import { useCreateTuliaPool } from '@/lens/lens';
 import { ComboBoxResponsive } from '../Combobox/Combobox';
 import { useForm } from 'react-hook-form';
@@ -32,6 +32,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../ui/form';
+import { CopyBlock } from 'react-code-blocks';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -305,48 +306,140 @@ const LendingReqModal = () => {
                   )}
                 />
               </div>
-              <div className="md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
-                <div className="flex flex-col gap-4">
-                  <div className="flex flex-col border-b border-tulia_primary pb-4">
-                    <span className="text-sm font-semibold">
-                      Borrow Coin Amount
+              {form.watch('interestModal') === InterestModal.FlashLoan ? (
+                <>
+                  <div className=" flex flex-col items-center justify-center md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
+                    <span className="text-sm font-semibold mb-2">
+                      Flash Loan Contract
                     </span>
-                    <span className="text-green-500">
-                      {form.watch('loanAmount') ? form.watch('loanAmount') : 0}{' '}
-                      {borrowCoin?.label}
+                    <Dialog>
+                      <DialogTrigger className="w-full">
+                        <Button className="bg-tulia_primary/50 w-full mt-2">
+                          <CodeIcon className="w-4 h-4 inline-block mr-2" />
+                          View Code
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl h-[520px] overflow-y-auto">
+                        <DialogTitle>Flash Loan Contract</DialogTitle>
+                        <DialogDescription>
+                          This is the flash loan contract that you can use to
+                          initiate a flash loan request.
+                        </DialogDescription>
+                        {/* <div className="overflow-y-auto h-[400px] md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full"> */}
+                        <CopyBlock
+                          language="solidity"
+                          wrapLongLines
+                          showLineNumbers
+                          text={`
+                  // SPDX-License-Identifier: MIT
+pragma solidity 0.8.20;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
+
+contract MockFlashBorrower is IERC3156FlashBorrower {
+    using SafeERC20 for IERC20;
+
+    IERC3156FlashLender public lender;
+    address public admin;
+
+    constructor(address _lender) {
+        lender = IERC3156FlashLender(_lender);
+        admin = msg.sender;
+    }
+
+    // This function initiates a flash loan request
+    function requestFlashLoan(address token, uint256 amount, bytes calldata data) external {
+        require(msg.sender == admin, "Only admin can initiate flash loan");
+        lender.flashLoan(this, token, amount, data);
+    }
+
+    // This is the callback function that the lender will call
+    function onFlashLoan(
+        address initiator,
+        address token,
+        uint256 amount,
+        uint256 fee,
+        bytes calldata data
+    ) external override returns (bytes32) {
+        require(msg.sender == address(lender), "Only lender can call this function");
+        require(initiator == address(this), "Unrecognized initiator");
+
+        // Placeholder for custom logic to utilize the flash loaned amount
+        // Example: arbitrage, collateral swap, etc.
+        // data can be used to pass custom parameters needed for the operation
+
+        // Repay the flash loan
+        uint256 totalRepayment = amount + fee;
+        IERC20(token).safeTransfer(msg.sender, totalRepayment);
+
+        return keccak256("ERC3156FlashBorrower.onFlashLoan");
+    }
+
+    function setLender(address _lender) external {
+        require(msg.sender == admin, "Only admin can set lender");
+        lender = IERC3156FlashLender(_lender);
+    }
+}
+`}
+                        />
+                        {/* </div> */}
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </>
+              ) : (
+                <div className="md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col border-b border-tulia_primary pb-4">
+                      <span className="text-sm font-semibold">
+                        Borrow Coin Amount
+                      </span>
+                      <span className="text-green-500">
+                        {form.watch('loanAmount')
+                          ? form.watch('loanAmount')
+                          : 0}{' '}
+                        {borrowCoin?.label}
+                      </span>
+                    </div>
+                    <div className="flex flex-col border-b border-tulia_primary pb-4">
+                      <span className="text-sm font-semibold">
+                        Interest Rate
+                      </span>
+                      <span className="text-green-500">
+                        {form.watch('interestRate')
+                          ? form.watch('interestRate')
+                          : 0}
+                        {'%'}
+                      </span>
+                    </div>
+                    {/* Collateral Amount */}
+                    <div className="flex flex-col border-b border-tulia_primary pb-4">
+                      <span className="text-sm font-semibold">
+                        Collateral Amount
+                      </span>
+                      <span className="text-green-500">
+                        0 {lendCoin?.label}
+                      </span>
+                    </div>
+                    {/* You will gain NUMBER THT Coin for this position */}
+                    <div className="flex flex-col border-b border-tulia_primary pb-4">
+                      <span className="text-xs font-semibold">
+                        You will gain{' '}
+                        <span className="text-green-600"> {'{NUMBER}'} </span>{' '}
+                        <span className="text-indigo-600">THT Coins </span> for
+                        this lend position
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      Collateral amount is calculated based on the interest rate
+                      and the loan amount
                     </span>
                   </div>
-                  <div className="flex flex-col border-b border-tulia_primary pb-4">
-                    <span className="text-sm font-semibold">Interest Rate</span>
-                    <span className="text-green-500">
-                      {form.watch('interestRate')
-                        ? form.watch('interestRate')
-                        : 0}
-                      {'%'}
-                    </span>
-                  </div>
-                  {/* Collateral Amount */}
-                  <div className="flex flex-col border-b border-tulia_primary pb-4">
-                    <span className="text-sm font-semibold">
-                      Collateral Amount
-                    </span>
-                    <span className="text-green-500">0 {lendCoin?.label}</span>
-                  </div>
-                  {/* You will gain NUMBER THT Coin for this position */}
-                  <div className="flex flex-col border-b border-tulia_primary pb-4">
-                    <span className="text-xs font-semibold">
-                      You will gain{' '}
-                      <span className="text-green-600"> {'{NUMBER}'} </span>{' '}
-                      <span className="text-indigo-600">THT Coins </span> for
-                      this lend position
-                    </span>
-                  </div>
-                  <span className="text-xs text-gray-500">
-                    Collateral amount is calculated based on the interest rate
-                    and the loan amount
-                  </span>
                 </div>
-              </div>
+              )}
             </div>
             <div className="flex justify-end gap-4 mt-4 border-t border-indigo-900 pt-4">
               <DialogClose>

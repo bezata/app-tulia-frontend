@@ -264,12 +264,12 @@ const LendingReqModal = () => {
                   )}
                 />
                 {/* calendars */}
-                {/* <FormField
+                <FormField
                   control={form.control}
                   name="endDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col gap-1 col-span-2">
-                      <FormLabel htmlFor="endDate">Request End Date</FormLabel>
+                      <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
                       <FormControl>
                         <Popover>
                           <PopoverTrigger asChild>
@@ -303,7 +303,7 @@ const LendingReqModal = () => {
                       <FormMessage />
                     </FormItem>
                   )}
-                /> */}
+                />
               </div>
               <div className="md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
                 <div className="flex flex-col gap-4">

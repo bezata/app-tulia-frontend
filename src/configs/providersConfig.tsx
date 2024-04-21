@@ -29,7 +29,7 @@ export const wagmiConfig = createConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
-    [polygonMumbai.id]: http('https://polygon-mumbai-pokt.nodies.app'),
+    [polygonMumbai.id]: http('https://polygon-mumbai-bor-rpc.publicnode.com'),
   },
 });
 
@@ -50,7 +50,7 @@ const config = getDefaultConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
-    [polygonMumbai.id]: http('https://polygon-mumbai-pokt.nodies.app'),
+    [polygonMumbai.id]: http('https://polygon-mumbai-bor-rpc.publicnode.com'),
   },
 });
 

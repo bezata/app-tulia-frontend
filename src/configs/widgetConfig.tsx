@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 
+
 interface Token {
   chainId: number;
   address: `0x${string}`;
@@ -40,7 +41,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
 
   const widgetConfig: WidgetConfig = useMemo(
     () => ({
-      integrator: 'Tulia',
+      integrator: 'tuliaprotocol',
       walletConfig,
       variant: 'expandable',
       subvariant: 'default',
@@ -98,7 +99,9 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
 
   return (
     <div className={className}>
-      {isMounted && <LiFiWidget integrator="Tulia" config={widgetConfig} />}
+      {isMounted && (
+        <LiFiWidget integrator="tuliaprotocol" config={widgetConfig} />
+      )}
     </div>
   );
 };

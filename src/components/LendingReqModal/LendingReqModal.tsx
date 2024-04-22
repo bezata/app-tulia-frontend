@@ -265,46 +265,51 @@ const LendingReqModal = () => {
                   )}
                 />
                 {/* calendars */}
-                <FormField
-                  control={form.control}
-                  name="endDate"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1 col-span-2">
-                      <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
-                      <FormControl>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={'outline'}
-                              className={`flex items-center gap-1`}
+                {form.watch('interestModal') !== InterestModal.FlashLoan && (
+                  <FormField
+                    control={form.control}
+                    name="endDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1 col-span-2">
+                        <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
+                        <FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={'outline'}
+                                className={`flex items-center gap-1`}
+                              >
+                                {form.watch('endDate') ? (
+                                  format(form.watch('endDate'), 'PP')
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarDays className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
                             >
-                              {form.watch('endDate') ? (
-                                format(form.watch('endDate'), 'PP')
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarDays className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={form.watch('endDate')}
-                              onSelect={(date: Date | undefined) =>
-                                date && form.setValue('endDate', date)
-                              }
-                              disabled={(date: Date) => {
-                                return date < new Date();
-                              }}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                              <Calendar
+                                mode="single"
+                                selected={form.watch('endDate')}
+                                onSelect={(date: Date | undefined) =>
+                                  date && form.setValue('endDate', date)
+                                }
+                                disabled={(date: Date) => {
+                                  return date < new Date();
+                                }}
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
               {form.watch('interestModal') === InterestModal.FlashLoan ? (
                 <>
@@ -313,8 +318,11 @@ const LendingReqModal = () => {
                       Flash Loan Contract
                     </span>
                     <Dialog>
-                      <DialogTrigger className="w-full">
-                        <Button className="bg-tulia_primary/50 w-full mt-2">
+                      <DialogTrigger type="button" className="w-full">
+                        <Button
+                          type="button"
+                          className="bg-tulia_primary/50 w-full mt-2"
+                        >
                           <CodeIcon className="w-4 h-4 inline-block mr-2" />
                           View Code
                         </Button>

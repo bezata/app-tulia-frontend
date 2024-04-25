@@ -43,7 +43,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
     () => ({
       integrator: 'tuliaprotocol',
       walletConfig,
-      variant: 'expandable',
+      variant: 'wide',
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
       containerStyle: {

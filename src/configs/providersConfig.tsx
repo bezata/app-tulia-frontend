@@ -12,23 +12,16 @@ import {
   trustWallet,
   ledgerWallet,
 } from '@rainbow-me/rainbowkit/wallets';
-import {
-  arbitrum,
-  mainnet,
-  optimism,
-  polygon,
-  sepolia,
-  polygonMumbai,
-} from 'wagmi/chains';
+import { arbitrumSepolia, mainnet, polygonMumbai } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { http, createConfig } from 'wagmi';
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, sepolia, polygonMumbai],
+  chains: [mainnet, arbitrumSepolia, polygonMumbai],
   transports: {
     [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [arbitrumSepolia.id]: http(),
     [polygonMumbai.id]: http('https://polygon-mumbai-bor-rpc.publicnode.com'),
   },
 });
@@ -45,11 +38,11 @@ const config = getDefaultConfig({
       wallets: [argentWallet, trustWallet, ledgerWallet],
     },
   ],
-  chains: [sepolia, mainnet, polygonMumbai],
+  chains: [arbitrumSepolia, mainnet, polygonMumbai],
   ssr: true,
   transports: {
     [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [arbitrumSepolia.id]: http(),
     [polygonMumbai.id]: http('https://polygon-mumbai-bor-rpc.publicnode.com'),
   },
 });

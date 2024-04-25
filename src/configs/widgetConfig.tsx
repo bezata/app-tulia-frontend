@@ -46,14 +46,13 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       variant: 'wide',
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
-      containerStyle: {
-        borderRadius: '16px',
-        display: 'flex',
-        maxWidth: 392,
-        boxShadow: '14px 22px 48px rgba(125, 44, 197, 0.06)',
-        backgroundColor: 'rgba(125, 44, 197, 0.06)',
+      components: {
+        MuiAppBar: { root: { backgroundColor: 'rgba(125, 44, 197, 0.06)' } },
+        MuiButton: { root: { borderRadius: 30 } },
+        MuiCard: { root: { borderRadius: 16 } },
+        MuiInputCard: { root: { borderRadius: 16 } },
+        MuiTabs: { root: { borderRadius: 16 } },
       },
-
       theme: {
         palette: {
           primary: { main: 'rgb(24,3,73)' }, //BUTTONS
@@ -66,6 +65,13 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
         },
         shape: {},
         typography: {},
+        container: {
+          borderRadius: '16px',
+          display: 'flex',
+          maxWidth: 392,
+          boxShadow: '14px 22px 48px rgba(125, 44, 197, 0.06)',
+          backgroundColor: 'rgba(125, 44, 197, 0.06)',
+        },
       },
 
       ...config,

@@ -45,6 +45,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       walletConfig,
       variant: 'wide',
       subvariant: 'default',
+      fee: '0.03',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
       components: {
         MuiAppBar: { root: { backgroundColor: 'rgba(125, 44, 197, 0.06)' } },

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { HelpCircle, Landmark, PlusCircle } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
+<<<<<<< Updated upstream
 import { useWriteContract, useAccount } from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import {
@@ -17,6 +18,44 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+=======
+import { useGetAllPoolDetails, useGetTotalPoolCount } from '@/lens/lens';
+import { PoolDetail } from './IPeerToPeer';
+import LendingReqModal from '@/components/LendingReqModal/LendingReqModal';
+
+const PeerToPeerPage = () => {
+  const allPoolDetails = useGetAllPoolDetails();
+  const [data, setData] = useState<ILendingData[]>([]);
+  const totalPoolCount = useGetTotalPoolCount();
+  const [poolCount, setPoolCount] = useState<number>(0);
+
+  React.useEffect(() => {
+    if (allPoolDetails) {
+      const formattedData = allPoolDetails.map(
+        (detail, index): ILendingData => {
+          const poolDetail = detail.result as unknown;
+          return {
+            lending_id: (index + 1)?.toString(),
+            wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
+            coin: 'ETH',
+            amount: Number((poolDetail as PoolDetail)?.loanAmount),
+            created_at: new Date(
+              Number((poolDetail as PoolDetail)?.creationTime) * 1000
+            )
+              ?.toISOString()
+              .split('T')[0],
+            type: 'lend',
+          };
+        }
+      );
+      setData(formattedData);
+    }
+  }, [allPoolDetails, totalPoolCount]);
+
+  React.useEffect(() => {
+    if (totalPoolCount) setPoolCount(totalPoolCount);
+  }, [totalPoolCount]);
+>>>>>>> Stashed changes
 
 const PeerToPeerPage = ({ data }: { data: any }) => {
   const userAddress = useAccount();

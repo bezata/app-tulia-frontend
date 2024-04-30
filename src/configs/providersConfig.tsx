@@ -21,7 +21,12 @@ export const wagmiConfig = createConfig({
   chains: [mainnet, sepolia],
   transports: {
     [mainnet.id]: http(),
+<<<<<<< Updated upstream
     [sepolia.id]: http(),
+=======
+    [arbitrumSepolia.id]: http(),
+    [polygonMumbai.id]: http('https://polygon-mumbai-pokt.nodies.app'),
+>>>>>>> Stashed changes
   },
 });
 
@@ -39,6 +44,14 @@ const config = getDefaultConfig({
   ],
   chains: [sepolia, mainnet, polygon, optimism, arbitrum],
   ssr: true,
+<<<<<<< Updated upstream
+=======
+  transports: {
+    [mainnet.id]: http(),
+    [arbitrumSepolia.id]: http(),
+    [polygonMumbai.id]: http('https://polygon-mumbai-pokt.nodies.app'),
+  },
+>>>>>>> Stashed changes
 });
 
 const queryClient = new QueryClient();

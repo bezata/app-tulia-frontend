@@ -9,12 +9,13 @@ export enum InterestModal {
 
 declare namespace ILendRequest {
     interface ILendRequestInputs {
-        lendCoin: CryptoCurrency;
-        barrowCoin: CryptoCurrency;
-        loanAmount: number;
-        interestModal: InterestModal;
-        endDate: Date;
-        interestRate: number;
+      lendCoin: CryptoCurrency;
+      borrowCoin: CryptoCurrency;
+      loanAmount: number;
+      interestModal: InterestModal;
+      endDate: Date;
+      interestRate: number;
+      InterestAddress: string;
     }
 
     type CryptoCurrency = {

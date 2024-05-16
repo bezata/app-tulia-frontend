@@ -23,10 +23,26 @@ import BtcIcon from '../../../public/BtcIcon';
 import EthIcon from '../../../public/EthIcon';
 
 const cryptoCurrencies: ILendRequest.CryptoCurrency[] = [
-  { label: 'ETH', value: 'ETH', symbol: <EthIcon /> },
-  { label: 'BTC', value: 'BTC', symbol: <BtcIcon /> },
-  { label: 'USDT', value: 'USDT', symbol: <BtcIcon /> },
-  { label: 'USDC', value: 'USDC', symbol: <EthIcon /> },
+  {
+    label: 'ETH',
+    value: '0xC7De508085c395E9a2e5fd738e3b7804e641Cd84',
+    symbol: <EthIcon />,
+  },
+  {
+    label: 'BTC',
+    value: '0xC7De508085c395E9a2e5fd738e3b7804e641Cd84',
+    symbol: <BtcIcon />,
+  },
+  {
+    label: 'USDT',
+    value: '0xC7De508085c395E9a2e5fd738edfgfdg3b7804e641Cd84',
+    symbol: <BtcIcon />,
+  },
+  {
+    label: 'USDC',
+    value: '0xC7De508085c395E9a2e5fd738e3b7ddfg804e641Cd84',
+    symbol: <EthIcon />,
+  },
 ];
 
 export function ComboBoxResponsive({
@@ -34,7 +50,7 @@ export function ComboBoxResponsive({
   selectedItem,
   setValue,
 }: {
-  mode: 'lend' | 'barrow';
+  mode: 'lend' | 'borrow';
   selectedItem: ILendRequest.CryptoCurrency;
   setValue: any;
 }) {
@@ -96,6 +112,7 @@ function StatusList({
   setSelectedCurrency: (currency: ILendRequest.CryptoCurrency | null) => void;
 }) {
   //NOTE: neden disabled amk???
+  //NOTE: kanka cidden niye disabled amk??? -behzat
   return (
     <Command>
       <CommandInput placeholder="Filter currency..." />
@@ -104,7 +121,7 @@ function StatusList({
         <CommandGroup>
           {cryptoCurrencies.map(currency => (
             <CommandItem
-              key={currency.value}
+              key={`${currency.label}-${currency.value}`}
               value={currency.value}
               onSelect={value => {
                 setSelectedCurrency(

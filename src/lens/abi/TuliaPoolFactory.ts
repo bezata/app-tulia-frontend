@@ -3,7 +3,96 @@ export const TuliaPoolFactoryABI = [
     inputs: [
       {
         internalType: 'address',
+        name: 'lender',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'loanTokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'assetToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'repaymentTokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'loanAmount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'interestRate',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'repaymentPeriod',
+        type: 'uint256',
+      },
+      {
+        internalType: 'contract IInterestModel',
+        name: 'interestModel',
+        type: 'address',
+      },
+      {
+        internalType: 'enum IPoolOrganizer.PoolType',
+        name: 'poolType',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint256',
+        name: 'optionalFlashLoanFeeRate',
+        type: 'uint256',
+      },
+    ],
+    name: 'createTuliaPool',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'poolAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'vaultAddress',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: '_poolOrganizer',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_permit2',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_feeManager',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_rewardManager',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_vaultManager',
         type: 'address',
       },
     ],
@@ -31,6 +120,12 @@ export const TuliaPoolFactoryABI = [
         name: 'vault',
         type: 'address',
       },
+      {
+        indexed: false,
+        internalType: 'enum IPoolOrganizer.PoolType',
+        name: 'poolType',
+        type: 'uint8',
+      },
     ],
     name: 'PoolCreated',
     type: 'event',
@@ -55,57 +150,29 @@ export const TuliaPoolFactoryABI = [
     type: 'event',
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'lender',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'loanTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'assetToken',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'interestRate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'repaymentPeriod',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract IInterestModel',
-        name: 'interestModel',
-        type: 'address',
-      },
-    ],
-    name: 'createTuliaPool',
+    inputs: [],
+    name: 'feeManager',
     outputs: [
       {
-        internalType: 'address',
-        name: 'poolAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'vaultAddress',
+        internalType: 'contract IFeeManager',
+        name: '',
         type: 'address',
       },
     ],
-    stateMutability: 'nonpayable',
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'permit2',
+    outputs: [
+      {
+        internalType: 'contract IPermit2',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -114,6 +181,32 @@ export const TuliaPoolFactoryABI = [
     outputs: [
       {
         internalType: 'contract IPoolOrganizer',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'rewardManager',
+    outputs: [
+      {
+        internalType: 'contract IRewardManager',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'vaultManager',
+    outputs: [
+      {
+        internalType: 'contract IVaultManager',
         name: '',
         type: 'address',
       },
@@ -140,4 +233,4 @@ export const TuliaPoolFactoryABI = [
     stateMutability: 'view',
     type: 'function',
   },
-] as const;
+];

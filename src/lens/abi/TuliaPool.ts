@@ -1,371 +1,922 @@
 export const TuliaPoolABI = [
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'lender',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'loanToken',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'collateralVaultAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'interestRate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'repaymentPeriod',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract IInterestModel',
-        name: 'interestModel',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'target',
-        type: 'address',
-      },
-    ],
-    name: 'AddressEmptyCode',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'AddressInsufficientBalance',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'FailedInnerCall',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'required',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'provided',
-        type: 'uint256',
-      },
-    ],
-    name: 'InsufficientAmount',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'InvalidState',
-    type: 'error',
-  },
-  {
-    inputs: [],
-    name: 'NotActiveLoan',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'token',
-        type: 'address',
-      },
-    ],
-    name: 'SafeERC20FailedOperation',
-    type: 'error',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'claimant',
-        type: 'address',
-      },
-    ],
-    name: 'CollateralClaimed',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'borrower',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'collateralAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'CollateralFunded',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'interestAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'InterestPaid',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'borrower',
-        type: 'address',
-      },
-    ],
-    name: 'LoanActivated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [],
-    name: 'LoanClosed',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [],
-    name: 'LoanDefaulted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'LoanFunded',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'lender',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'LoanOfferCreated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amountRepaid',
-        type: 'uint256',
-      },
-    ],
-    name: 'RepaymentMade',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'BORROWER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'LENDER_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'borrower',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'interestTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'collateralAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'activateLoan',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'claimCollateral',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'declareDefault',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'fundLoan',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'loanDetails',
-    outputs: [
-      {
-        internalType: 'address',
-        name: 'lender',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'loanToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract TuliaVault',
-        name: 'collateralVault',
-        type: 'address',
-      },
-      {
-        internalType: 'contract TuliaToken',
-        name: 'interestToken',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'interestRate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'repaymentPeriod',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract IInterestModel',
-        name: 'interestModel',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'borrower',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'repay',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'state',
-    outputs: [
-      {
-        internalType: 'enum TuliaPool.LoanState',
-        name: '',
-        type: 'uint8',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
+  [
+    {
+      inputs: [],
+      stateMutability: 'nonpayable',
+      type: 'constructor',
+    },
+    {
+      inputs: [],
+      name: 'AccessControlBadConfirmation',
+      type: 'error',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+        {
+          internalType: 'bytes32',
+          name: 'neededRole',
+          type: 'bytes32',
+        },
+      ],
+      name: 'AccessControlUnauthorizedAccount',
+      type: 'error',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'vaultManager',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'rewardManager',
+          type: 'address',
+        },
+      ],
+      name: 'ManagerRegistered',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+      ],
+      name: 'PoolDeregistered',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'lender',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'borrower',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'vault',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'enum IPoolOrganizer.PoolType',
+          name: 'poolType',
+          type: 'uint8',
+        },
+      ],
+      name: 'PoolRegistered',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'previousAdminRole',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'newAdminRole',
+          type: 'bytes32',
+        },
+      ],
+      name: 'RoleAdminChanged',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'sender',
+          type: 'address',
+        },
+      ],
+      name: 'RoleGranted',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'sender',
+          type: 'address',
+        },
+      ],
+      name: 'RoleRevoked',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'vault',
+          type: 'address',
+        },
+      ],
+      name: 'VaultRegistered',
+      type: 'event',
+    },
+    {
+      inputs: [],
+      name: 'DEFAULT_ADMIN_ROLE',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'POOL_MANAGER_ROLE',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+      ],
+      name: 'deregisterPool',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'fundedPools',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'borrower',
+          type: 'address',
+        },
+      ],
+      name: 'getAllBorrowerPoolDetails',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'lender',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'borrower',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationTime',
+              type: 'uint256',
+            },
+            {
+              internalType: 'address',
+              name: 'vault',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'loanToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'assetToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'repaymentToken',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'loanAmount',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'interestRate',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'repaymentPeriod',
+              type: 'uint256',
+            },
+            {
+              internalType: 'enum IPoolOrganizer.PoolType',
+              name: 'poolType',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IPoolOrganizer.PoolDetails[]',
+          name: '',
+          type: 'tuple[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'getAllFundedPoolDetails',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'lender',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'borrower',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationTime',
+              type: 'uint256',
+            },
+            {
+              internalType: 'address',
+              name: 'vault',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'loanToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'assetToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'repaymentToken',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'loanAmount',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'interestRate',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'repaymentPeriod',
+              type: 'uint256',
+            },
+            {
+              internalType: 'enum IPoolOrganizer.PoolType',
+              name: 'poolType',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IPoolOrganizer.PoolDetails[]',
+          name: '',
+          type: 'tuple[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'lender',
+          type: 'address',
+        },
+      ],
+      name: 'getAllLenderPoolDetails',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'lender',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'borrower',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationTime',
+              type: 'uint256',
+            },
+            {
+              internalType: 'address',
+              name: 'vault',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'loanToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'assetToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'repaymentToken',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'loanAmount',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'interestRate',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'repaymentPeriod',
+              type: 'uint256',
+            },
+            {
+              internalType: 'enum IPoolOrganizer.PoolType',
+              name: 'poolType',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IPoolOrganizer.PoolDetails[]',
+          name: '',
+          type: 'tuple[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'getManagers',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+      ],
+      name: 'getPoolDetails',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'lender',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'borrower',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationTime',
+              type: 'uint256',
+            },
+            {
+              internalType: 'address',
+              name: 'vault',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'loanToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'assetToken',
+              type: 'address',
+            },
+            {
+              internalType: 'contract IERC20',
+              name: 'repaymentToken',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'loanAmount',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'interestRate',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'repaymentPeriod',
+              type: 'uint256',
+            },
+            {
+              internalType: 'enum IPoolOrganizer.PoolType',
+              name: 'poolType',
+              type: 'uint8',
+            },
+          ],
+          internalType: 'struct IPoolOrganizer.PoolDetails',
+          name: '',
+          type: 'tuple',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'lender',
+          type: 'address',
+        },
+      ],
+      name: 'getPoolsByLender',
+      outputs: [
+        {
+          internalType: 'address[]',
+          name: '',
+          type: 'address[]',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+      ],
+      name: 'getRoleAdmin',
+      outputs: [
+        {
+          internalType: 'bytes32',
+          name: '',
+          type: 'bytes32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'getTotalPools',
+      outputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+      ],
+      name: 'getVaultForPool',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'factoryAddress',
+          type: 'address',
+        },
+      ],
+      name: 'grantFactoryAccess',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'grantRole',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'hasRole',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+      ],
+      name: 'markPoolAsFunded',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      name: 'poolVaults',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_vaultManager',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: '_rewardManager',
+          type: 'address',
+        },
+      ],
+      name: 'registerManagers',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'lender',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'borrower',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'vault',
+          type: 'address',
+        },
+        {
+          internalType: 'contract IERC20',
+          name: 'loanToken',
+          type: 'address',
+        },
+        {
+          internalType: 'contract IERC20',
+          name: 'assetToken',
+          type: 'address',
+        },
+        {
+          internalType: 'contract IERC20',
+          name: 'repaymentToken',
+          type: 'address',
+        },
+        {
+          internalType: 'uint256',
+          name: 'loanAmount',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'interestRate',
+          type: 'uint256',
+        },
+        {
+          internalType: 'uint256',
+          name: 'repaymentPeriod',
+          type: 'uint256',
+        },
+        {
+          internalType: 'enum IPoolOrganizer.PoolType',
+          name: 'poolType',
+          type: 'uint8',
+        },
+      ],
+      name: 'registerPool',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'vault',
+          type: 'address',
+        },
+      ],
+      name: 'registerVault',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'address',
+          name: 'callerConfirmation',
+          type: 'address',
+        },
+      ],
+      name: 'renounceRole',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes32',
+          name: 'role',
+          type: 'bytes32',
+        },
+        {
+          internalType: 'address',
+          name: 'account',
+          type: 'address',
+        },
+      ],
+      name: 'revokeRole',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'rewardManager',
+      outputs: [
+        {
+          internalType: 'contract IRewardManager',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: 'pool',
+          type: 'address',
+        },
+        {
+          internalType: 'address',
+          name: 'newBorrower',
+          type: 'address',
+        },
+      ],
+      name: 'setBorrowerForPool',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'bytes4',
+          name: 'interfaceId',
+          type: 'bytes4',
+        },
+      ],
+      name: 'supportsInterface',
+      outputs: [
+        {
+          internalType: 'bool',
+          name: '',
+          type: 'bool',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [],
+      name: 'vaultManager',
+      outputs: [
+        {
+          internalType: 'contract IVaultManager',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ],
 ] as const;

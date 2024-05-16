@@ -33,6 +33,7 @@ import {
   FormMessage,
 } from '../ui/form';
 import { CopyBlock } from 'react-code-blocks';
+import { create } from 'domain';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -49,28 +50,127 @@ const schema = z.object({
   interestModal: z.nativeEnum(InterestModal),
   interestRate: z.string().refine(v => parseFloat(v) > 0),
   endDate: z.date(),
+  interestAddress: z.string().optional(),
 });
 
 const LendingReqModal = () => {
   const createTuliaPool = useCreateTuliaPool();
   const [open, setOpen] = React.useState(false);
+  const [collateral, setCollateral] = React.useState(0);
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
-      lendCoin: { label: 'ETH', value: 'ETH', symbol: <EthIcon /> },
-      barrowCoin: { label: 'BTC', value: 'BTC', symbol: <BtcIcon /> },
-      loanAmount: 0,
-      interestModal: InterestModal.Compound,
+      lendCoin: {
+        label: 'ETH',
+        value: '0xC7De508085c395E9a2e5fd738e3b7804e641Cd84',
+        symbol: <EthIcon />,
+      },
+      borrowCoin: {
+        label: 'BTC',
+        value: '0xC7De508085c395E9a2e5fd738e3b7804e641Cd84',
+        symbol: <BtcIcon />,
+      },
+      loanAmount: undefined,
+      interestModal: InterestModal.Simple,
       endDate: new Date(),
-      interestRate: 0,
+      interestRate: undefined,
     },
     resolver: zodResolver(schema),
   });
 
+  const calculateCollateral = (
+    loanAmount: number,
+    interestRate: string,
+    interestModel: InterestModal
+  ): number => {
+    let interest = 0;
+    const principal = loanAmount;
+    const rate = parseFloat(interestRate) / 100;
+    switch (interestModel) {
+      case InterestModal.Simple:
+        interest = principal * rate;
+        break;
+      case InterestModal.Compound:
+        interest = principal * (Math.pow(1 + rate, 1) - 1);
+        break;
+      case InterestModal.FlashLoan:
+        interest = principal * rate;
+        break;
+      case InterestModal.MarketBased:
+        interest = principal * rate;
+        break;
+      default:
+        console.error('Unsupported interest model');
+        return principal;
+    }
+
+    return principal + interest;
+  };
+
+  React.useEffect(() => {
+    const subscription = form.watch((value, { name, type }) => {
+      if (
+        name === 'loanAmount' ||
+        name === 'interestRate' ||
+        name === 'interestModal'
+      ) {
+        const calculatedCollateral = calculateCollateral(
+          value.loanAmount,
+          value.interestRate,
+          value.interestModal
+        );
+        setCollateral(calculatedCollateral);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch]);
+
+  const updateInterestAddress = (modal: InterestModal) => {
+    let newAddress = '';
+    switch (modal) {
+      case InterestModal.Compound:
+        newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
+        break;
+      case InterestModal.Simple:
+        newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
+        break;
+      case InterestModal.FlashLoan:
+        newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
+        break;
+      case InterestModal.MarketBased:
+        newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
+        break;
+      default:
+        break;
+    }
+    return newAddress;
+  };
+
   const lendCoin = form.watch('lendCoin');
-  const borrowCoin = form.watch('barrowCoin');
+  const borrowCoin = form.watch('borrowCoin');
 
   const onSubmit = (data: ILendRequest.ILendRequestInputs) => {
-    console.log(data);
+    const currentDate = Date.now();
+    const currentDateInSeconds = currentDate / 1000;
+    // @ts-ignore
+    const repaymentEndDateInSeconds = Number(new Date(data.endDate) / 1000);
+    const repaymentDifference = Math.trunc(
+      repaymentEndDateInSeconds - currentDateInSeconds
+    );
+    const optionalFlashLoanFeeRate =
+      data.interestModal === InterestModal.FlashLoan ? data.interestRate : 0;
+    const newInterestAddress = updateInterestAddress(data.interestModal);
+    const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
+    createTuliaPool(
+      data.loanAmount,
+      data.lendCoin.value,
+      data.borrowCoin.value,
+      data.borrowCoin.value,
+      data.interestRate,
+      repaymentDifference,
+      newInterestAddress,
+      poolType,
+      optionalFlashLoanFeeRate
+    );
   };
 
   const onCloseClick = () => {
@@ -112,7 +212,7 @@ const LendingReqModal = () => {
                   <Label htmlFor="lendCoin">Borrow Coin</Label>
                   <ComboBoxResponsive
                     setValue={form.setValue}
-                    mode="barrow"
+                    mode="borrow"
                     selectedItem={borrowCoin}
                   />
                 </div>
@@ -124,7 +224,11 @@ const LendingReqModal = () => {
                       <FormLabel htmlFor="loanAmount">Loan Amount</FormLabel>
                       <div className="relative">
                         <FormControl>
-                          <Input type="number" defaultValue={0} {...field} />
+                          <Input
+                            type="number"
+                            defaultValue={undefined}
+                            {...field}
+                          />
                         </FormControl>
                         <span className="absolute right-8 text-gray-500 top-2">
                           {lendCoin?.label}
@@ -152,14 +256,16 @@ const LendingReqModal = () => {
                       <FormLabel>Interest Modal</FormLabel>
                       <FormControl>
                         <RadioGroup
-                          onValueChange={field.onChange}
+                          onValueChange={value => {
+                            field.onChange(value);
+                          }}
                           className="grid grid-cols-2 gap-4 mt-1"
-                          defaultValue={InterestModal.Compound}
+                          defaultValue={InterestModal.Simple}
                         >
                           <div
                             data-selected={
                               form.watch('interestModal') ===
-                              InterestModal.Compound
+                              InterestModal.Simple
                             }
                             className="flex items-center gap-2 border border-tulia_primary p-2 data-[selected=true]:bg-tulia_primary/50 transition-all rounded-sm"
                           >
@@ -333,7 +439,6 @@ const LendingReqModal = () => {
                           This is the flash loan contract that you can use to
                           initiate a flash loan request.
                         </DialogDescription>
-                        {/* <div className="overflow-y-auto h-[400px] md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full"> */}
                         <CopyBlock
                           language="solidity"
                           wrapLongLines
@@ -393,7 +498,6 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
 }
 `}
                         />
-                        {/* </div> */}
                       </DialogContent>
                     </Dialog>
                   </div>
@@ -429,7 +533,8 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                         Collateral Amount
                       </span>
                       <span className="text-green-500">
-                        0 {lendCoin?.label}
+                        {collateral}
+                        {lendCoin?.label}
                       </span>
                     </div>
                     {/* You will gain NUMBER THT Coin for this position */}

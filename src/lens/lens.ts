@@ -1,9 +1,10 @@
 'use client';
-import { PoolOrganizerABI } from './abi/PoolOrganizer';
-import { TuliaPoolABI } from './abi/TuliaPool';
-import { VaultManagerABI } from './abi/VaultManager';
-import { RewardManagerABI } from './abi/RewardManager';
+import { PoolOrganizerABI } from '@/lens/abi/PoolOrganizer';
+import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
+import { VaultManagerABI } from '@/lens/abi/VaultManager';
+import { RewardManagerABI } from '@/lens/abi/RewardManager';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
+import { SimpleInterestABI } from '@/lens/abi/SimpleInterestModel';
 import {
   useWriteContract,
   useAccount,
@@ -13,6 +14,11 @@ import {
   useAccountEffect,
 } from 'wagmi';
 import { useEffect, useState } from 'react';
+
+interface CalculationProps {
+  principal: number;
+  rate: number;
+}
 
 export const useGetAllPools = () => {
   const { data: allPoolAddresses } = useReadContract({
@@ -77,6 +83,17 @@ export const useGetAllPoolDetails = () => {
   });
 
   return allPoolDetails;
+};
+
+export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
+  const { data } = useReadContract({
+    abi: SimpleInterestABI,
+    address: '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8',
+    functionName: 'calculateInterest',
+    args: [principal, rate],
+  });
+
+  return { interest: data as number | undefined };
 };
 
 export const useCreateTuliaPool = () => {

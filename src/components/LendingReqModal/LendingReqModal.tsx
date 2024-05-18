@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -8,9 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, CalendarDays, CodeIcon } from 'lucide-react';
-import { useCreateTuliaPool } from '@/lens/lens';
+import { useCreateTuliaPool, useCalculateInterest } from '@/lens/lens';
 import { ComboBoxResponsive } from '../Combobox/Combobox';
 import { useForm } from 'react-hook-form';
 import ILendRequest, { InterestModal } from '@/types/LendRequest/ILendRequest';
@@ -55,8 +56,10 @@ const schema = z.object({
 
 const LendingReqModal = () => {
   const createTuliaPool = useCreateTuliaPool();
+
   const [open, setOpen] = React.useState(false);
   const [collateral, setCollateral] = React.useState(0);
+  const [interestRate, setInterestRate] = React.useState(0);
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
       lendCoin: {
@@ -77,52 +80,63 @@ const LendingReqModal = () => {
     resolver: zodResolver(schema),
   });
 
+  const interest = useCalculateInterest({
+    principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
+    rate: form.watch('interestRate'),
+  });
   const calculateCollateral = (
     loanAmount: number,
-    interestRate: string,
-    interestModel: InterestModal
+    interestRate: number,
+    interestModel: InterestModal,
+    interest: number | undefined
   ): number => {
-    let interest = 0;
-    const principal = loanAmount;
-    const rate = parseFloat(interestRate) / 100;
+    const principal = BigInt(parseEther(loanAmount.toString()));
+    const rate = BigInt(Math.round(interestRate * 100)); // Convert percentage to basis points
+
+    let calculatedInterest = BigInt(0);
+
+    if (interest !== undefined) {
+      calculatedInterest = BigInt(parseEther(interest.toString()));
+    }
+
     switch (interestModel) {
       case InterestModal.Simple:
-        interest = principal * rate;
+        calculatedInterest = (principal * rate) / BigInt(10000);
         break;
       case InterestModal.Compound:
-        interest = principal * (Math.pow(1 + rate, 1) - 1);
+        calculatedInterest = (principal * rate) / BigInt(10000);
         break;
       case InterestModal.FlashLoan:
-        interest = principal * rate;
-        break;
       case InterestModal.MarketBased:
-        interest = principal * rate;
+        calculatedInterest = (principal * rate) / BigInt(10000);
         break;
       default:
         console.error('Unsupported interest model');
-        return principal;
+        return Number(formatEther(principal));
     }
 
-    return principal + interest;
+    const total = principal + calculatedInterest;
+    return parseFloat(formatEther(total));
   };
 
   React.useEffect(() => {
-    const subscription = form.watch((value, { name, type }) => {
+    const subscription = form.watch((value, { name }) => {
       if (
         name === 'loanAmount' ||
         name === 'interestRate' ||
         name === 'interestModal'
       ) {
         const calculatedCollateral = calculateCollateral(
-          value.loanAmount,
-          value.interestRate,
-          value.interestModal
+          parseFloat(value.loanAmount?.toString() || '0'),
+          value.interestRate ?? 0,
+          value.interestModal ?? InterestModal.Simple,
+          interest.interest as any
         );
         setCollateral(calculatedCollateral);
       }
     });
     return () => subscription.unsubscribe();
-  }, [form.watch]);
+  }, [form, interest]);
 
   const updateInterestAddress = (modal: InterestModal) => {
     let newAddress = '';
@@ -533,8 +547,7 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                         Collateral Amount
                       </span>
                       <span className="text-green-500">
-                        {collateral}
-                        {lendCoin?.label}
+                        {collateral} {lendCoin?.label}
                       </span>
                     </div>
                     {/* You will gain NUMBER THT Coin for this position */}

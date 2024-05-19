@@ -21,20 +21,10 @@ interface CalculationProps {
   rate: number;
 }
 
-export const useGetAllPools = () => {
-  const { data: allPoolAddresses } = useReadContract({
-    abi: PoolOrganizerABI,
-    address: '0xd848AFB987ef7a424f377903EDA1126584201a86',
-    functionName: 'getAllPoolDetails',
-  });
-
-  return allPoolAddresses as string[] | undefined;
-};
-
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xE08d27897053E248E4F7167454Af2FC933069fe3',
+    address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
     functionName: 'getTotalPools',
   });
 
@@ -45,7 +35,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xE08d27897053E248E4F7167454Af2FC933069fe3',
+    address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -53,26 +43,33 @@ export const useGetPoolDetails = (poolAddress: string) => {
   return poolDetails as any;
 };
 
+export const useGetAllPoolAddresses = () => {
+  const { data: allPoolAddresses } = useReadContract({
+    abi: PoolOrganizerABI,
+    address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
+    functionName: 'getAllPoolAddresses',
+  });
+
+  return allPoolAddresses as string[] | undefined;
+};
+
 // Function to fetch details of all pools
 export const useGetAllPoolDetails = () => {
-  const allPoolAddresses = useGetAllPools(); // Assuming useGetAllPools fetches all pool addresses
-  const [contractReadsConfig, setContractReadsConfig] = useState([]);
+  const [allPoolDetails, setAllPoolDetails] = useState<any[]>([]);
+  const poolCount = useGetTotalPoolCount();
+  const allPoolAddresses = useGetAllPoolAddresses();
 
   useEffect(() => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
-      const config = allPoolAddresses.map(address => ({
-        address: '0xE08d27897053E248E4F7167454Af2FC933069fe3',
+      const allPoolDetails = allPoolAddresses.map(address => ({
+        address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
         abi: PoolOrganizerABI,
         functionName: 'getPoolDetails',
         args: [address],
       }));
-      setContractReadsConfig(config as any);
+      setAllPoolDetails(allPoolDetails);
     }
-  }, [allPoolAddresses]);
-
-  const { data: allPoolDetails } = useReadContracts({
-    contracts: contractReadsConfig,
-  });
+  }, [allPoolAddresses, poolCount]);
 
   return allPoolDetails;
 };

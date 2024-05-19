@@ -10,7 +10,12 @@ import {
 } from '@/components/ui/dialog';
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, CalendarDays, CodeIcon } from 'lucide-react';
+import {
+  PlusCircle,
+  CalendarDays,
+  CodeIcon,
+  ArrowBigRightDashIcon,
+} from 'lucide-react';
 import {
   useCreateTuliaPool,
   useCalculateInterest,
@@ -39,6 +44,7 @@ import {
 } from '../ui/form';
 import { CopyBlock } from 'react-code-blocks';
 import { create } from 'domain';
+import ArbIcon from '../../../public/ArbIcon';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -67,14 +73,14 @@ const LendingReqModal = () => {
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
       lendCoin: {
-        label: 'ETH',
-        value: '0xC7De508085c395E9a2e5fd738e3b7804e641Cd84',
+        label: 'WETH',
+        value: '0x38A3FfF5C1FebDA2CF33725d96A71271a48b257a',
         symbol: <EthIcon />,
       },
       borrowCoin: {
-        label: 'BTC',
-        value: '0xC7De508085c395E9a2e5fd738e3b7804e641Cd84',
-        symbol: <BtcIcon />,
+        label: 'ARB',
+        value: '0x348f6BFAdd2F95906094692eE879f28CB2af1eC9',
+        symbol: <ArbIcon />,
       },
       loanAmount: undefined,
       interestModal: InterestModal.Simple,
@@ -165,10 +171,10 @@ const LendingReqModal = () => {
     let newAddress = '';
     switch (modal) {
       case InterestModal.Compound:
-        newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
+        newAddress = '0x1B1d3f3bdfa7D28eF818c268b59A20e5932dC706';
         break;
       case InterestModal.Simple:
-        newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
+        newAddress = '0x0F5534A65e5433a551b648D8634b6db3138F863D';
         break;
       case InterestModal.FlashLoan:
         newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
@@ -309,6 +315,24 @@ const LendingReqModal = () => {
                             <FormControl>
                               <RadioGroupItem
                                 {...field}
+                                value={InterestModal.Simple}
+                                id="simple"
+                              />
+                            </FormControl>
+                            <Label htmlFor="simple">
+                              Simple <span className="text-red-500">- 5%</span>
+                            </Label>
+                          </div>
+                          <div
+                            data-selected={
+                              form.watch('interestModal') ===
+                              InterestModal.Compound
+                            }
+                            className="flex items-center gap-2 border border-tulia_primary p-2 data-[selected=true]:bg-tulia_primary/50 transition-all rounded-sm"
+                          >
+                            <FormControl>
+                              <RadioGroupItem
+                                {...field}
                                 value={InterestModal.Compound}
                                 id="compound"
                               />
@@ -318,24 +342,7 @@ const LendingReqModal = () => {
                               <span className="text-red-500">- 5%</span>
                             </Label>
                           </div>
-                          <div
-                            data-selected={
-                              form.watch('interestModal') ===
-                              InterestModal.Simple
-                            }
-                            className="flex items-center gap-2 border border-tulia_primary p-2 data-[selected=true]:bg-tulia_primary/50 transition-all rounded-sm"
-                          >
-                            <FormControl>
-                              <RadioGroupItem
-                                {...field}
-                                value={InterestModal.Simple}
-                                id="simple"
-                              />
-                            </FormControl>
-                            <Label htmlFor="simple">
-                              Simple <span className="text-red-500">- 5%</span>
-                            </Label>
-                          </div>
+
                           <div
                             data-selected={
                               form.watch('interestModal') ===

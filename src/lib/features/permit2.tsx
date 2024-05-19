@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { useSignTypedData, useChainId } from 'wagmi';
+import { useSignTypedData, useChainId, useAccount } from 'wagmi';
 
 function BatchPermitComponent() {
+  const userAccount = useAccount();
   const { signTypedData } = useSignTypedData();
   const chainId = useChainId();
   const contractAddress = '0xF3a5Dc77650e75aC1C271fE2BE7730088E7081f2';
@@ -49,6 +50,7 @@ function BatchPermitComponent() {
           spender: contractAddress,
           sigDeadline: BigInt(1700000000),
         },
+        account: userAccount?.address,
       });
     } catch (error) {
       console.error('Error calculating signature:', error);

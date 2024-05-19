@@ -6,6 +6,7 @@ import { RewardManagerABI } from '@/lens/abi/RewardManager';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import { SimpleInterestABI } from '@/lens/abi/SimpleInterestModel';
 import { CompoundInterestABI } from '@/lens/abi/CompoundInterestModel';
+import { AdvancedAPYManagerABI } from './abi/AdvancedAPYManager';
 import {
   useWriteContract,
   useAccount,
@@ -20,6 +21,25 @@ interface CalculationProps {
   principal: number;
   rate: number;
 }
+interface AdvancedAPYManagerProps {
+  loanAmount: BigInt;
+  durationSeconds: number;
+}
+
+export const useCalculateRewardApy = ({
+  loanAmount,
+  durationSeconds,
+}: AdvancedAPYManagerProps) => {
+  const { data: apy } = useReadContract({
+    abi: AdvancedAPYManagerABI,
+    address: '0x688a33A216f1bfDE39602eBbe7c3c3f9252B3E66',
+    functionName: 'calculateAPY',
+    args: [loanAmount as any, durationSeconds as any],
+  });
+
+  return apy as number | undefined;
+};
+
 
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({

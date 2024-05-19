@@ -6,6 +6,8 @@ const EthIcon = (props: SVGProps<SVGSVGElement>) => (
     xmlSpace="preserve"
     fillRule="evenodd"
     clipRule="evenodd"
+    width="24px"
+    height="24px"
     imageRendering="optimizeQuality"
     shapeRendering="geometricPrecision"
     textRendering="geometricPrecision"

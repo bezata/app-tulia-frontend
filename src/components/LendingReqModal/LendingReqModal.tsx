@@ -20,6 +20,7 @@ import {
   useCreateTuliaPool,
   useCalculateInterest,
   useCalculateCompoundInterest,
+  useCalculateRewardApy,
 } from '@/lens/lens';
 import { ComboBoxResponsive } from '../Combobox/Combobox';
 import { useForm } from 'react-hook-form';
@@ -66,10 +67,9 @@ const schema = z.object({
 
 const LendingReqModal = () => {
   const createTuliaPool = useCreateTuliaPool();
-
   const [open, setOpen] = React.useState(false);
   const [collateral, setCollateral] = React.useState(0);
-  const [interestRate, setInterestRate] = React.useState(0);
+  const [rewardApy, setRewardApy] = React.useState(0);
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
       lendCoin: {
@@ -133,7 +133,7 @@ const LendingReqModal = () => {
           }
           calculatedInterest = compoundedPrincipal - principal;
           break;
-          break;
+
         case InterestModal.FlashLoan:
         case InterestModal.MarketBased:
           calculatedInterest = (principal * rate) / BigInt(10000);
@@ -191,6 +191,26 @@ const LendingReqModal = () => {
   const lendCoin = form.watch('lendCoin');
   const borrowCoin = form.watch('borrowCoin');
 
+  const dateHandler = (date: Date) => {
+    const currentDate = Date.now();
+    const currentDateInSeconds = currentDate / 1000;
+    const repaymentEndDateInSeconds = Number(date) / 1000;
+    const repaymentDifference = Math.trunc(
+      repaymentEndDateInSeconds - currentDateInSeconds
+    );
+    return repaymentDifference;
+  };
+  const calculateRewardAPY = useCalculateRewardApy({
+    loanAmount: parseEther(form.watch('loanAmount')?.toString() || '0'),
+    durationSeconds: dateHandler(form.watch('endDate')),
+  });
+
+  useEffect(() => {
+    if (calculateRewardAPY) {
+      setRewardApy(calculateRewardAPY);
+    }
+  }, [calculateRewardAPY]);
+
   const onSubmit = (data: ILendRequest.ILendRequestInputs) => {
     const currentDate = Date.now();
     const currentDateInSeconds = currentDate / 1000;
@@ -199,6 +219,7 @@ const LendingReqModal = () => {
     const repaymentDifference = Math.trunc(
       repaymentEndDateInSeconds - currentDateInSeconds
     );
+    console.log(repaymentDifference);
     const optionalFlashLoanFeeRate =
       data.interestModal === InterestModal.FlashLoan ? data.interestRate : 0;
     const newInterestAddress = updateInterestAddress(data.interestModal);
@@ -219,6 +240,8 @@ const LendingReqModal = () => {
   const onCloseClick = () => {
     setOpen(false);
     form.reset();
+    setRewardApy(0);
+    setCollateral(0);
   };
 
   return (
@@ -584,9 +607,15 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                     <div className="flex flex-col border-b border-tulia_primary pb-4">
                       <span className="text-xs font-semibold">
                         You will gain{' '}
-                        <span className="text-green-600"> {'{NUMBER}'} </span>{' '}
-                        <span className="text-indigo-600">THT Coins </span> for
-                        this lend position
+                        <span className="text-green-600">
+                          {`${String(rewardApy)}%`}
+                        </span>
+                        <span> interest reward for</span>{' '}
+                        <span className="text-indigo-600">
+                          {' '}
+                          {lendCoin?.label}{' '}
+                        </span>
+                        in this lend position
                       </span>
                     </div>
                     <span className="text-xs text-gray-500">

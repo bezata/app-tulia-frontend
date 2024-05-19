@@ -6,10 +6,12 @@ const USDCIcon = (props: SVGProps<SVGSVGElement>) => (
     xmlSpace="preserve"
     fillRule="evenodd"
     clipRule="evenodd"
+    width="24px"
+    height="24px"
     imageRendering="optimizeQuality"
     shapeRendering="geometricPrecision"
     textRendering="geometricPrecision"
-    viewBox="0 0 4091.27 4091.73"
+    viewBox="20 10 2091.27 2091.73"
     {...props}
   >
     <g fillRule="nonzero">

@@ -1,5 +1,5 @@
 export const TuliaPoolFactoryABI = [
-  [
+  
     {
       inputs: [],
       name: 'AccessControlBadConfirmation',
@@ -225,5 +225,5 @@ export const TuliaPoolFactoryABI = [
       stateMutability: 'view',
       type: 'function',
     },
-  ],
+ 
 ];

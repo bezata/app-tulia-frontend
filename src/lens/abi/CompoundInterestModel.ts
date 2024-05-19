@@ -1,4 +1,4 @@
-export const SimpleInterestABI = [
+export const CompoundInterestABI = [
   [
     {
       inputs: [

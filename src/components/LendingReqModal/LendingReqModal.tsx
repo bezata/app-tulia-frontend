@@ -11,7 +11,11 @@ import {
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, CalendarDays, CodeIcon } from 'lucide-react';
-import { useCreateTuliaPool, useCalculateInterest } from '@/lens/lens';
+import {
+  useCreateTuliaPool,
+  useCalculateInterest,
+  useCalculateCompoundInterest,
+} from '@/lens/lens';
 import { ComboBoxResponsive } from '../Combobox/Combobox';
 import { useForm } from 'react-hook-form';
 import ILendRequest, { InterestModal } from '@/types/LendRequest/ILendRequest';
@@ -84,37 +88,55 @@ const LendingReqModal = () => {
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
     rate: form.watch('interestRate'),
   });
+
+  const compoundInterest = useCalculateCompoundInterest({
+    principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
+    rate: form.watch('interestRate'),
+  });
   const calculateCollateral = (
     loanAmount: number,
     interestRate: number,
     interestModel: InterestModal,
-    interest: number | undefined
+    interest: number | undefined,
+    compoundInterest: number | undefined
   ): number => {
     const principal = BigInt(parseEther(loanAmount.toString()));
     const rate = BigInt(Math.round(interestRate * 100)); // Convert percentage to basis points
 
     let calculatedInterest = BigInt(0);
 
-    if (interest !== undefined) {
-      calculatedInterest = BigInt(parseEther(interest.toString()));
+    if (interest !== undefined && compoundInterest !== undefined) {
+      calculatedInterest = BigInt(
+        parseEther(
+          interestModel === InterestModal.Compound
+            ? compoundInterest.toString()
+            : interest.toString()
+        )
+      );
+    } else {
+      switch (interestModel) {
+        case InterestModal.Simple:
+          calculatedInterest = (principal * rate) / BigInt(10000);
+          break;
+        case InterestModal.Compound:
+          const totalPeriods = 1;
+          let compoundedPrincipal = principal;
+          for (let i = 0; i < totalPeriods; i++) {
+            compoundedPrincipal =
+              (compoundedPrincipal * (BigInt(10000) + rate)) / BigInt(10000);
+          }
+          calculatedInterest = compoundedPrincipal - principal;
+          break;
+          break;
+        case InterestModal.FlashLoan:
+        case InterestModal.MarketBased:
+          calculatedInterest = (principal * rate) / BigInt(10000);
+          break;
+        default:
+          console.error('Unsupported interest model');
+          return Number(formatEther(principal));
+      }
     }
-
-    switch (interestModel) {
-      case InterestModal.Simple:
-        calculatedInterest = (principal * rate) / BigInt(10000);
-        break;
-      case InterestModal.Compound:
-        calculatedInterest = (principal * rate) / BigInt(10000);
-        break;
-      case InterestModal.FlashLoan:
-      case InterestModal.MarketBased:
-        calculatedInterest = (principal * rate) / BigInt(10000);
-        break;
-      default:
-        console.error('Unsupported interest model');
-        return Number(formatEther(principal));
-    }
-
     const total = principal + calculatedInterest;
     return parseFloat(formatEther(total));
   };
@@ -130,13 +152,14 @@ const LendingReqModal = () => {
           parseFloat(value.loanAmount?.toString() || '0'),
           value.interestRate ?? 0,
           value.interestModal ?? InterestModal.Simple,
-          interest.interest as any
+          interest.interest as any,
+          compoundInterest.interest as any
         );
         setCollateral(calculatedCollateral);
       }
     });
     return () => subscription.unsubscribe();
-  }, [form, interest]);
+  }, [form, interest, compoundInterest]);
 
   const updateInterestAddress = (modal: InterestModal) => {
     let newAddress = '';

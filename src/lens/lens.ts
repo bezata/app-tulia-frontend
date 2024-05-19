@@ -5,6 +5,7 @@ import { VaultManagerABI } from '@/lens/abi/VaultManager';
 import { RewardManagerABI } from '@/lens/abi/RewardManager';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import { SimpleInterestABI } from '@/lens/abi/SimpleInterestModel';
+import { CompoundInterestABI } from '@/lens/abi/CompoundInterestModel';
 import {
   useWriteContract,
   useAccount,
@@ -30,31 +31,21 @@ export const useGetAllPools = () => {
   return allPoolAddresses as string[] | undefined;
 };
 
-export const useSignit = () => {
-  const { signMessage } = useSignMessage();
-
-  useAccountEffect({
-    onConnect(data) {
-      signMessage({ message: '' });
-    },
-    onDisconnect() {},
-  });
-};
-
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xd848AFB987ef7a424f377903EDA1126584201a86',
+    address: '0xE08d27897053E248E4F7167454Af2FC933069fe3',
     functionName: 'getTotalPools',
   });
 
   return totalPoolCount as number | undefined;
 };
 
+// Function to fetch details of a single pool
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xd848AFB987ef7a424f377903EDA1126584201a86',
+    address: '0xE08d27897053E248E4F7167454Af2FC933069fe3',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -62,14 +53,15 @@ export const useGetPoolDetails = (poolAddress: string) => {
   return poolDetails as any;
 };
 
+// Function to fetch details of all pools
 export const useGetAllPoolDetails = () => {
-  const allPoolAddresses = useGetAllPools();
+  const allPoolAddresses = useGetAllPools(); // Assuming useGetAllPools fetches all pool addresses
   const [contractReadsConfig, setContractReadsConfig] = useState([]);
 
   useEffect(() => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const config = allPoolAddresses.map(address => ({
-        address: '0xd848AFB987ef7a424f377903EDA1126584201a86',
+        address: '0xE08d27897053E248E4F7167454Af2FC933069fe3',
         abi: PoolOrganizerABI,
         functionName: 'getPoolDetails',
         args: [address],
@@ -85,10 +77,33 @@ export const useGetAllPoolDetails = () => {
   return allPoolDetails;
 };
 
+// Function to fetch details of only funded pools
+export const useGetAllFundedPoolDetails = () => {
+  const allPoolDetails = useGetAllPoolDetails();
+
+  const fundedPoolDetails = allPoolDetails?.filter(pool => pool.funded);
+
+  return fundedPoolDetails;
+};
+
 export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
   const { data } = useReadContract({
     abi: SimpleInterestABI,
-    address: '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8',
+    address: '0x0F5534A65e5433a551b648D8634b6db3138F863D',
+    functionName: 'calculateInterest',
+    args: [principal, rate],
+  });
+
+  return { interest: data as number | undefined };
+};
+
+export const useCalculateCompoundInterest = ({
+  principal,
+  rate,
+}: CalculationProps) => {
+  const { data } = useReadContract({
+    abi: CompoundInterestABI,
+    address: '0x1B1d3f3bdfa7D28eF818c268b59A20e5932dC706',
     functionName: 'calculateInterest',
     args: [principal, rate],
   });
@@ -113,7 +128,7 @@ export const useCreateTuliaPool = () => {
   ) => {
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0x5943aF98762bD50cc6179867c93d16cb164e31B6',
+      address: '0x4c08762698c9DcBdF8df7f1eBe61Bc1ce5211d3c',
       functionName: 'createTuliaPool',
       args: [
         userAddress?.address as any,

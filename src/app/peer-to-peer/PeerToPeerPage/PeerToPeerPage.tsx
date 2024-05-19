@@ -15,22 +15,22 @@ const PeerToPeerPage = () => {
   const [data, setData] = useState<ILendingData[]>([]);
   const totalPoolCount = useGetTotalPoolCount();
   const [poolCount, setPoolCount] = useState<number>(0);
+  React.useEffect(() => {
+    setPoolCount(totalPoolCount as any);
+  }, [totalPoolCount]);
 
   React.useEffect(() => {
     if (allPoolDetails) {
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
+          console.log(detail.result);
           return {
             lending_id: (index + 1)?.toString(),
             wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
             coin: 'ETH',
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
-            created_at: new Date(
-              Number((poolDetail as PoolDetail).creationTime) * 1000
-            )
-              ?.toISOString()
-              .split('T')[0],
+            created_at: new Date()?.toISOString().split('T')[0],
             type: 'lend',
           };
         }
@@ -38,10 +38,6 @@ const PeerToPeerPage = () => {
       setData(formattedData);
     }
   }, [allPoolDetails, totalPoolCount]);
-
-  React.useEffect(() => {
-    if (totalPoolCount) setPoolCount(totalPoolCount);
-  }, [totalPoolCount]);
 
   const { section } = useAppSelector(state => state.example);
   const [filteredData, setFilteredData] = React.useState<ILendingData[]>(data);
@@ -79,7 +75,7 @@ const PeerToPeerPage = () => {
         <LendingReqModal />
       </div>
       <h2 className="text-md font-light mb-4 ">
-        All Lending Requests (Total: {poolCount})
+        All Lending Requests (Total: {Number(poolCount)})
       </h2>
 
       <PeerToPeerTable columns={columns} data={filteredData} />

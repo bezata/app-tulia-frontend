@@ -219,12 +219,22 @@ const LendingReqModal = () => {
     const repaymentDifference = Math.trunc(
       repaymentEndDateInSeconds - currentDateInSeconds
     );
-    console.log(repaymentDifference);
     const optionalFlashLoanFeeRate =
       data.interestModal === InterestModal.FlashLoan ? data.interestRate : 0;
     const newInterestAddress = updateInterestAddress(data.interestModal);
     const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
     createTuliaPool(
+      data.loanAmount,
+      data.lendCoin.value,
+      data.borrowCoin.value,
+      data.borrowCoin.value,
+      data.interestRate,
+      repaymentDifference,
+      newInterestAddress,
+      poolType,
+      optionalFlashLoanFeeRate
+    );
+    console.log(
       data.loanAmount,
       data.lendCoin.value,
       data.borrowCoin.value,

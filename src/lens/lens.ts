@@ -44,7 +44,7 @@ export const useCalculateRewardApy = ({
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
+    address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
     functionName: 'getTotalPools',
   });
 
@@ -55,7 +55,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
+    address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -66,39 +66,45 @@ export const useGetPoolDetails = (poolAddress: string) => {
 export const useGetAllPoolAddresses = () => {
   const { data: allPoolAddresses } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
+    address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
     functionName: 'getAllPoolAddresses',
   });
 
   return allPoolAddresses as string[] | undefined;
 };
 
-// Function to fetch details of all pools
 export const useGetAllPoolDetails = () => {
-  const [allPoolDetails, setAllPoolDetails] = useState<any[]>([]);
-  const poolCount = useGetTotalPoolCount();
   const allPoolAddresses = useGetAllPoolAddresses();
+  const poolCounts = useGetTotalPoolCount();
+  const [contractsConfig, setContractsConfig] = useState([]);
 
   useEffect(() => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
-      const allPoolDetails = allPoolAddresses.map(address => ({
-        address: '0x0DF9b624E212F7ca9A8c10B9b089344eA9303833',
-        abi: PoolOrganizerABI,
+      const newContractsConfig = allPoolAddresses.map(address => ({
+        address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75', // Pool contract address
         functionName: 'getPoolDetails',
         args: [address],
       }));
-      setAllPoolDetails(allPoolDetails);
+      setContractsConfig(newContractsConfig as any);
     }
-  }, [allPoolAddresses, poolCount]);
+  }, [allPoolAddresses, poolCounts]);
 
-  return allPoolDetails;
+  const { data, error } = useReadContracts({
+    contracts: contractsConfig,
+  });
+
+  if (error) {
+    console.error('Error fetching pool details:', error);
+  }
+
+  return data;
 };
 
-// Function to fetch details of only funded pools
 export const useGetAllFundedPoolDetails = () => {
   const allPoolDetails = useGetAllPoolDetails();
-
-  const fundedPoolDetails = allPoolDetails?.filter(pool => pool.funded);
+  const fundedPoolDetails = allPoolDetails?.filter(
+    (pool: any) => pool.result?.loanAmount > 0
+  );
 
   return fundedPoolDetails;
 };
@@ -145,7 +151,7 @@ export const useCreateTuliaPool = () => {
   ) => {
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0x4c08762698c9DcBdF8df7f1eBe61Bc1ce5211d3c',
+      address: '0xD3E4a3421936815AB4394BDff7BCD173b9f7e2e0',
       functionName: 'createTuliaPool',
       args: [
         userAddress?.address as any,

@@ -18,7 +18,6 @@ const PeerToPeerPage = () => {
   React.useEffect(() => {
     setPoolCount(totalPoolCount as any);
   }, [totalPoolCount]);
-
   React.useEffect(() => {
     if (allPoolDetails) {
       const formattedData = allPoolDetails.map(
@@ -31,7 +30,7 @@ const PeerToPeerPage = () => {
             coin: 'ETH',
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
             created_at: new Date()?.toISOString().split('T')[0],
-            type: 'lend',
+            type: Number((poolDetail as PoolDetail)?.interestRate),
           };
         }
       );

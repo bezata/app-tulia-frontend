@@ -81,7 +81,8 @@ export const useGetAllPoolDetails = () => {
   useEffect(() => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
-        address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75', // Pool contract address
+        abi: PoolOrganizerABI,
+        address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
         functionName: 'getPoolDetails',
         args: [address],
       }));

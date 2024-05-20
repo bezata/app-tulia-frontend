@@ -17,7 +17,7 @@ export type ILendingData = {
   coin: string;
   amount: number;
   created_at: string;
-  type: 'lend';
+  type: number;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [

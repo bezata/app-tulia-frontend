@@ -1,12 +1,26 @@
 'use client';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '../ui/button';
 import {
   useConnectModal,
   useAccountModal,
   useChainModal,
 } from '@rainbow-me/rainbowkit';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
+import IHeader from '../Header/IHeader';
+const navigationMenuItems: IHeader.INavigation[] = [
+  {
+    title: 'Mypools',
+    slug: '/mypools',
+  },
+];
 const CustomConnectButton = () => {
   const { openConnectModal } = useConnectModal();
   const { openAccountModal } = useAccountModal();
@@ -59,7 +73,22 @@ const CustomConnectButton = () => {
                 }
 
                 return (
-                  <div style={{ display: 'flex', gap: 12 }}>
+                  <div style={{ display: 'flex', gap: 9 }}>
+                    <NavigationMenu>
+                      <NavigationMenuList>
+                        {navigationMenuItems.map((item, index) => (
+                          <NavigationMenuItem key={index}>
+                            <Link
+                              href={item.slug}
+                              target={item?.target}
+                              className={`${navigationMenuTriggerStyle()} duration-500 flex`}
+                            >
+                              {item.title}
+                            </Link>
+                          </NavigationMenuItem>
+                        ))}
+                      </NavigationMenuList>
+                    </NavigationMenu>
                     <Button
                       variant={'outline'}
                       className="hover:bg-violet-500/30"

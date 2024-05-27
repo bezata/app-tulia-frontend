@@ -129,7 +129,7 @@ const Header = () => {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="basis-2/12 flex justify-end">
+        <div className="basis-1/12 flex justify-end">
           <CustomConnectButton />
           {/* Will be used on testnet */}
           {/* <SocialAuth /> */}

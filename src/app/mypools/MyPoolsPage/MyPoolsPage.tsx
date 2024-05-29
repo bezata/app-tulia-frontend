@@ -81,15 +81,6 @@ const MyPoolspage = () => {
         </div>
 
         {/* Back to card button */}
-        {poolSection && (
-          <Button
-            onClick={() => setPoolSection(null)}
-            className="tulia_main_button mt-2 mb-4"
-          >
-            <MoveLeft className="w-4 h-4 mr-2" />
-            <span className="mr-2">Back to section selection</span>
-          </Button>
-        )}
         {!poolSection && (
           <div className="grid grid-cols-12 gap-8">
             <ChooseSectionCard
@@ -112,9 +103,18 @@ const MyPoolspage = () => {
         )}
         {poolSection && (
           <>
-            <h2 className="text-md font-light mb-4 ">
-              All Pools (Total: {Number(filteredData.length)})
-            </h2>{' '}
+            <div className="flex items-center justify-between">
+              <Button
+                onClick={() => setPoolSection(null)}
+                className="tulia_main_button mt-2 mb-4"
+              >
+                <MoveLeft className="w-4 h-4 mr-2" />
+                <span className="mr-2">Back to section selection</span>
+              </Button>
+              <h2 className="text-md font-light mb-4 ">
+                All Pools (Total: {Number(filteredData.length)})
+              </h2>{' '}
+            </div>
             <MyPoolsTable columns={columns} data={filteredData} />
           </>
         )}

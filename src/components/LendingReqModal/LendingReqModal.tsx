@@ -46,6 +46,8 @@ import {
 import { CopyBlock } from 'react-code-blocks';
 import { create } from 'domain';
 import ArbIcon from '../../../public/ArbIcon';
+import { useAccount } from 'wagmi';
+import { toast } from 'sonner';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -70,6 +72,7 @@ const LendingReqModal = () => {
   const [open, setOpen] = React.useState(false);
   const [collateral, setCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
+  const account = useAccount();
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
       lendCoin: {
@@ -258,7 +261,13 @@ const LendingReqModal = () => {
     <Dialog open={open} setOpen={setOpen}>
       <DialogTrigger>
         <Button
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            if (account.status === 'connected') {
+              setOpen(true);
+            } else {
+              toast.error('Please connect your wallet to continue');
+            }
+          }}
           className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
         >
           Lending Request <PlusCircle className="w-4 h-4 inline-block ml-2" />

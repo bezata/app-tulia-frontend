@@ -1,5 +1,5 @@
 import * as React from 'react';
-const BorrowIcon = props => (
+const BorrowIcon = (props: React.PropsWithChildren<{}>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     data-name="Layer 3"

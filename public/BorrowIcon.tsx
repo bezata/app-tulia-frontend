@@ -1,5 +1,7 @@
 import * as React from 'react';
-const BorrowIcon = (props: React.PropsWithChildren<{}>) => (
+import { SVGProps } from 'react';
+
+const BorrowIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     data-name="Layer 3"

@@ -44,7 +44,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       integrator: 'tuliaprotocol',
       walletConfig,
       variant: 'wide',
-      fee: 0.15,
+      fee: 0.002,
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
       components: {

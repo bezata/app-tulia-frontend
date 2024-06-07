@@ -22,34 +22,23 @@ const navigationMenuItems: IHeader.INavigation[] = [
 
 const CustomConnectButton = () => {
   const { open } = useWeb3Modal();
-  const { isDisconnected } = useAccount();
+  const account = useAccount();
 
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    setConnected(!isDisconnected);
-  }, [isDisconnected]);
+    if (account.status === 'connected') {
+      setConnected(true);
+    }
+    if (account.status === 'disconnected') {
+      setConnected(false);
+    }
+  }, [account?.status]);
 
   return (
     <div
       style={{ display: 'flex', justifyContent: 'space-between', padding: 12 }}
     >
-      <NavigationMenu>
-        <NavigationMenuList>
-          {navigationMenuItems.map((item, index) => (
-            <NavigationMenuItem key={index}>
-              <Link
-                href={item.slug}
-                target={item?.target}
-                className={`${navigationMenuTriggerStyle()} duration-500 flex`}
-              >
-                {item.title}
-              </Link>
-            </NavigationMenuItem>
-          ))}
-        </NavigationMenuList>
-      </NavigationMenu>
-
       {!connected ? (
         <Button
           variant={'outline'}
@@ -60,6 +49,21 @@ const CustomConnectButton = () => {
         </Button>
       ) : (
         <div style={{ display: 'flex', gap: 9 }}>
+          <NavigationMenu>
+            <NavigationMenuList>
+              {navigationMenuItems.map((item, index) => (
+                <NavigationMenuItem key={index}>
+                  <Link
+                    href={item.slug}
+                    target={item?.target}
+                    className={`${navigationMenuTriggerStyle()} duration-500 flex`}
+                  >
+                    {item.title}
+                  </Link>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
           <w3m-account-button />
         </div>
       )}

@@ -11,7 +11,7 @@ const MainLayout: React.FC<IMainLayout> = ({ children }) => {
       {/* NOTE: header section */}
       <Header />
       {/* NOTE: main section */}
-      <main className="container mx-auto min-h-[calc(100vh-8rem)]">
+      <main className=" dark container mx-auto min-h-[calc(100vh-8rem)]">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

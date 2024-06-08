@@ -11,6 +11,7 @@ import { PoolDetail } from './IPeerToPeer';
 import LendingReqModal from '@/components/LendingReqModal/LendingReqModal';
 
 const PeerToPeerPage = () => {
+  //NOTE: state tutmak lazim direk variable ile tutamayiz.
   const allPoolDetails = useGetAllPoolDetails();
   const [data, setData] = useState<ILendingData[]>([]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -70,12 +71,12 @@ const PeerToPeerPage = () => {
           requests.
         </p>
       </div>
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <LendingReqModal />
+        <h2 className="text-md font-light">
+          All Lending Requests (Total: {Number(poolCount)})
+        </h2>
       </div>
-      <h2 className="text-md font-light mb-4 ">
-        All Lending Requests (Total: {Number(poolCount)})
-      </h2>
 
       <PeerToPeerTable columns={columns} data={filteredData} />
     </div>

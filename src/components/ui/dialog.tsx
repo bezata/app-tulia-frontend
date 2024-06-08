@@ -24,6 +24,7 @@ interface DialogContentProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   onClose?: () => void;
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  withoutClose?: boolean;
 }
 
 const DialogContext = React.createContext<{
@@ -47,7 +48,7 @@ const DialogComponent: React.FC<DialogProps> = ({
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, onClose, ...props }, ref) => {
+>(({ className, children, onClose, withoutClose, ...props }, ref) => {
   const { setOpen } = React.useContext(DialogContext);
 
   return (
@@ -62,16 +63,18 @@ const DialogContent = React.forwardRef<
         {...props}
       >
         {children}
-        <DialogClose
-          onClick={() => {
-            onClose && onClose();
-            setOpen && setOpen(false);
-          }}
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </DialogClose>
+        {!withoutClose && (
+          <DialogClose
+            onClick={() => {
+              onClose && onClose();
+              setOpen && setOpen(false);
+            }}
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   );

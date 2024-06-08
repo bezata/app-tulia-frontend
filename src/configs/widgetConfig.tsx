@@ -8,8 +8,7 @@ import {
   HiddenUI,
 } from '@lifi/widget';
 import { useEffect, useMemo, useState } from 'react';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
-
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 
 interface Token {
   chainId: number;
@@ -35,6 +34,7 @@ export interface SwapWidgetProps {
 }
 
 export const TuliaSwap = (props: SwapWidgetProps) => {
+  const { open, close } = useWeb3Modal();
   const { config, onSuccess, className } = props;
 
   const walletConfig = useWidgetWalletConfig();
@@ -44,6 +44,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       integrator: 'tuliaprotocol',
       walletConfig,
       variant: 'wide',
+      fee: 0.002,
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
       components: {
@@ -113,15 +114,15 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
 };
 
 const useWidgetWalletConfig = () => {
-  const { openConnectModal } = useConnectModal();
+  const { open } = useWeb3Modal();
 
   const walletConfig: WidgetWalletConfig = useMemo(
     () => ({
       onConnect: async () => {
-        openConnectModal?.();
+        open?.();
       },
     }),
-    [openConnectModal]
+    [open]
   );
 
   return walletConfig;

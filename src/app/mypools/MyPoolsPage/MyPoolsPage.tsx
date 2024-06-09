@@ -6,8 +6,7 @@ import {
   IPoolsdata,
   PoolState,
 } from '@/components/MyPoolsTable/columns';
-import { setSection } from '@/lib/features/example/exampleSlice';
-import { useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { useAppDispatch } from '@/lib/hooks';
 import { HelpCircle, Landmark, MoveLeft } from 'lucide-react';
 import React from 'react';
 import { useState } from 'react';
@@ -17,7 +16,6 @@ import ChooseSectionCard from '@/components/ChooseSectionCard/ChooseSectionCard'
 import { Button } from '@/components/ui/button';
 import { useAccount } from 'wagmi';
 import ConnectYourWalletPage from '@/components/ConnectYourWalletPage/ConnectYourWalletPage';
-import { randomUUID } from 'crypto';
 
 const MyPoolspage = () => {
   const account = useAccount();

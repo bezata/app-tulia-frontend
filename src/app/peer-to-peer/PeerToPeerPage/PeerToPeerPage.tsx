@@ -13,7 +13,24 @@ import LendingReqModal from '@/components/LendingReqModal/LendingReqModal';
 const PeerToPeerPage = () => {
   //NOTE: state tutmak lazim direk variable ile tutamayiz.
   const allPoolDetails = useGetAllPoolDetails();
-  const [data, setData] = useState<ILendingData[]>([]);
+  const [data, setData] = useState<ILendingData[]>([
+    {
+      lending_id: '1',
+      wallet_address: '0x123456',
+      coin: 'ETH',
+      amount: 100,
+      created_at: '2021-10-10',
+      type: 1,
+    },
+    {
+      lending_id: '2',
+      wallet_address: '0x123456',
+      coin: 'ETH',
+      amount: 100,
+      created_at: '2021-10-10',
+      type: 2,
+    },
+  ]);
   const totalPoolCount = useGetTotalPoolCount();
   const [poolCount, setPoolCount] = useState<number>(0);
   React.useEffect(() => {

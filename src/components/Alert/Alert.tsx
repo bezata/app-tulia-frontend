@@ -19,6 +19,7 @@ interface AlertProps {
   actionText: string;
   actionFunction: () => void;
   disabled?: boolean;
+  actionButtonStyle?: string;
 }
 
 function Alert({
@@ -29,6 +30,7 @@ function Alert({
   actionText,
   actionFunction,
   disabled = false,
+  actionButtonStyle = '',
 }: AlertProps) {
   return (
     <AlertDialog>
@@ -44,7 +46,7 @@ function Alert({
           <AlertDialogCancel>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
             onClick={actionFunction}
-            className="tulia_main_button"
+            className={`tulia_main_button ${actionButtonStyle}`}
           >
             {actionText}
           </AlertDialogAction>

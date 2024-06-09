@@ -5,6 +5,8 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getSortedRowModel,
+  SortingState,
 } from '@tanstack/react-table';
 
 import {
@@ -16,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '../ui/button';
+import React from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,10 +29,16 @@ export function MyPoolsTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [sort, setSort] = React.useState<SortingState>([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSort,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting: sort,
+    },
   });
 
   return (

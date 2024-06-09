@@ -8,6 +8,23 @@ import USDCIcon from '../../../public/USDCIcon';
 import ArbIcon from '../../../public/ArbIcon';
 import DaiIcon from '../../../public/DaiIcon';
 import UniIcon from '../../../public/UniIcon';
+import BorrowViewModal from '../PoolsViewModal/BorrowViewModal/BorrowViewModal';
+import LendViewModal from '../PoolsViewModal/LendViewModal/LendViewModal';
+import { Button } from '../ui/button';
+import { ArrowUpDown } from 'lucide-react';
+
+export enum PoolState {
+  Active = 'Active',
+  Pending = 'Pending',
+  Closed = 'Closed',
+  Defaulted = 'Defaulted',
+}
+export enum InterestModal {
+  Simple = 'Simple',
+  Compound = 'Compound',
+  FlashLoan = 'Flash Loan',
+  MarketBased = 'Market Based',
+}
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -18,6 +35,8 @@ export type IPoolsdata = {
   amount: number;
   created_at: string;
   type: number;
+  state: PoolState;
+  interest_modal: InterestModal;
 };
 
 export const columns: ColumnDef<IPoolsdata>[] = [
@@ -49,21 +68,57 @@ export const columns: ColumnDef<IPoolsdata>[] = [
   },
   {
     accessorKey: 'amount',
-    header: 'Amount',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="hover:bg-transparent"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Amount
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      return (
+        <p className="text-gray-400 text-left ml-4">
+          {row.original.amount} {row.original.coin}
+        </p>
+      );
+    },
   },
   {
     accessorKey: 'created_at',
-    header: 'Date',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="hover:bg-transparent"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Created Date
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      return (
+        <p className="text-gray-400 text-left ml-4">
+          {new Date(row.original.created_at).toDateString()}
+        </p>
+      );
+    },
   },
   {
-    accessorKey: 'type',
-    header: 'Type',
+    accessorKey: 'interest_modal',
+    header: 'Interest Modal',
   },
   {
     accessorKey: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      return <PoolsViewModal row={row} />;
+      return row.original.type === 1 ? (
+        <BorrowViewModal row={row} />
+      ) : (
+        <LendViewModal row={row} />
+      );
     },
   },
 ];

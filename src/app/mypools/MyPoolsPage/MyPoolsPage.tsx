@@ -1,6 +1,11 @@
 'use client';
 import { MyPoolsTable } from '@/components/MyPoolsTable/MyPoolsTable';
-import { columns, IPoolsdata } from '@/components/MyPoolsTable/columns';
+import {
+  columns,
+  InterestModal,
+  IPoolsdata,
+  PoolState,
+} from '@/components/MyPoolsTable/columns';
 import { setSection } from '@/lib/features/example/exampleSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { HelpCircle, Landmark, MoveLeft } from 'lucide-react';
@@ -12,11 +17,43 @@ import ChooseSectionCard from '@/components/ChooseSectionCard/ChooseSectionCard'
 import { Button } from '@/components/ui/button';
 import { useAccount } from 'wagmi';
 import ConnectYourWalletPage from '@/components/ConnectYourWalletPage/ConnectYourWalletPage';
+import { randomUUID } from 'crypto';
 
 const MyPoolspage = () => {
   const account = useAccount();
   const allPoolDetails = useGetAllPoolDetails();
-  const [data, setData] = useState<IPoolsdata[]>([]);
+  const [data, setData] = useState<IPoolsdata[]>([
+    {
+      lending_id: Math.random().toString(),
+      wallet_address: '0x123456',
+      coin: 'ETH',
+      amount: 100,
+      created_at: '2021-10-10',
+      type: 1,
+      state: PoolState.Defaulted,
+      interest_modal: InterestModal.FlashLoan,
+    },
+    {
+      lending_id: Math.random().toString(),
+      wallet_address: '0x123456',
+      coin: 'ETH',
+      amount: 200,
+      created_at: '2022-10-10',
+      type: 1,
+      state: PoolState.Defaulted,
+      interest_modal: InterestModal.Simple,
+    },
+    {
+      lending_id: '2',
+      wallet_address: '0x123456',
+      coin: 'ETH',
+      amount: 100,
+      created_at: '2021-10-10',
+      type: 2,
+      state: PoolState.Active,
+      interest_modal: InterestModal.FlashLoan,
+    },
+  ]);
   const totalPoolCount = useGetTotalPoolCount();
   const [poolCount, setPoolCount] = useState<number>(0);
   const [poolSection, setPoolSection] = useState<'lend' | 'borrow' | null>(

@@ -42,6 +42,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
   const widgetConfig: WidgetConfig = useMemo(
     () => ({
       integrator: 'tuliaprotocol',
+      align: 'center',
       walletConfig,
       variant: 'wide',
       fee: 0.002,
@@ -69,7 +70,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
         container: {
           borderRadius: '16px',
           display: 'flex',
-          maxWidth: 392,
+          maxWidth: 400,
           boxShadow: '14px 22px 48px rgba(125, 44, 197, 0.06)',
           backgroundColor: 'rgba(125, 44, 197, 0.06)',
         },

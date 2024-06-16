@@ -15,7 +15,7 @@ import IHeader from '../Header/IHeader';
 
 const navigationMenuItems: IHeader.INavigation[] = [
   {
-    title: 'Mypools',
+    title: 'My Pools',
     slug: '/mypools',
   },
 ];

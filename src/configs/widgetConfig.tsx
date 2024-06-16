@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 
+
 interface Token {
   chainId: number;
   address: `0x${string}`;
@@ -45,7 +46,6 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       align: 'center',
       walletConfig,
       variant: 'wide',
-      fee: 0.002,
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
       components: {
@@ -55,6 +55,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
         MuiInputCard: { root: { borderRadius: 16 } },
         MuiTabs: { root: { borderRadius: 16 } },
       },
+      appearance: 'dark',
       theme: {
         palette: {
           primary: { main: 'rgb(24,3,73)' }, //BUTTONS
@@ -83,10 +84,50 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
 
   const widgetEvents = useWidgetEvents();
 
+  const storeTransaction = async (
+    route: {
+      fromToken: Token;
+      toToken: Token;
+      fromAmountUSD: string;
+      toAmountUSD: string;
+    },
+    status: string
+  ) => {
+    try {
+      const response = await fetch('/api/store-transaction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          address: route.fromToken.address,
+          chainId: route.fromToken.chainId,
+          fromAmountUSD: route.fromAmountUSD,
+          toAmountUSD: route.toAmountUSD,
+          status,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to store transaction');
+      }
+
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error('Error storing transaction:', error);
+    }
+  };
+
   useEffect(() => {
     widgetEvents.on(
       WidgetEvent.RouteExecutionCompleted,
-      (route: { fromToken: Token; toToken: Token }) => {
+      (route: {
+        fromToken: Token;
+        toToken: Token;
+        fromAmountUSD: string;
+        toAmountUSD: string;
+      }) => {
         if (
           (!config?.toChain || route.toToken.chainId === config.toChain) &&
           (!config?.toToken ||
@@ -94,6 +135,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
               config.toToken.toLowerCase())
         ) {
           onSuccess?.();
+          storeTransaction(route, 'completed');
         }
       }
     );

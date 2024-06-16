@@ -58,7 +58,7 @@ const providers = [
           const userDoc = await userRef.get();
 
           if (!userDoc.exists) {
-            await userRef.set({ address, chainId }); // Create a new user if not existing
+            await userRef.set({ address, chainId }); 
           }
 
           return {

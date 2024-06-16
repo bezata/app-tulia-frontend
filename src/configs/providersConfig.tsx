@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { arbitrumSepolia, mainnet } from 'wagmi/chains';
+import { arbitrumSepolia, mainnet, polygon } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { createConfig, http } from 'wagmi';
@@ -11,7 +11,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { siweConfig } from '../configs/siweConfig';
 
 export const projectId = `${process.env.NEXT_PUBLIC_PROJECT_ID}`;
-export const chains = [mainnet, arbitrumSepolia] as const;
+export const chains = [mainnet, arbitrumSepolia, polygon] as const;
 
 const metadata = {
   name: 'Tulia',
@@ -25,6 +25,7 @@ export const wagmiConfig = createConfig({
   transports: {
     [mainnet.id]: http(),
     [arbitrumSepolia.id]: http(),
+    [polygon.id]: http(),
   },
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),
@@ -42,6 +43,8 @@ createWeb3Modal({
   projectId,
   enableAnalytics: true,
   enableOnramp: true,
+  allowUnsupportedChain: true,
+  defaultChain: arbitrumSepolia,
 });
 
 if (!projectId) throw new Error('Project ID is not defined');

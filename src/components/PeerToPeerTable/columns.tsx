@@ -8,6 +8,7 @@ import USDCIcon from '../../../public/USDCIcon';
 import ArbIcon from '../../../public/ArbIcon';
 import DaiIcon from '../../../public/DaiIcon';
 import UniIcon from '../../../public/UniIcon';
+import Image from 'next/image';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -16,8 +17,9 @@ export type ILendingData = {
   wallet_address: string;
   coin: string;
   amount: number;
-  created_at: string;
   type: number;
+  interestRate: string;
+  numericValue: string;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [
@@ -52,8 +54,23 @@ export const columns: ColumnDef<ILendingData>[] = [
     header: 'Amount',
   },
   {
-    accessorKey: 'created_at',
-    header: 'Date',
+    accessorKey: 'interestRate',
+    header: 'Interest Rate',
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-col gap-2 ">
+          <div className="px-3">
+            <span>{row.original.interestRate}</span>
+          </div>
+          <div className="flex px-2">
+            <span className=" flex  px-2 items-center border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+              <Image src="/logo.png" alt="Logo" width={20} height={20} />
+              {row.original.numericValue}
+            </span>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'type',

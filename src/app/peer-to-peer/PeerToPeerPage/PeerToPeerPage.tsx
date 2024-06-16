@@ -19,7 +19,8 @@ const PeerToPeerPage = () => {
       wallet_address: '0x123456',
       coin: 'ETH',
       amount: 100,
-      created_at: '2021-10-10',
+      interestRate: '%21',
+      numericValue: '%21',
       type: 1,
     },
     {
@@ -27,7 +28,8 @@ const PeerToPeerPage = () => {
       wallet_address: '0x123456',
       coin: 'ETH',
       amount: 100,
-      created_at: '2021-10-10',
+      interestRate: '%21',
+      numericValue: '½12',
       type: 2,
     },
   ]);
@@ -43,11 +45,13 @@ const PeerToPeerPage = () => {
           const poolDetail = detail.result as unknown;
           console.log(detail.result);
           return {
+            numericValue: (poolDetail as PoolDetail)?.numericValue,
+            interestRate: (poolDetail as PoolDetail)?.interestRate,
             lending_id: (index + 1)?.toString(),
             wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
             coin: 'ETH',
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
-            created_at: new Date()?.toISOString().split('T')[0],
+
             type: Number((poolDetail as PoolDetail)?.interestRate),
           };
         }

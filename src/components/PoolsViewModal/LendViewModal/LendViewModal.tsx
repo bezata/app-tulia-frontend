@@ -48,6 +48,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
               {row.original.amount} {row.original.coin}
             </span>
           </div>
+
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
             {/* Interest Details */}
             <span className="font-bold">
@@ -101,6 +102,16 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-12 flex gap-2 flex-col">
             {row.original.interest_modal === InterestModal.FlashLoan && (
               <div className=" flex flex-col items-center justify-center md:col-span-4 col-span-12 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
+                <div className="w-full">
+                  <span>
+                    <Button
+                      type="button"
+                      className="capitalize bg-tulia_primary/50 w-full mt-2"
+                    >
+                      Claim Interest
+                    </Button>
+                  </span>
+                </div>
                 <Dialog>
                   <DialogTrigger type="button" className="w-full">
                     <Button

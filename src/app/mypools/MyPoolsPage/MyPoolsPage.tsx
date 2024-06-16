@@ -64,21 +64,23 @@ const MyPoolspage = () => {
   React.useEffect(() => {
     if (allPoolDetails) {
       const formattedData = allPoolDetails.map((detail, index): IPoolsdata => {
-        const poolDetail = detail.result as unknown;
+        const poolDetail = detail.result as unknown as PoolDetail;
         console.log(detail.result);
         return {
-          lending_id: (index + 1)?.toString(),
-          wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
+          lending_id: (index + 1).toString(),
+          wallet_address: poolDetail.lender.slice(0, 7),
           coin: 'ETH',
-          amount: Number((poolDetail as PoolDetail)?.loanAmount),
-          created_at: new Date()?.toISOString().split('T')[0],
-          type: Number((poolDetail as PoolDetail)?.interestRate),
+          amount: Number(poolDetail.loanAmount),
+          created_at: new Date().toISOString().split('T')[0],
+          type: Number(poolDetail.interestRate),
+          state: PoolState.Active,
+          interest_modal: InterestModal.Simple,
         };
       });
       setData(formattedData);
     }
   }, [allPoolDetails, totalPoolCount]);
-
+  
   const [filteredData, setFilteredData] = React.useState<IPoolsdata[]>(data);
   const dispatch = useAppDispatch();
 

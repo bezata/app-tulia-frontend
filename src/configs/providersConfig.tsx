@@ -6,7 +6,7 @@ import { arbitrumSepolia, mainnet } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { createConfig, http } from 'wagmi';
-import { injected, coinbaseWallet, walletConnect } from 'wagmi/connectors';
+import { injected, walletConnect, coinbaseWallet } from 'wagmi/connectors';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { siweConfig } from '../configs/siweConfig';
 
@@ -29,6 +29,10 @@ export const wagmiConfig = createConfig({
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),
     injected({ shimDisconnect: true }),
+    coinbaseWallet({
+      appName: metadata.name,
+      appLogoUrl: metadata.icons[0],
+    }),
   ],
 });
 

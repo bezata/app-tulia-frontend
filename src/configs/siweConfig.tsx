@@ -5,13 +5,13 @@ import type {
   SIWESession,
 } from '@web3modal/siwe';
 import { createSIWEConfig, formatMessage } from '@web3modal/siwe';
-import { mainnet, sepolia, arbitrumSepolia } from 'viem/chains';
+import { mainnet, sepolia } from 'viem/chains';
 
 export const siweConfig = createSIWEConfig({
   getMessageParams: async () => ({
     domain: typeof window !== 'undefined' ? window.location.host : '',
     uri: typeof window !== 'undefined' ? window.location.origin : '',
-    chains: [mainnet.id, sepolia.id, arbitrumSepolia.id],
+    chains: [mainnet.id, sepolia.id],
     statement: 'Hi there! Please sign this message to verify your identity.',
   }),
   createMessage: ({ address, ...args }: SIWECreateMessageArgs) =>

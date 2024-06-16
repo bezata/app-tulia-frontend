@@ -1,16 +1,22 @@
 import NextAuth from 'next-auth';
-import credentialsProvider from 'next-auth/providers/credentials';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import {
-  type SIWESession,
+  SIWESession,
   verifySignature,
   getChainIdFromMessage,
   getAddressFromMessage,
 } from '@web3modal/siwe';
+import { db } from '@/configs/firebaseAdmin';
 
 declare module 'next-auth' {
   interface Session extends SIWESession {
     address: string;
     chainId: number;
+  }
+
+  interface User {
+    chainId: number;
+    address: string;
   }
 }
 
@@ -25,71 +31,66 @@ if (!projectId) {
 }
 
 const providers = [
-  credentialsProvider({
+  CredentialsProvider({
     name: 'Ethereum',
     credentials: {
-      message: {
-        label: 'Message',
-        type: 'text',
-        placeholder: '0x0',
-      },
-      signature: {
-        label: 'Signature',
-        type: 'text',
-        placeholder: '0x0',
-      },
+      message: { label: 'Message', type: 'text', placeholder: '0x0' },
+      signature: { label: 'Signature', type: 'text', placeholder: '0x0' },
     },
     async authorize(credentials) {
-      try {
-        if (!credentials?.message) {
-          throw new Error('SiweMessage is undefined');
-        }
-        const { message, signature } = credentials;
-        const address = getAddressFromMessage(message);
-        const chainId = getChainIdFromMessage(message);
-
-        const isValid = await verifySignature({
-          address,
-          message,
-          signature,
-          chainId,
-          projectId,
-        });
-
-        if (isValid) {
-          return {
-            id: `${chainId}:${address}`,
-          };
-        }
-
-        return null;
-      } catch (e) {
-        return null;
+      if (!credentials?.message || !credentials?.signature) {
+        throw new Error('SiweMessage or signature is missing');
       }
+      const { message, signature } = credentials;
+      const address = getAddressFromMessage(message);
+      const chainId = getChainIdFromMessage(message);
+      const isValid = await verifySignature({
+        address,
+        message,
+        signature,
+        chainId,
+        projectId,
+      });
+
+      if (isValid) {
+        const userRef = db.collection('users').doc(address);
+        const userDoc = await userRef.get();
+        if (!userDoc.exists) {
+          await userRef.set({ address, chainId }); // Create a new user if not existing
+        }
+
+        return {
+          id: `${chainId}:${address}`,
+          address,
+          chainId: Number(chainId),
+        };
+      }
+
+      return null;
     },
   }),
 ];
 
 const handler = NextAuth({
-  // https://next-auth.js.org/configuration/providers/oauth
   secret: nextAuthSecret,
   providers,
-  session: {
-    strategy: 'jwt',
-  },
+  session: { strategy: 'jwt' },
   callbacks: {
-    session({ session, token }) {
-      if (!token.sub) {
-        return session;
+    async session({ session, token }) {
+      if (token.sub) {
+        const [chainId, address] = token.sub.split(':');
+        if (chainId && address) {
+          session.address = address;
+          session.chainId = parseInt(chainId, 10);
+        }
       }
-
-      const [chainId, address] = token.sub.split(':');
-      if (chainId && address) {
-        session.address = address;
-        session.chainId = parseInt(chainId, 10);
-      }
-
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.sub = `${user.chainId}:${user.address}`;
+      }
+      return token;
     },
   },
 });

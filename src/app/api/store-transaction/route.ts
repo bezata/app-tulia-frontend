@@ -4,23 +4,36 @@ import { db } from '@/configs/firebaseAdmin';
 
 export async function POST(req: NextRequest) {
   try {
-    const { address, chainId, fromAmountUSD, toAmountUSD, status } =
-      await req.json();
+    const { address, fromAmountUSD } = await req.json();
 
-    const transactionRef = db.collection('transactions').doc();
-    await transactionRef.set({
-      address,
-      chainId,
-      fromAmountUSD,
-      toAmountUSD,
-      status,
-      timestamp: Date.now(),
-    });
+    // Check if the address exists in the users collection
+    const userRef = db.collection('users').doc(address);
+    const userDoc = await userRef.get();
 
-    return NextResponse.json(
-      { message: 'Transaction stored successfully' },
-      { status: 200 }
-    );
+    if (userDoc.exists && userDoc.data()) {
+      const newTransactionVolume =
+        (userDoc?.data()?.transactionVolume ?? 0) + parseFloat(fromAmountUSD);
+      await userRef.update({
+        transactionVolume: newTransactionVolume,
+        fromAmountUSD,
+        timestamp: Date.now(),
+      });
+      return NextResponse.json(
+        { message: 'User document updated successfully' },
+        { status: 200 }
+      );
+    } else {
+      // Create a new user document
+      await userRef.set({
+        transactionVolume: parseFloat(fromAmountUSD),
+        fromAmountUSD,
+        timestamp: Date.now(),
+      });
+      return NextResponse.json(
+        { message: 'New user document created successfully' },
+        { status: 200 }
+      );
+    }
   } catch (error) {
     console.error('Error storing transaction:', error);
     return NextResponse.json(

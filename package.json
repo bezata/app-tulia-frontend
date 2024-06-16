@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
-    "@lifi/widget": "^3.0.0-alpha.40",
+    "@lifi/sdk": "^3.0.0-beta.0",
+    "@lifi/wallet-management": "^3.0.0-beta.3",
+    "@lifi/widget": "^3.0.0-beta.3",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-hover-card": "^1.0.7",
@@ -55,6 +57,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@lifi/types": "^13.12.4",
     "@types/node": "^20",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18",

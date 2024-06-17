@@ -21,11 +21,11 @@ const metadata = {
 };
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, arbitrumSepolia],
+  chains: [mainnet, arbitrumSepolia, polygon],
   transports: {
     [mainnet.id]: http(),
     [arbitrumSepolia.id]: http(),
-    [polygon.id]: http(),
+    [polygon.id]: http('https://polygon-rpc.com'),
   },
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),
@@ -44,7 +44,6 @@ createWeb3Modal({
   enableAnalytics: true,
   enableOnramp: true,
   allowUnsupportedChain: true,
-  defaultChain: arbitrumSepolia,
 });
 
 if (!projectId) throw new Error('Project ID is not defined');

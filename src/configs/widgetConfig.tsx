@@ -9,7 +9,8 @@ import {
 } from '@lifi/widget';
 import { useEffect, useMemo, useState } from 'react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-
+import { useSession } from 'next-auth/react';
+import { useAccount } from 'wagmi';
 
 interface Token {
   chainId: number;
@@ -35,9 +36,9 @@ export interface SwapWidgetProps {
 }
 
 export const TuliaSwap = (props: SwapWidgetProps) => {
-  const { open, close } = useWeb3Modal();
+  const { data: session } = useSession();
   const { config, onSuccess, className } = props;
-
+  const account = useAccount();
   const walletConfig = useWidgetWalletConfig();
 
   const widgetConfig: WidgetConfig = useMemo(
@@ -48,6 +49,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       variant: 'wide',
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
+
       components: {
         MuiAppBar: { root: { backgroundColor: 'rgba(125, 44, 197, 0.06)' } },
         MuiButton: { root: { borderRadius: 30 } },
@@ -84,15 +86,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
 
   const widgetEvents = useWidgetEvents();
 
-  const storeTransaction = async (
-    route: {
-      fromToken: Token;
-      toToken: Token;
-      fromAmountUSD: string;
-      toAmountUSD: string;
-    },
-    status: string
-  ) => {
+  const storeTransaction = async (route: { fromAmountUSD: string }) => {
     try {
       const response = await fetch('/api/store-transaction', {
         method: 'POST',
@@ -100,11 +94,8 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          address: route.fromToken.address,
-          chainId: route.fromToken.chainId,
+          address: account?.address,
           fromAmountUSD: route.fromAmountUSD,
-          toAmountUSD: route.toAmountUSD,
-          status,
         }),
       });
 
@@ -113,7 +104,6 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       }
 
       const data = await response.json();
-      console.log(data.message);
     } catch (error) {
       console.error('Error storing transaction:', error);
     }
@@ -135,7 +125,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
               config.toToken.toLowerCase())
         ) {
           onSuccess?.();
-          storeTransaction(route, 'completed');
+          storeTransaction(route);
         }
       }
     );

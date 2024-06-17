@@ -21,7 +21,8 @@ const PeerToPeerPage = () => {
       amount: 100,
       interestRate: '%21',
       numericValue: '%21',
-      type: 1,
+      repayment_period: '',
+      loan_state: 1,
     },
     {
       lending_id: '2',
@@ -29,8 +30,9 @@ const PeerToPeerPage = () => {
       coin: 'ETH',
       amount: 100,
       interestRate: '%21',
-      numericValue: '½12',
-      type: 2,
+      numericValue: '%5.32',
+      loan_state: 122,
+      repayment_period: '',
     },
   ]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -51,8 +53,8 @@ const PeerToPeerPage = () => {
             wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
             coin: 'ETH',
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
-
-            type: Number((poolDetail as PoolDetail)?.interestRate),
+            repayment_period: (poolDetail as PoolDetail)?.repayment_period,
+            loan_state: Number((poolDetail as PoolDetail)?.loan_state),
           };
         }
       );

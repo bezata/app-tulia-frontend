@@ -35,7 +35,7 @@ const navigationMenuItems: IHeader.INavigation[] = [
   },
   {
     title: 'Decentralized Lending',
-    slug: '/aave',
+    slug: '/tulialend',
   },
   {
     title: 'Docs',

@@ -17,9 +17,10 @@ export type ILendingData = {
   wallet_address: string;
   coin: string;
   amount: number;
-  type: number;
+  loan_state: number;
   interestRate: string;
   numericValue: string;
+  repayment_period: string;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [
@@ -58,13 +59,19 @@ export const columns: ColumnDef<ILendingData>[] = [
     header: 'Interest Rate',
     cell: ({ row }) => {
       return (
-        <div className="flex flex-col gap-2 ">
+        <div className="flex flex-col gap-2  ">
           <div className="px-3">
             <span>{row.original.interestRate}</span>
           </div>
-          <div className="flex px-2">
-            <span className=" flex  px-2 items-center border text-xs border-white/[0.2] bg-transparent  rounded-sm">
-              <Image src="/logo.png" alt="Logo" width={20} height={20} />
+          <div className="flex px-2 ">
+            <span className=" flex  px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={20}
+                height={20}
+                className="flex"
+              />
               {row.original.numericValue}
             </span>
           </div>
@@ -73,9 +80,10 @@ export const columns: ColumnDef<ILendingData>[] = [
     },
   },
   {
-    accessorKey: 'type',
-    header: 'Type',
+    accessorKey: 'loan_state',
+    header: 'loan state',
   },
+  { accessorKey: 'repayment_period', header: 'repayment period' },
   {
     accessorKey: 'actions',
     header: 'Actions',

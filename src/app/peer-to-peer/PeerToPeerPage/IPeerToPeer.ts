@@ -4,4 +4,6 @@ export interface PoolDetail {
   creationTime: bigint;
   interestRate: string;
   numericValue: string;
+  repayment_period: string;
+  loan_state: bigint;
 }

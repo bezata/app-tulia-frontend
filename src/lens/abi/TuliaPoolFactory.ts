@@ -8,11 +8,6 @@ export const TuliaPoolFactoryABI = [
       },
       {
         internalType: 'address',
-        name: '_permit2',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
         name: '_rewardManager',
         type: 'address',
       },
@@ -142,19 +137,6 @@ export const TuliaPoolFactoryABI = [
       },
     ],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'permit2',
-    outputs: [
-      {
-        internalType: 'contract IPermit2',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {

@@ -119,6 +119,30 @@ export const RewardManagerABI = [
         type: 'bool',
       },
     ],
+    name: 'calculateClaimableRewards',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        internalType: 'bool',
+        name: 'isLender',
+        type: 'bool',
+      },
+    ],
     name: 'claimRewards',
     outputs: [],
     stateMutability: 'nonpayable',
@@ -208,6 +232,11 @@ export const RewardManagerABI = [
       {
         internalType: 'bool',
         name: 'isFlashPool',
+        type: 'bool',
+      },
+      {
+        internalType: 'bool',
+        name: 'isAccruing',
         type: 'bool',
       },
     ],

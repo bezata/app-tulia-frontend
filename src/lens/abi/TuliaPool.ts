@@ -1,81 +1,21 @@
 export const TuliaPoolABI = [
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'lender',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'loanTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'repaymentTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'collateralVaultAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'interestRate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'repaymentPeriodInDays',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract IInterestModel',
-        name: 'interestModel',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IPermit2',
-        name: '_permit2',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'poolOrganizerAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'vaultManagerAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'rewardManagerAddress',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
-  },
-  {
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
         indexed: false,
-        internalType: 'uint256',
-        name: 'collateralAmount',
-        type: 'uint256',
+        internalType: 'bool',
+        name: 'status',
+        type: 'bool',
       },
     ],
-    name: 'CollateralFunded',
+    name: 'InterestAccrualToggled',
     type: 'event',
   },
   {
@@ -84,23 +24,17 @@ export const TuliaPoolABI = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'borrower',
+        name: 'pool',
         type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'collateralAmount',
+        name: 'amount',
         type: 'uint256',
       },
     ],
-    name: 'LoanActivated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [],
-    name: 'LoanClosed',
+    name: 'InterestDeposited',
     type: 'event',
   },
   {
@@ -109,24 +43,23 @@ export const TuliaPoolABI = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'borrower',
+        name: 'pool',
         type: 'address',
       },
-    ],
-    name: 'LoanDefaulted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'loanAmount',
+        name: 'amount',
         type: 'uint256',
       },
     ],
-    name: 'LoanFunded',
+    name: 'InterestPaid',
     type: 'event',
   },
   {
@@ -135,106 +68,39 @@ export const TuliaPoolABI = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'lender',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'to',
         type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'loanAmount',
+        name: 'amount',
         type: 'uint256',
       },
-      {
-        indexed: false,
-        internalType: 'contract IERC20',
-        name: 'loanToken',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'contract IERC20',
-        name: 'repaymentToken',
-        type: 'address',
-      },
     ],
-    name: 'LoanOfferCreated',
+    name: 'InterestRefunded',
     type: 'event',
   },
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'amountRepaid',
-        type: 'uint256',
-      },
-    ],
-    name: 'RepaymentMade',
-    type: 'event',
-  },
-  {
-    inputs: [],
-    name: 'activateLoan',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'calculateInterest',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'calculateRequiredCollateral',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'checkAndHandleDefault',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'closeDeal',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'fundLoan',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getBorrower',
-    outputs: [
-      {
         internalType: 'address',
-        name: '',
+        name: 'pool',
         type: 'address',
+      },
+    ],
+    name: 'calculateClaimableInterest',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -244,159 +110,90 @@ export const TuliaPoolABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'user',
+        name: 'pool',
         type: 'address',
       },
     ],
-    name: 'getCollateralAmount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
+    name: 'deregisterVault',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'getFundedBlock',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getInterestRate',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getLender',
-    outputs: [
+    inputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'to',
         type: 'address',
       },
     ],
-    stateMutability: 'view',
+    name: 'distributeInterest',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'getLoanAmount',
-    outputs: [
+    inputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getLoanState',
-    outputs: [
-      {
-        internalType: 'enum TuliaPool.LoanState',
-        name: '',
-        type: 'uint8',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getRepaymentPeriod',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'getRepaymentToken',
-    outputs: [
-      {
-        internalType: 'contract IERC20',
-        name: '',
+        internalType: 'address',
+        name: 'pool',
         type: 'address',
       },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'loanDetails',
-    outputs: [
       {
         internalType: 'address',
         name: 'lender',
         type: 'address',
       },
+    ],
+    name: 'handleDefault',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
       {
-        internalType: 'contract IERC20',
-        name: 'loanToken',
+        internalType: 'address',
+        name: '',
         type: 'address',
       },
-      {
-        internalType: 'contract IERC20',
-        name: 'repaymentToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract TuliaVault',
-        name: 'collateralVault',
-        type: 'address',
-      },
+    ],
+    name: 'interestInfo',
+    outputs: [
       {
         internalType: 'uint256',
-        name: 'loanAmount',
+        name: 'totalInterest',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'interestRate',
+        name: 'paymentStartBlock',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: 'repaymentPeriod',
+        name: 'interestPaid',
         type: 'uint256',
       },
       {
-        internalType: 'contract IVaultManager',
-        name: 'vaultManager',
-        type: 'address',
+        internalType: 'bool',
+        name: 'isAccruing',
+        type: 'bool',
       },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
       {
-        internalType: 'contract IInterestModel',
-        name: 'interestModel',
+        internalType: 'address',
+        name: 'pool',
         type: 'address',
       },
       {
@@ -404,90 +201,23 @@ export const TuliaPoolABI = [
         name: 'borrower',
         type: 'address',
       },
-      {
-        internalType: 'uint256',
-        name: 'startBlock',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'fundedBlock',
-        type: 'uint256',
-      },
     ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'permit2',
-    outputs: [
-      {
-        internalType: 'contract IPermit2',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'poolOrganizer',
-    outputs: [
-      {
-        internalType: 'contract IPoolOrganizer',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'repay',
+    name: 'refundRemainingInterest',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'rewardManager',
-    outputs: [
+    inputs: [
       {
-        internalType: 'contract IRewardManager',
-        name: '',
+        internalType: 'address',
+        name: 'pool',
         type: 'address',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'state',
-    outputs: [
-      {
-        internalType: 'enum TuliaPool.LoanState',
-        name: '',
-        type: 'uint8',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'vaultManager',
-    outputs: [
-      {
-        internalType: 'contract IVaultManager',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
+    name: 'registerPoolVault',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const;

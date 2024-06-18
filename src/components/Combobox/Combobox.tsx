@@ -29,32 +29,32 @@ import UniIcon from '../../../public/UniIcon';
 const cryptoCurrencies: ILendRequest.CryptoCurrency[] = [
   {
     label: 'WETH',
-    value: '0x38A3FfF5C1FebDA2CF33725d96A71271a48b257a',
+    value: '0xD34738726C013a0184965A5C6603C0AA7BCF6B80',
     symbol: <EthIcon />,
   },
   {
     label: 'WBTC',
-    value: '0x762C6842c858898C0DE653Cc0E39De51b84493c5',
+    value: '0x3E34D176dc568414f3DB022C2DE8c4076e3B6043',
     symbol: <BtcIcon />,
   },
   {
     label: 'USDC',
-    value: '0x00Dc19B6C30d06F2f0B1aF8934c9fb73D821F55B',
+    value: '0x569da455F23155612437eEd8CfF2106aE7e6C158',
     symbol: <USDCIcon />,
   },
   {
     label: 'ARB',
-    value: '0xC7De508085c395E9a2e5fd738e3b7ddfg804e641Cd84',
+    value: '0xdB722aD58d55cE8FdCa16c86462BCBa8739E3e58',
     symbol: <ArbIcon />,
   },
   {
     label: 'DAI',
-    value: '0x9A9f2BC83c2071bc458844A1421875d8D08B1e31',
+    value: '0xc399E512Ff58882305A9C38f2C6d806f6F77f178',
     symbol: <DaiIcon />,
   },
   {
     label: 'UNI',
-    value: '0x6a81A32DE20937c4235AA8F81AeD1b6B079c810D',
+    value: '0x5632a6D2E2aF12f20f69F78ee85AB2aE77F9949d',
     symbol: <UniIcon />,
   },
 ];
@@ -130,6 +130,7 @@ function StatusList({
 }) {
   //NOTE: neden disabled amk???
   //NOTE: kanka cidden niye disabled amk???
+  //NOTE: yağız çözdü kanka
   return (
     <Command>
       <CommandInput placeholder="Filter currency..." />

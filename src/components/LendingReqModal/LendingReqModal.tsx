@@ -44,7 +44,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { CopyBlock } from 'react-code-blocks';
-import { create } from 'domain';
 import ArbIcon from '../../../public/ArbIcon';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
@@ -73,6 +72,7 @@ const LendingReqModal = () => {
   const [collateral, setCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
   const account = useAccount();
+
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
       lendCoin: {
@@ -177,7 +177,7 @@ const LendingReqModal = () => {
         newAddress = '0x1B1d3f3bdfa7D28eF818c268b59A20e5932dC706';
         break;
       case InterestModal.Simple:
-        newAddress = '0x0F5534A65e5433a551b648D8634b6db3138F863D';
+        newAddress = '0x771EE257Ccea2918474d881cfB6e11e2B34e9e93';
         break;
       case InterestModal.FlashLoan:
         newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';
@@ -484,7 +484,9 @@ const LendingReqModal = () => {
                                   date && form.setValue('endDate', date)
                                 }
                                 disabled={(date: Date) => {
-                                  return date < new Date();
+                                  const today = new Date();
+                                  today.setDate(today.getDate());
+                                  return date <= today;
                                 }}
                                 initialFocus
                               />

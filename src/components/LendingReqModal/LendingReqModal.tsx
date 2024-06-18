@@ -439,19 +439,13 @@ const LendingReqModal = () => {
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input
-                            disabled={
-                              form.watch('interestModal') === 'MarketBased'
-                            }
-                            type="number"
-                            defaultValue={0}
-                            {...field}
-                          />
+                          <Input type="number" defaultValue={0} {...field} />
                           <span className="absolute right-8 text-gray-500 top-2">
                             {'%'}
                           </span>
                         </div>
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}

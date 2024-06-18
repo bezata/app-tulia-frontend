@@ -56,21 +56,26 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
               Interest Details
             </span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Rate</span>
             <span className="text-sm text-gray-400">5%</span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold text-primary">
               Interest Discount
             </span>
-            <span className="text-sm text-green-500">+0.5% (0.05 ETH)</span>
+            <span className="text-sm text-green-500">+0.5% </span>
+            <span className="text-sm text-green-500">(0.05 ETH)</span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
             <span className="text-sm text-gray-400">
               {row.original.interest_modal}
             </span>
+          </div>
+          <div className="col-span-3 flex flex-col">
+            <span className="text-sm font-semibold">Claimable Interest </span>
+            <span className="text-sm text-green-500">120 ETH</span>
           </div>
           {/* Loan Details */}
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">

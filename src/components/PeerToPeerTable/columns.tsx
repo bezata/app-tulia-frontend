@@ -81,9 +81,9 @@ export const columns: ColumnDef<ILendingData>[] = [
   },
   {
     accessorKey: 'loan_state',
-    header: 'loan state',
+    header: 'Loan State',
   },
-  { accessorKey: 'repayment_period', header: 'repayment period' },
+  { accessorKey: 'repayment_period', header: 'Repayment Period' },
   {
     accessorKey: 'actions',
     header: 'Actions',

@@ -362,7 +362,8 @@ const LendingReqModal = () => {
                               />
                             </FormControl>
                             <Label htmlFor="simple">
-                              Simple <span className="text-red-500">- 5%</span>
+                              Simple{' '}
+                              <span className="text-green-500">- 5%</span>
                             </Label>
                           </div>
                           <div
@@ -377,11 +378,12 @@ const LendingReqModal = () => {
                                 {...field}
                                 value={InterestModal.Compound}
                                 id="compound"
+                                disabled={true}
                               />
                             </FormControl>
                             <Label htmlFor="compound">
                               Compound{' '}
-                              <span className="text-red-500">- 5%</span>
+                              <span className="text-red-500">- Soon</span>
                             </Label>
                           </div>
 
@@ -401,7 +403,7 @@ const LendingReqModal = () => {
                             </FormControl>
                             <Label htmlFor="flashLoan">
                               Flash Loan{' '}
-                              <span className="text-red-500">- 5%</span>
+                              <span className="text-green-500">- 5%</span>
                             </Label>
                           </div>
                           <div
@@ -416,11 +418,12 @@ const LendingReqModal = () => {
                                 {...field}
                                 value={InterestModal.MarketBased}
                                 id="marketBased"
+                                disabled={true}
                               />
                             </FormControl>
                             <Label htmlFor="marketBased">
                               Market Based{' '}
-                              <span className="text-red-500">- 5%</span>
+                              <span className="text-red-500">- Soon</span>
                             </Label>
                           </div>
                         </RadioGroup>
@@ -500,8 +503,38 @@ const LendingReqModal = () => {
                 )}
               </div>
               {form.watch('interestModal') === InterestModal.FlashLoan ? (
-                <>
-                  <div className=" flex flex-col items-center justify-center md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
+                <div className="md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
+                  <div className="flex flex-col gap-4">
+                    {/* Collateral Amount */}
+                    <div className="flex flex-col border-b border-tulia_primary pb-4">
+                      <span className="text-sm font-semibold">
+                        Flash Loan Fee Rate
+                      </span>
+                      <span className="text-green-500">{collateral} %</span>
+                    </div>
+                    {/* You will gain NUMBER THT Coin for this position */}
+                    <div className="flex flex-col border-b border-tulia_primary pb-4">
+                      <span className="text-xs font-semibold">
+                        You will gain{' '}
+                        <span className="text-green-600">
+                          {`${String(rewardApy)}%`}{' '}
+                          <span className="text-indigo-600">
+                            {' '}
+                            {lendCoin?.label}{' '}
+                          </span>
+                        </span>
+                        <span> interest reward while waiting</span> in this lend
+                        position
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      Borrowers will pay a fee for the flash loan and accepit it
+                      with our mock flash loan contract.
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                /* <div className=" flex flex-col items-center justify-center md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
                     <span className="text-sm font-semibold mb-2">
                       Flash Loan Contract
                     </span>
@@ -582,9 +615,8 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                         />
                       </DialogContent>
                     </Dialog>
-                  </div>
-                </>
-              ) : (
+                  </div> */
+
                 <div className="md:col-span-4 col-span-12 md:pl-4 pl-0 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col border-b border-tulia_primary pb-4">

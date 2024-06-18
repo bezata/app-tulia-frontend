@@ -27,10 +27,28 @@ export const columns: ColumnDef<ILendingData>[] = [
   {
     accessorKey: 'lending_id',
     header: 'Loan ID',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center justify-center">
+          <div>
+            <span>{row.original.lending_id}</span>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'wallet_address',
     header: 'Wallet Address',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center ml-4">
+          <div>
+            <span>{row.original.wallet_address}</span>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'coin',
@@ -53,6 +71,15 @@ export const columns: ColumnDef<ILendingData>[] = [
   {
     accessorKey: 'amount',
     header: 'Amount',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center ml-4">
+          <div>
+            <span>{row.original.amount}</span>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'interestRate',
@@ -60,7 +87,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-2  ">
-          <div className="px-3">
+          <div className="px-3  ml-4">
             <span>{row.original.interestRate}</span>
           </div>
           <div className="flex px-2 ">
@@ -81,9 +108,30 @@ export const columns: ColumnDef<ILendingData>[] = [
   },
   {
     accessorKey: 'loan_state',
-    header: 'loan state',
+    header: 'Loan State',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center ml-4">
+          <div>
+            <span>{row.original.loan_state}</span>
+          </div>
+        </div>
+      );
+    },
   },
-  { accessorKey: 'repayment_period', header: 'repayment period' },
+  {
+    accessorKey: 'repayment_period',
+    header: 'Repayment Period',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center ml-4">
+          <div>
+            <span>{row.original.repayment_period}</span>
+          </div>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: 'actions',
     header: 'Actions',

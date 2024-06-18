@@ -13,6 +13,7 @@ import { CodeIcon, LucideBanknote, Percent, UserCheck } from 'lucide-react';
 import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
+import Image from 'next/image';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   return (
@@ -75,7 +76,17 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
-            <span className="text-sm text-green-500">120 ETH</span>
+            <span className="text-sm text-green-500">120 ETH</span>{' '}
+            <span className="flex px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={20}
+                height={20}
+                className="flex"
+              />
+              %12
+            </span>
           </div>
           {/* Loan Details */}
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">

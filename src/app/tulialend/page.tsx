@@ -1,4 +1,4 @@
-import { Clock10 } from 'lucide-react';
+import { IconClock } from '@tabler/icons-react';
 import React from 'react';
 
 const page = () => {
@@ -6,7 +6,7 @@ const page = () => {
     <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       {/* Coming soon */}
       <div className="text-center">
-        <Clock10 className="w-16 h-16 mx-auto text-white" />
+        <IconClock stroke={1} className="w-16 h-16 mx-auto text-white" />
         <h1 className="text-4xl font-extrabold mt-8 text-primary sm:text-5xl">
           Tulia Decentralized Personalized Lending Protocol
         </h1>

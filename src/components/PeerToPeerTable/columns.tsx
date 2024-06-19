@@ -22,6 +22,7 @@ export type ILendingData = {
   interestRate: bigint;
   numericValue: number | undefined;
   repaymentPeriod: bigint;
+  loanToken: string;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [

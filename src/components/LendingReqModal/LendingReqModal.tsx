@@ -55,7 +55,7 @@ const schema = z.object({
   loanAmount: z.string().refine(v => parseFloat(v) > 0),
   interestModal: z.nativeEnum(InterestModal),
   interestRate: z.string().refine(v => parseFloat(v) > 0),
-  endDate: z.date(),
+  endDate: z.string().refine(v => parseFloat(v) > 0),
   interestAddress: z.string().optional(),
 });
 
@@ -84,7 +84,7 @@ const LendingReqModal = () => {
       },
       loanAmount: undefined,
       interestModal: InterestModal.Simple,
-      endDate: date,
+      endDate: undefined,
       interestRate: undefined,
     },
     resolver: zodResolver(schema),
@@ -148,19 +148,9 @@ const LendingReqModal = () => {
   const lendCoin = form.watch('lendCoin');
   const borrowCoin = form.watch('borrowCoin');
 
-  const dateHandler = (date: Date) => {
-    const currentDate = Date.now();
-    const currentDateInSeconds = currentDate / 1000;
-    const repaymentEndDateInSeconds = Number(date) / 1000;
-    const repaymentDifference = Math.trunc(
-      repaymentEndDateInSeconds - currentDateInSeconds
-    );
-    return repaymentDifference;
-  };
-
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: parseEther(form.watch('loanAmount')?.toString() || '0'),
-    durationSeconds: dateHandler(form.watch('endDate')),
+    durationSeconds: 1000,
   });
 
   const calculateCollateral = (
@@ -215,7 +205,7 @@ const LendingReqModal = () => {
       data.borrowCoin.value,
       data.borrowCoin.value,
       data.interestRate,
-      repaymentDifference,
+      100000,
       newInterestAddress,
       poolType,
       optionalFlashLoanFeeRate
@@ -446,9 +436,14 @@ const LendingReqModal = () => {
                         <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" min={1} {...field} />
+                            <Input
+                              min={1}
+                              type="number"
+                              defaultValue={0}
+                              {...field}
+                            />
                             <span className="absolute right-8 text-gray-500 top-2">
-                              {'Day'}
+                              {'Days'}
                             </span>
                           </div>
                         </FormControl>

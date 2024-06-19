@@ -60,7 +60,6 @@ const PeerToPeerPage = () => {
       loanAmount: BigInt(10000),
       durationSeconds: 1000,
     }) ?? 0;
-  console.log(apy);
   const allPoolDetails = useGetAllPoolDetails();
   const [data, setData] = useState<ILendingData[]>([
     {
@@ -72,6 +71,7 @@ const PeerToPeerPage = () => {
       numericValue: 0.2,
       repaymentPeriod: BigInt(1),
       loan_state: 1,
+      loanToken: '0xD',
     },
     {
       lending_id: '2',
@@ -82,6 +82,7 @@ const PeerToPeerPage = () => {
       numericValue: 0.2,
       loan_state: 122,
       repaymentPeriod: BigInt(123),
+      loanToken: '0xD',
     },
   ]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -91,21 +92,43 @@ const PeerToPeerPage = () => {
   }, [totalPoolCount]);
   React.useEffect(() => {
     if (allPoolDetails) {
-      console.log(allPoolDetails);
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
-          console.log(detail.result);
-          console.log(poolDetail);
+
+          let currency = { label: 'ETH', symbol: <EthIcon /> };
+          // @ts-ignore
+          switch (poolDetail.loanToken.toLowerCase()) {
+            case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
+              currency = { label: 'WETH', symbol: <EthIcon /> };
+              break;
+            case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
+              currency = { label: 'WBTC', symbol: <BtcIcon /> };
+              break;
+            case '0x569da455f23155612437eed8cff2106ae7e6c158':
+              currency = { label: 'USDC', symbol: <USDCIcon /> };
+              break;
+            case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
+              currency = { label: 'ARB', symbol: <DaiIcon /> };
+              break;
+            case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
+              currency = { label: 'DAI', symbol: <DaiIcon /> };
+              break;
+            case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
+              currency = { label: 'UNI', symbol: <UniIcon /> };
+              break;
+          }
+
           return {
             numericValue: (Number(apy) / 10000) as number | undefined,
             interestRate: (poolDetail as PoolDetail)?.interestRate,
             lending_id: (index + 1)?.toString(),
             wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
-            coin: 'ETH',
+            coin: currency.label,
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
             repaymentPeriod: (poolDetail as PoolDetail)?.repaymentPeriod,
             loan_state: Number((poolDetail as PoolDetail)?.loan_state),
+            loanToken: (poolDetail as PoolDetail)?.loanToken,
           };
         }
       );

@@ -13,7 +13,7 @@ declare namespace ILendRequest {
       borrowCoin: CryptoCurrency;
       loanAmount: number;
       interestModal: InterestModal;
-      endDate: Date;
+      endDate: string;
       interestRate: number;
       InterestAddress: string;
     }

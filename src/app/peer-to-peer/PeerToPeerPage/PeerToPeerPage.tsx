@@ -9,9 +9,58 @@ import { useState } from 'react';
 import { useGetAllPoolDetails, useGetTotalPoolCount } from '@/lens/lens';
 import { PoolDetail } from './IPeerToPeer';
 import LendingReqModal from '@/components/LendingReqModal/LendingReqModal';
+import TransactionProcessModal from '@/components/TransactionProcessModal/TransactionProcessModal';
+import { useCalculateRewardApy } from '@/lens/lens';
+import ILendRequest from '@/types/LendRequest/ILendRequest';
+import BtcIcon from '../../../../public/BtcIcon';
+import EthIcon from '../../../../public/EthIcon';
+import USDCIcon from '../../../../public/USDCIcon';
+import ArbIcon from '../../../../public/ArbIcon';
+import DaiIcon from '../../../../public/DaiIcon';
+import UniIcon from '../../../../public/UniIcon';
+
+const cryptoCurrencies = [
+  {
+    label: 'WETH',
+    value: '0xD34738726C013a0184965A5C6603C0AA7BCF6B80',
+    symbol: <EthIcon />,
+  },
+  {
+    label: 'WBTC',
+    value: '0x3E34D176dc568414f3DB022C2DE8c4076e3B6043',
+    symbol: <BtcIcon />,
+  },
+  {
+    label: 'USDC',
+    value: '0x569da455F23155612437eEd8CfF2106aE7e6C158',
+    symbol: <USDCIcon />,
+  },
+  {
+    label: 'ARB',
+    value: '0xdB722aD58d55cE8FdCa16c86462BCBa8739E3e58',
+    symbol: <ArbIcon />,
+  },
+  {
+    label: 'DAI',
+    value: '0xc399E512Ff58882305A9C38f2C6d806f6F77f178',
+    symbol: <DaiIcon />,
+  },
+  {
+    label: 'UNI',
+    value: '0x5632a6D2E2aF12f20f69F78ee85AB2aE77F9949d',
+    symbol: <UniIcon />,
+  },
+];
 
 const PeerToPeerPage = () => {
   //NOTE: state tutmak lazim direk variable ile tutamayiz.
+
+  const apy =
+    useCalculateRewardApy({
+      loanAmount: BigInt(10000),
+      durationSeconds: 1000,
+    }) ?? 0;
+  console.log(apy);
   const allPoolDetails = useGetAllPoolDetails();
   const [data, setData] = useState<ILendingData[]>([
     {
@@ -19,9 +68,9 @@ const PeerToPeerPage = () => {
       wallet_address: '0x123456',
       coin: 'ETH',
       amount: 100,
-      interestRate: '%22',
-      numericValue: '%21',
-      repayment_period: '',
+      interestRate: BigInt(0),
+      numericValue: 0.2,
+      repaymentPeriod: BigInt(1),
       loan_state: 1,
     },
     {
@@ -29,10 +78,10 @@ const PeerToPeerPage = () => {
       wallet_address: '0x123456',
       coin: 'ETH',
       amount: 102,
-      interestRate: '%21',
-      numericValue: '%5.32',
+      interestRate: BigInt(0),
+      numericValue: 0.2,
       loan_state: 122,
-      repayment_period: '',
+      repaymentPeriod: BigInt(123),
     },
   ]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -42,18 +91,20 @@ const PeerToPeerPage = () => {
   }, [totalPoolCount]);
   React.useEffect(() => {
     if (allPoolDetails) {
+      console.log(allPoolDetails);
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
           console.log(detail.result);
+          console.log(poolDetail);
           return {
-            numericValue: (poolDetail as PoolDetail)?.numericValue,
+            numericValue: (Number(apy) / 10000) as number | undefined,
             interestRate: (poolDetail as PoolDetail)?.interestRate,
             lending_id: (index + 1)?.toString(),
             wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
             coin: 'ETH',
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
-            repayment_period: (poolDetail as PoolDetail)?.repayment_period,
+            repaymentPeriod: (poolDetail as PoolDetail)?.repaymentPeriod,
             loan_state: Number((poolDetail as PoolDetail)?.loan_state),
           };
         }

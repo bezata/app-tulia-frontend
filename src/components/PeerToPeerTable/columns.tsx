@@ -11,18 +11,17 @@ import UniIcon from '../../../public/UniIcon';
 import { Button } from '../ui/button';
 import Image from 'next/image';
 import { ArrowUpDown } from 'lucide-react';
+import { formatEther } from 'viem';
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type ILendingData = {
   lending_id: string;
   wallet_address: string;
   coin: string;
   amount: number;
   loan_state: number;
-  interestRate: string;
-  numericValue: string;
-  repayment_period: string;
+  interestRate: bigint;
+  numericValue: number | undefined;
+  repaymentPeriod: bigint;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [
@@ -60,7 +59,6 @@ export const columns: ColumnDef<ILendingData>[] = [
         <div className="flex items-center gap-2">
           {row.original.coin === 'ETH' && <EthIcon width={24} height={24} />}
           {row.original.coin === 'BTC' && <BtcIcon width={24} height={24} />}
-          {row.original.coin === 'TUL' && <BtcIcon width={24} height={24} />}
           {row.original.coin === 'USDC' && <USDCIcon width={24} height={24} />}
           {row.original.coin === 'ARB' && <ArbIcon width={24} height={24} />}
           {row.original.coin === 'DAI' && <DaiIcon width={24} height={24} />}
@@ -85,7 +83,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <p className="text-gray-400 text-left ml-4">
-          {row.original.amount} {row.original.coin}
+          {formatEther(BigInt(row.original.amount))} {row.original.coin}
         </p>
       );
     },
@@ -105,11 +103,11 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-2  ">
-          <div className="px-3  ml-4">
-            <span>{row.original.interestRate}</span>
+          <div className="px-3  ml-9">
+            <span>{`${String(row.original.interestRate)} %`}</span>
           </div>
           <div className="flex px-3  ml-4 ">
-            <span className=" flex  px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+            <span className="text-purple-400 flex  px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -117,7 +115,7 @@ export const columns: ColumnDef<ILendingData>[] = [
                 height={20}
                 className="flex"
               />
-              {row.original.numericValue}
+              {`${String(row.original.numericValue)}%`}
             </span>
           </div>
         </div>
@@ -150,10 +148,23 @@ export const columns: ColumnDef<ILendingData>[] = [
       </Button>
     ),
     cell: ({ row }) => {
+      const repaymentPeriodInDays =
+        Number(row.original.repaymentPeriod) / 86400;
+      let displayRepaymentPeriod = repaymentPeriodInDays.toFixed(2);
+
+      if (displayRepaymentPeriod.endsWith('.00')) {
+        displayRepaymentPeriod = repaymentPeriodInDays.toFixed(0);
+      } else if (displayRepaymentPeriod.endsWith('0')) {
+        displayRepaymentPeriod = repaymentPeriodInDays.toFixed(1);
+      }
+
       return (
-        <div className="flex items-center ml-4">
+        <div className="flex items-center ml-12">
           <div>
-            <span>{row.original.repayment_period}</span>
+            <span>
+              {displayRepaymentPeriod} day
+              {displayRepaymentPeriod !== '1' ? 's' : ''}
+            </span>
           </div>
         </div>
       );

@@ -7,4 +7,5 @@ export interface PoolDetail {
   repaymentPeriod: bigint;
   loan_state: bigint;
   loanToken: string;
+  repaymentToken: string;
 }

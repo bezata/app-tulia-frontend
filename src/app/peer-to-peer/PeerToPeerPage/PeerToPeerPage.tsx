@@ -19,38 +19,7 @@ import ArbIcon from '../../../../public/ArbIcon';
 import DaiIcon from '../../../../public/DaiIcon';
 import UniIcon from '../../../../public/UniIcon';
 
-const cryptoCurrencies = [
-  {
-    label: 'WETH',
-    value: '0xD34738726C013a0184965A5C6603C0AA7BCF6B80',
-    symbol: <EthIcon />,
-  },
-  {
-    label: 'WBTC',
-    value: '0x3E34D176dc568414f3DB022C2DE8c4076e3B6043',
-    symbol: <BtcIcon />,
-  },
-  {
-    label: 'USDC',
-    value: '0x569da455F23155612437eEd8CfF2106aE7e6C158',
-    symbol: <USDCIcon />,
-  },
-  {
-    label: 'ARB',
-    value: '0xdB722aD58d55cE8FdCa16c86462BCBa8739E3e58',
-    symbol: <ArbIcon />,
-  },
-  {
-    label: 'DAI',
-    value: '0xc399E512Ff58882305A9C38f2C6d806f6F77f178',
-    symbol: <DaiIcon />,
-  },
-  {
-    label: 'UNI',
-    value: '0x5632a6D2E2aF12f20f69F78ee85AB2aE77F9949d',
-    symbol: <UniIcon />,
-  },
-];
+
 
 const PeerToPeerPage = () => {
   //NOTE: state tutmak lazim direk variable ile tutamayiz.
@@ -65,24 +34,26 @@ const PeerToPeerPage = () => {
     {
       lending_id: '1',
       wallet_address: '0x123456',
-      coin: 'ETH',
+      Token: 'ETH',
       amount: 100,
       interestRate: BigInt(0),
       numericValue: 0.2,
       repaymentPeriod: BigInt(1),
       loan_state: 1,
       loanToken: '0xD',
+      borrowToken: 'ETH',
     },
     {
-      lending_id: '2',
+      lending_id: '1',
       wallet_address: '0x123456',
-      coin: 'ETH',
-      amount: 102,
+      Token: 'ETH',
+      amount: 100,
       interestRate: BigInt(0),
       numericValue: 0.2,
-      loan_state: 122,
-      repaymentPeriod: BigInt(123),
+      repaymentPeriod: BigInt(1),
+      loan_state: 1,
       loanToken: '0xD',
+      borrowToken: 'ETH',
     },
   ]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -95,6 +66,9 @@ const PeerToPeerPage = () => {
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
+          let repaymentCurrency = { label: 'ETH', symbol: <EthIcon /> };
+
+          console.log(poolDetail, 'poolDetail');
 
           let currency = { label: 'ETH', symbol: <EthIcon /> };
           // @ts-ignore
@@ -109,7 +83,7 @@ const PeerToPeerPage = () => {
               currency = { label: 'USDC', symbol: <USDCIcon /> };
               break;
             case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
-              currency = { label: 'ARB', symbol: <DaiIcon /> };
+              currency = { label: 'ARB', symbol: <ArbIcon /> };
               break;
             case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
               currency = { label: 'DAI', symbol: <DaiIcon /> };
@@ -119,16 +93,39 @@ const PeerToPeerPage = () => {
               break;
           }
 
+          // @ts-ignore
+          switch (poolDetail.repaymentToken.toLowerCase()) {
+            case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
+              repaymentCurrency = { label: 'WETH', symbol: <EthIcon /> };
+              break;
+            case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
+              repaymentCurrency = { label: 'WBTC', symbol: <BtcIcon /> };
+              break;
+            case '0x569da455f23155612437eed8cff2106ae7e6c158':
+              repaymentCurrency = { label: 'USDC', symbol: <USDCIcon /> };
+              break;
+            case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
+              repaymentCurrency = { label: 'ARB', symbol: <ArbIcon /> };
+              break;
+            case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
+              repaymentCurrency = { label: 'DAI', symbol: <DaiIcon /> };
+              break;
+            case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
+              repaymentCurrency = { label: 'UNI', symbol: <UniIcon /> };
+              break;
+          }
+
           return {
             numericValue: (Number(apy) / 10000) as number | undefined,
             interestRate: (poolDetail as PoolDetail)?.interestRate,
             lending_id: (index + 1)?.toString(),
             wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
-            coin: currency.label,
+            Token: currency.label,
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
             repaymentPeriod: (poolDetail as PoolDetail)?.repaymentPeriod,
             loan_state: Number((poolDetail as PoolDetail)?.loan_state),
-            loanToken: (poolDetail as PoolDetail)?.loanToken,
+            loanToken: currency.symbol as any,
+            borrowToken: repaymentCurrency.symbol as any,
           };
         }
       );

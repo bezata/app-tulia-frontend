@@ -194,7 +194,7 @@ const LendingReqModal = () => {
       data.borrowCoin.value,
       data.borrowCoin.value,
       data.interestRate,
-      repaymentDifference,
+      10000,
       newInterestAddress,
       poolType,
       optionalFlashLoanFeeRate
@@ -204,7 +204,7 @@ const LendingReqModal = () => {
       data.lendCoin.value,
       data.borrowCoin.value,
       data.borrowCoin.value,
-      data.interestRate,
+      100000,
       100000,
       newInterestAddress,
       poolType,

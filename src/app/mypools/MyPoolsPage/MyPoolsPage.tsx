@@ -29,6 +29,7 @@ const MyPoolspage = () => {
       created_at: '2021-10-10',
       type: 1,
       state: PoolState.Defaulted,
+      loan_state: PoolState.Defaulted,
       interest_modal: InterestModal.FlashLoan,
     },
     {
@@ -39,6 +40,7 @@ const MyPoolspage = () => {
       created_at: '2022-10-10',
       type: 1,
       state: PoolState.Defaulted,
+      loan_state: PoolState.Defaulted,
       interest_modal: InterestModal.Simple,
     },
     {
@@ -49,6 +51,7 @@ const MyPoolspage = () => {
       created_at: '2021-10-10',
       type: 2,
       state: PoolState.Active,
+      loan_state: PoolState.Active,
       interest_modal: InterestModal.FlashLoan,
     },
   ]);
@@ -74,13 +77,14 @@ const MyPoolspage = () => {
           created_at: new Date().toISOString().split('T')[0],
           type: Number(poolDetail.interestRate),
           state: PoolState.Active,
+          loan_state: PoolState.Active,
           interest_modal: InterestModal.Simple,
         };
       });
       setData(formattedData);
     }
   }, [allPoolDetails, totalPoolCount]);
-  
+
   const [filteredData, setFilteredData] = React.useState<IPoolsdata[]>(data);
   const dispatch = useAppDispatch();
 

@@ -105,7 +105,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-2  ">
-          <div className="px-3  ml-5">
+          <div className="px-3  ml-4">
             <span>{row.original.interestRate}</span>
           </div>
           <div className="flex px-3  ml-4 ">

@@ -3,7 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import EthIcon from '../../../public/EthIcon';
 import BtcIcon from '../../../public/BtcIcon';
-import LendingViewModal from '../LendingViewModal/LendingViewModal';
+import LoaningViewModal from '../LendingViewModal/LendingViewModal';
 import USDCIcon from '../../../public/USDCIcon';
 import ArbIcon from '../../../public/ArbIcon';
 import DaiIcon from '../../../public/DaiIcon';
@@ -16,15 +16,14 @@ import { formatEther } from 'viem';
 export type ILendingData = {
   lending_id: string;
   wallet_address: string;
-  borrowCoin: string;
-  lendCoin: string;
-  coin: string;
+  Token: string;
   amount: number;
   loan_state: number;
   interestRate: bigint;
   numericValue: number | undefined;
   repaymentPeriod: bigint;
   loanToken: string;
+  borrowToken: string;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [
@@ -55,59 +54,59 @@ export const columns: ColumnDef<ILendingData>[] = [
     },
   },
   {
-    accessorKey: 'lendCoin',
-    header: 'Lend Coin',
+    accessorKey: 'loanToken',
+    header: 'Loan Token',
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-1">
-          {row.original.lendCoin === 'ETH' && (
+          {row.original.loanToken === 'ETH' && (
             <EthIcon width={24} height={24} />
           )}
-          {row.original.lendCoin === 'BTC' && (
+          {row.original.loanToken === 'BTC' && (
             <BtcIcon width={24} height={24} />
           )}
-          {row.original.lendCoin === 'USDC' && (
+          {row.original.loanToken === 'USDC' && (
             <USDCIcon width={24} height={24} />
           )}
-          {row.original.lendCoin === 'ARB' && (
+          {row.original.loanToken === 'ARB' && (
             <ArbIcon width={24} height={24} />
           )}
-          {row.original.lendCoin === 'DAI' && (
+          {row.original.loanToken === 'DAI' && (
             <DaiIcon width={24} height={24} />
           )}
-          {row.original.lendCoin === 'UNI' && (
+          {row.original.loanToken === 'UNI' && (
             <UniIcon width={24} height={24} />
           )}
-          <span>{row.original.lendCoin}</span>
+          <span>{row.original.loanToken}</span>
         </div>
       );
     },
   },
   {
-    accessorKey: 'borrowCoin',
-    header: 'Borrow Coin',
+    accessorKey: 'borrowToken',
+    header: 'Borrow Token',
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-1">
-          {row.original.borrowCoin === 'ETH' && (
+          {row.original.borrowToken === 'ETH' && (
             <EthIcon width={24} height={24} />
           )}
-          {row.original.borrowCoin === 'BTC' && (
+          {row.original.borrowToken === 'BTC' && (
             <BtcIcon width={24} height={24} />
           )}
-          {row.original.borrowCoin === 'USDC' && (
+          {row.original.borrowToken === 'USDC' && (
             <USDCIcon width={24} height={24} />
           )}
-          {row.original.borrowCoin === 'ARB' && (
+          {row.original.borrowToken === 'ARB' && (
             <ArbIcon width={24} height={24} />
           )}
-          {row.original.borrowCoin === 'DAI' && (
+          {row.original.borrowToken === 'DAI' && (
             <DaiIcon width={24} height={24} />
           )}
-          {row.original.borrowCoin === 'UNI' && (
+          {row.original.borrowToken === 'UNI' && (
             <UniIcon width={24} height={24} />
           )}
-          <span>{row.original.borrowCoin}</span>
+          <span>{row.original.borrowToken}</span>
         </div>
       );
     },
@@ -127,7 +126,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <p className="text-gray-400 text-left ml-4">
-          {formatEther(BigInt(row.original.amount))} {row.original.coin}
+          {formatEther(BigInt(row.original.amount))} {row.original.Token}
         </p>
       );
     },
@@ -218,7 +217,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     accessorKey: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
-      return <LendingViewModal row={row} />;
+      return <LoaningViewModal row={row} />;
     },
   },
 ];

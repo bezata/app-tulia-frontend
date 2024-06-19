@@ -6,16 +6,20 @@ const UniIcon = (props: SVGProps<SVGSVGElement>) => (
     version="1.1"
     id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
-    width="24px"
-    height="24px"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+    x="0px"
+    y="0px"
     viewBox="20 30 168.3 193.8"
+    enableBackground="new 0 0 168.3 193.8"
     xmlSpace="preserve"
+    width={30}
+    height={30}
     {...props}
   >
     <style type="text/css">
       {`
-        .st0 { fill: #FF007A; }
-        .st1 { fill-rule: evenodd; clip-rule: evenodd; fill: #FF007A; }
+        .st0{fill:#FF007A;}
+        .st1{fill-rule:evenodd;clip-rule:evenodd;fill:#FF007A;}
       `}
     </style>
     <path

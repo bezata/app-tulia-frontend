@@ -71,7 +71,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Loan Amount</span>
               <span className="text-sm text-gray-400">
-                {row.original.amount} {row.original.coin}
+                {row.original.amount} {row.original.Token}
               </span>
             </div>
             <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -114,25 +114,25 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
               <span className="text-sm font-semibold">Lend Coin</span>
               <span className="text-sm text-gray-400">
                 <div className="flex items-center gap-2">
-                  {row.original.lendCoin === 'ETH' && (
+                  {row.original.loanToken === 'ETH' && (
                     <EthIcon width={24} height={24} />
                   )}
-                  {row.original.lendCoin === 'BTC' && (
+                  {row.original.loanToken === 'BTC' && (
                     <BtcIcon width={24} height={24} />
                   )}
-                  {row.original.lendCoin === 'USDC' && (
+                  {row.original.loanToken === 'USDC' && (
                     <USDCIcon width={24} height={24} />
                   )}
-                  {row.original.lendCoin === 'ARB' && (
+                  {row.original.loanToken === 'ARB' && (
                     <ArbIcon width={24} height={24} />
                   )}
-                  {row.original.lendCoin === 'DAI' && (
+                  {row.original.loanToken === 'DAI' && (
                     <DaiIcon width={24} height={24} />
                   )}
-                  {row.original.lendCoin === 'UNI' && (
+                  {row.original.loanToken === 'UNI' && (
                     <UniIcon width={24} height={24} />
                   )}
-                  <span>{row.original.lendCoin}</span>
+                  <span>{row.original.loanToken}</span>
                 </div>
               </span>
             </div>
@@ -140,25 +140,25 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
               <span className="text-sm font-semibold">Borrow Coin</span>
               <span className="text-sm text-gray-400">
                 <div className="flex items-center gap-2">
-                  {row.original.borrowCoin === 'ETH' && (
+                  {row.original.borrowToken === 'ETH' && (
                     <EthIcon width={24} height={24} />
                   )}
-                  {row.original.borrowCoin === 'BTC' && (
+                  {row.original.borrowToken === 'BTC' && (
                     <BtcIcon width={24} height={24} />
                   )}
-                  {row.original.borrowCoin === 'USDC' && (
+                  {row.original.borrowToken === 'USDC' && (
                     <USDCIcon width={24} height={24} />
                   )}
-                  {row.original.borrowCoin === 'ARB' && (
+                  {row.original.borrowToken === 'ARB' && (
                     <ArbIcon width={24} height={24} />
                   )}
-                  {row.original.borrowCoin === 'DAI' && (
+                  {row.original.borrowToken === 'DAI' && (
                     <DaiIcon width={24} height={24} />
                   )}
-                  {row.original.borrowCoin === 'UNI' && (
+                  {row.original.borrowToken === 'UNI' && (
                     <UniIcon width={24} height={24} />
                   )}
-                  <span>{row.original.borrowCoin}</span>
+                  <span>{row.original.borrowToken}</span>
                 </div>
               </span>
             </div>

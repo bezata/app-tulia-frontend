@@ -37,6 +37,7 @@ export type IPoolsdata = {
   type: number;
   state: PoolState;
   interest_modal: InterestModal;
+  loan_state: PoolState;
 };
 
 export const columns: ColumnDef<IPoolsdata>[] = [
@@ -109,6 +110,19 @@ export const columns: ColumnDef<IPoolsdata>[] = [
   {
     accessorKey: 'interest_modal',
     header: 'Interest Modal',
+  },
+  {
+    accessorKey: 'loan_state',
+    header: 'Loan State',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center ml-4">
+          <div>
+            <span>{row.original.loan_state}</span>
+          </div>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'actions',

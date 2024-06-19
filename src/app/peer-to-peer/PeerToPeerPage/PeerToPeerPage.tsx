@@ -66,7 +66,7 @@ const PeerToPeerPage = () => {
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
-          let repaymentCurrency = { label: 'ETH', symbol: <EthIcon /> };
+          let repaymentCurrency = { label: 'ARB', symbol: <ArbIcon /> };
 
           console.log(poolDetail, 'poolDetail');
 
@@ -96,7 +96,10 @@ const PeerToPeerPage = () => {
           // @ts-ignore
           switch (poolDetail.repaymentToken.toLowerCase()) {
             case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
-              repaymentCurrency = { label: 'WETH', symbol: <EthIcon /> };
+              repaymentCurrency = {
+                label: 'WETH',
+                symbol: <EthIcon />,
+              };
               break;
             case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
               repaymentCurrency = { label: 'WBTC', symbol: <BtcIcon /> };
@@ -131,7 +134,7 @@ const PeerToPeerPage = () => {
       );
       setData(formattedData);
     }
-  }, [allPoolDetails, totalPoolCount]);
+  }, [allPoolDetails, totalPoolCount, apy]);
 
   const { section } = useAppSelector(state => state.example);
   const [filteredData, setFilteredData] = React.useState<ILendingData[]>(data);

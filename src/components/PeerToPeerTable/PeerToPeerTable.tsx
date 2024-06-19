@@ -21,6 +21,7 @@ import { Button } from '../ui/button';
 import { useAccount } from 'wagmi';
 import { Wallet } from 'lucide-react';
 import React from 'react';
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -31,6 +32,7 @@ export function PeerToPeerTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [sort, setSort] = React.useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,

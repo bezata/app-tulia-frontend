@@ -131,6 +131,7 @@ function StatusList({
   //NOTE: neden disabled amk???
   //NOTE: kanka cidden niye disabled amk???
   //NOTE: yağız çözdü kanka
+  //Note: Abi çözdüm
   return (
     <Command>
       <CommandInput placeholder="Filter currency..." />

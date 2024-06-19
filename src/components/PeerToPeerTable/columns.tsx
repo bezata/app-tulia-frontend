@@ -16,6 +16,8 @@ import { formatEther } from 'viem';
 export type ILendingData = {
   lending_id: string;
   wallet_address: string;
+  borrowCoin: string;
+  lendCoin: string;
   coin: string;
   amount: number;
   loan_state: number;
@@ -44,7 +46,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     header: 'Wallet Address',
     cell: ({ row }) => {
       return (
-        <div className="flex items-center ml-4">
+        <div className="flex items-center ">
           <div>
             <span>{row.original.wallet_address}</span>
           </div>
@@ -53,18 +55,59 @@ export const columns: ColumnDef<ILendingData>[] = [
     },
   },
   {
-    accessorKey: 'coin',
-    header: 'Coin',
+    accessorKey: 'lendCoin',
+    header: 'Lend Coin',
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2">
-          {row.original.coin === 'ETH' && <EthIcon width={24} height={24} />}
-          {row.original.coin === 'BTC' && <BtcIcon width={24} height={24} />}
-          {row.original.coin === 'USDC' && <USDCIcon width={24} height={24} />}
-          {row.original.coin === 'ARB' && <ArbIcon width={24} height={24} />}
-          {row.original.coin === 'DAI' && <DaiIcon width={24} height={24} />}
-          {row.original.coin === 'UNI' && <UniIcon width={24} height={24} />}
-          <span>{row.original.coin}</span>
+        <div className="flex items-center gap-1">
+          {row.original.lendCoin === 'ETH' && (
+            <EthIcon width={24} height={24} />
+          )}
+          {row.original.lendCoin === 'BTC' && (
+            <BtcIcon width={24} height={24} />
+          )}
+          {row.original.lendCoin === 'USDC' && (
+            <USDCIcon width={24} height={24} />
+          )}
+          {row.original.lendCoin === 'ARB' && (
+            <ArbIcon width={24} height={24} />
+          )}
+          {row.original.lendCoin === 'DAI' && (
+            <DaiIcon width={24} height={24} />
+          )}
+          {row.original.lendCoin === 'UNI' && (
+            <UniIcon width={24} height={24} />
+          )}
+          <span>{row.original.lendCoin}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: 'borrowCoin',
+    header: 'Borrow Coin',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center gap-1">
+          {row.original.borrowCoin === 'ETH' && (
+            <EthIcon width={24} height={24} />
+          )}
+          {row.original.borrowCoin === 'BTC' && (
+            <BtcIcon width={24} height={24} />
+          )}
+          {row.original.borrowCoin === 'USDC' && (
+            <USDCIcon width={24} height={24} />
+          )}
+          {row.original.borrowCoin === 'ARB' && (
+            <ArbIcon width={24} height={24} />
+          )}
+          {row.original.borrowCoin === 'DAI' && (
+            <DaiIcon width={24} height={24} />
+          )}
+          {row.original.borrowCoin === 'UNI' && (
+            <UniIcon width={24} height={24} />
+          )}
+          <span>{row.original.borrowCoin}</span>
         </div>
       );
     },

@@ -13,6 +13,7 @@ import { CodeIcon, LucideBanknote, Percent, UserCheck } from 'lucide-react';
 import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
+import Image from 'next/image';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   return (
@@ -55,22 +56,36 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
               Interest Details
             </span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">
               Interest Rate on Loan Amount
             </span>
             <span className="text-sm text-gray-400">5% (0.05 ETH)</span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold text-primary">
               Interest Discount
             </span>
             <span className="text-sm text-green-500">+0.5% (0.05 ETH)</span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
             <span className="text-sm text-gray-400">
               {row.original.interest_modal}
+            </span>
+          </div>
+          <div className="col-span-3 flex flex-col">
+            <span className="text-sm font-semibold">Claimable Interest </span>
+            <span className="text-sm text-green-500">120 ETH</span>{' '}
+            <span className="flex px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={20}
+                height={20}
+                className="flex"
+              />
+              %12
             </span>
           </div>
 
@@ -110,6 +125,16 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-12 flex gap-2 flex-col">
             {row.original.interest_modal === InterestModal.FlashLoan && (
               <div className=" flex flex-col items-center justify-center md:col-span-4 col-span-12 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">
+                <div className="w-full">
+                  <span>
+                    <Button
+                      type="button"
+                      className="capitalize bg-tulia_primary/50 w-full mt-2"
+                    >
+                      Claim Interest
+                    </Button>
+                  </span>
+                </div>
                 <Dialog>
                   <DialogTrigger type="button" className="w-full">
                     <Button

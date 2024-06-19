@@ -124,7 +124,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                       type="button"
                       className="capitalize bg-tulia_primary/50 w-full mt-2"
                     >
-                      Claim Interest
+                      Claim Interest.
                     </Button>
                   </span>
                 </div>

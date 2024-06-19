@@ -32,7 +32,7 @@ export const useCalculateRewardApy = ({
 }: AdvancedAPYManagerProps) => {
   const { data: apy } = useReadContract({
     abi: AdvancedAPYManagerABI,
-    address: '0x688a33A216f1bfDE39602eBbe7c3c3f9252B3E66',
+    address: '0x6511B3C5B3Cc44bC16cb77C5fC5eCD27615c2F85',
     functionName: 'calculateAPY',
     args: [loanAmount as any, durationSeconds as any],
   });
@@ -40,11 +40,10 @@ export const useCalculateRewardApy = ({
   return apy as number | undefined;
 };
 
-
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
+    address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
     functionName: 'getTotalPools',
   });
 
@@ -55,7 +54,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
+    address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -66,7 +65,7 @@ export const useGetPoolDetails = (poolAddress: string) => {
 export const useGetAllPoolAddresses = () => {
   const { data: allPoolAddresses } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
+    address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
     functionName: 'getAllPoolAddresses',
   });
 
@@ -82,7 +81,7 @@ export const useGetAllPoolDetails = () => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
         abi: PoolOrganizerABI,
-        address: '0x4be559E99199aAC1DbC0b6017C51Afc5CAed9b75',
+        address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
         functionName: 'getPoolDetails',
         args: [address],
       }));
@@ -113,7 +112,7 @@ export const useGetAllFundedPoolDetails = () => {
 export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
   const { data } = useReadContract({
     abi: SimpleInterestABI,
-    address: '0x0F5534A65e5433a551b648D8634b6db3138F863D',
+    address: '0x771EE257Ccea2918474d881cfB6e11e2B34e9e93',
     functionName: 'calculateInterest',
     args: [principal, rate],
   });
@@ -140,7 +139,7 @@ export const useCreateTuliaPool = () => {
   const { writeContract } = useWriteContract();
 
   return (
-    loanAmount: number,
+    loanAmount: BigInt,
     loanToken: string,
     assetToken: string,
     repaymentToken: string,
@@ -152,7 +151,7 @@ export const useCreateTuliaPool = () => {
   ) => {
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0xD3E4a3421936815AB4394BDff7BCD173b9f7e2e0',
+      address: '0xF3D0a6a51c153445c563d37Ee1d3B8C2C268e468',
       functionName: 'createTuliaPool',
       args: [
         userAddress?.address as any,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogClose,
@@ -10,12 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
-import {
-  PlusCircle,
-  CalendarDays,
-  CodeIcon,
-  ArrowBigRightDashIcon,
-} from 'lucide-react';
+import { PlusCircle, CalendarDays } from 'lucide-react';
 import {
   useCreateTuliaPool,
   useCalculateInterest,
@@ -26,7 +21,7 @@ import { ComboBoxResponsive } from '../Combobox/Combobox';
 import { useForm } from 'react-hook-form';
 import ILendRequest, { InterestModal } from '@/types/LendRequest/ILendRequest';
 import EthIcon from '../../../public/EthIcon';
-import BtcIcon from '../../../public/BtcIcon';
+import ArbIcon from '../../../public/ArbIcon';
 import { Input } from '@/components/ui/input';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -43,10 +38,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../ui/form';
-import { CopyBlock } from 'react-code-blocks';
-import ArbIcon from '../../../public/ArbIcon';
 import { useAccount } from 'wagmi';
-import { useState } from 'react';
 import { toast } from 'sonner';
 
 const schema = z.object({
@@ -71,13 +63,12 @@ const LendingReqModal = () => {
   const createTuliaPool = useCreateTuliaPool();
   const [open, setOpen] = React.useState(false);
   const [collateral, setCollateral] = React.useState(0);
+  const [uiCollateral, setUiCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
   const [feeAmount, setFeeAmount] = useState(0);
   const account = useAccount();
   const newDate = new Date();
-  // Increment the current date by one
   newDate.setDate(newDate.getDate() + 1);
-
   const [date, setDate] = useState(newDate);
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
@@ -115,54 +106,6 @@ const LendingReqModal = () => {
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
     rate: form.watch('interestRate'),
   });
-  const calculateCollateral = (
-    loanAmount: number,
-    interestRate: number,
-    interestModel: InterestModal,
-    interest: number | undefined,
-    compoundInterest: number | undefined
-  ): number => {
-    const principal = BigInt(parseEther(loanAmount.toString()));
-    const rate = BigInt(Math.round(interestRate * 100)); // Convert percentage to basis points
-
-    let calculatedInterest = BigInt(0);
-
-    if (interest !== undefined && compoundInterest !== undefined) {
-      calculatedInterest = BigInt(
-        parseEther(
-          interestModel === InterestModal.Compound
-            ? compoundInterest.toString()
-            : interest.toString()
-        )
-      );
-    } else {
-      switch (interestModel) {
-        case InterestModal.Simple:
-          calculatedInterest = (principal * rate) / BigInt(10000);
-          break;
-        case InterestModal.Compound:
-          const totalPeriods = 1;
-          let compoundedPrincipal = principal;
-          for (let i = 0; i < totalPeriods; i++) {
-            compoundedPrincipal =
-              (compoundedPrincipal * (BigInt(10000) + rate)) / BigInt(10000);
-          }
-          calculatedInterest = compoundedPrincipal - principal;
-          break;
-
-        case InterestModal.FlashLoan:
-          calculatedInterest = (principal * rate) / BigInt(10000);
-        case InterestModal.MarketBased:
-          calculatedInterest = (principal * rate) / BigInt(10000);
-          break;
-        default:
-          console.error('Unsupported interest model');
-          return Number(formatEther(principal));
-      }
-    }
-    const total = principal + calculatedInterest;
-    return parseFloat(formatEther(total));
-  };
 
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
@@ -173,10 +116,7 @@ const LendingReqModal = () => {
       ) {
         const calculatedCollateral = calculateCollateral(
           parseFloat(value.loanAmount?.toString() || '0'),
-          value.interestRate ?? 0,
-          value.interestModal ?? InterestModal.Simple,
-          interest.interest as any,
-          compoundInterest.interest as any
+          parseFloat(value.interestRate?.toString() || '0')
         );
         setCollateral(calculatedCollateral);
       }
@@ -217,14 +157,31 @@ const LendingReqModal = () => {
     );
     return repaymentDifference;
   };
+
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: parseEther(form.watch('loanAmount')?.toString() || '0'),
     durationSeconds: dateHandler(form.watch('endDate')),
   });
 
+  const calculateCollateral = (
+    loanAmount: number,
+    interestRate: number
+  ): number => {
+    const principal = parseFloat(loanAmount.toString());
+    const rate = parseFloat(interestRate.toString());
+
+    const interest = (principal * rate) / 100;
+    console.log(
+      `Principal: ${principal}, Rate: ${rate}, Interest: ${interest}`
+    );
+    const total = principal + interest;
+    setUiCollateral(total);
+    return total;
+  };
+
   useEffect(() => {
     if (calculateRewardAPY) {
-      setRewardApy(calculateRewardAPY);
+      setRewardApy(Number(calculateRewardAPY));
     }
   }, [calculateRewardAPY]);
 
@@ -240,8 +197,9 @@ const LendingReqModal = () => {
       data.interestModal === InterestModal.FlashLoan ? data.interestRate : 0;
     const newInterestAddress = updateInterestAddress(data.interestModal);
     const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
+    const loanAmount = parseEther(String(data?.loanAmount));
     createTuliaPool(
-      data.loanAmount,
+      loanAmount,
       data.lendCoin.value,
       data.borrowCoin.value,
       data.borrowCoin.value,
@@ -252,7 +210,7 @@ const LendingReqModal = () => {
       optionalFlashLoanFeeRate
     );
     console.log(
-      data.loanAmount,
+      loanAmount,
       data.lendCoin.value,
       data.borrowCoin.value,
       data.borrowCoin.value,
@@ -270,6 +228,7 @@ const LendingReqModal = () => {
     setRewardApy(0);
     setCollateral(0);
   };
+
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'loanAmount' || name === 'interestRate') {
@@ -281,7 +240,6 @@ const LendingReqModal = () => {
     });
     return () => subscription.unsubscribe();
   }, [form]);
-
   return (
     <Dialog open={open} setOpen={setOpen}>
       <DialogTrigger>
@@ -645,7 +603,7 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                         Collateral Amount
                       </span>
                       <span className="text-green-500">
-                        {collateral} {borrowCoin?.label}
+                        {uiCollateral} {borrowCoin?.label}
                       </span>
                     </div>
                     {/* You will gain NUMBER THT Coin for this position */}
@@ -653,7 +611,7 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                       <span className="text-xs font-semibold">
                         You will gain{' '}
                         <span className="text-green-600">
-                          {`${String(rewardApy)}%`}
+                          {`${String(rewardApy / 10000)}%`}
                         </span>
                         <span> interest reward for</span>{' '}
                         <span className="text-indigo-600">

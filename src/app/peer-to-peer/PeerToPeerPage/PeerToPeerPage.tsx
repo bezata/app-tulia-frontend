@@ -39,7 +39,7 @@ const PeerToPeerPage = () => {
       interestRate: BigInt(0),
       numericValue: 0.2,
       repaymentPeriod: BigInt(1),
-      loan_state: 1,
+      loan_state: 'Active',
       loanToken: '0xD',
       borrowToken: 'ETH',
     },
@@ -51,7 +51,7 @@ const PeerToPeerPage = () => {
       interestRate: BigInt(0),
       numericValue: 0.2,
       repaymentPeriod: BigInt(1),
-      loan_state: 1,
+      loan_state: 'Pending',
       loanToken: '0xD',
       borrowToken: 'ETH',
     },
@@ -118,6 +118,9 @@ const PeerToPeerPage = () => {
               break;
           }
 
+          // @ts-ignore
+          const loanState = poolDetail?.funded ? 'Active' : 'Pending';
+
           return {
             numericValue: (Number(apy) / 10000) as number | undefined,
             interestRate: (poolDetail as PoolDetail)?.interestRate,
@@ -126,12 +129,13 @@ const PeerToPeerPage = () => {
             Token: currency.label,
             amount: Number((poolDetail as PoolDetail)?.loanAmount),
             repaymentPeriod: (poolDetail as PoolDetail)?.repaymentPeriod,
-            loan_state: Number((poolDetail as PoolDetail)?.loan_state),
+            loan_state: loanState as any,
             loanToken: currency.symbol as any,
             borrowToken: repaymentCurrency.symbol as any,
           };
         }
       );
+
       setData(formattedData);
     }
   }, [allPoolDetails, totalPoolCount, apy]);
@@ -170,7 +174,7 @@ const PeerToPeerPage = () => {
       </div>
       <div className="mb-4 flex items-center justify-between">
         <LendingReqModal />
-        <h2 className="text-md font-light">
+        <h2 className="text-md font-bold">
           All Lending Requests (Total: {Number(poolCount)})
         </h2>
       </div>

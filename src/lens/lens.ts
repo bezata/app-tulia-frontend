@@ -134,37 +134,5 @@ export const useCalculateCompoundInterest = ({
   return { interest: data as number | undefined };
 };
 
-export const useCreateTuliaPool = () => {
-  const userAddress = useAccount();
-  const { writeContract } = useWriteContract();
 
-  return (
-    loanAmount: BigInt,
-    loanToken: string,
-    assetToken: string,
-    repaymentToken: string,
-    interestRate: number,
-    repaymentPeriod: number,
-    interestModel: string,
-    poolType: number,
-    optionalFlashLoanFeeRate: number
-  ) => {
-    writeContract({
-      abi: TuliaPoolFactoryABI,
-      address: '0xF3D0a6a51c153445c563d37Ee1d3B8C2C268e468',
-      functionName: 'createTuliaPool',
-      args: [
-        userAddress?.address as any,
-        loanToken as any,
-        assetToken as any,
-        repaymentToken as any,
-        loanAmount as any,
-        interestRate as any,
-        repaymentPeriod as any,
-        interestModel as any,
-        poolType,
-        optionalFlashLoanFeeRate as any,
-      ],
-    });
-  };
-};
+

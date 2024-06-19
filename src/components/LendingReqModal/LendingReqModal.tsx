@@ -12,7 +12,6 @@ import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, CalendarDays } from 'lucide-react';
 import {
-  useCreateTuliaPool,
   useCalculateInterest,
   useCalculateCompoundInterest,
   useCalculateRewardApy,
@@ -28,8 +27,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { format } from 'date-fns';
-import { Calendar } from '../ui/calendar';
 import {
   Form,
   FormControl,
@@ -40,6 +37,9 @@ import {
 } from '../ui/form';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
+import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
+import { useWriteContract } from 'wagmi';
+import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -60,7 +60,7 @@ const schema = z.object({
 });
 
 const LendingReqModal = () => {
-  const createTuliaPool = useCreateTuliaPool();
+  const { writeContract, data: hash } = useWriteContract();
   const [open, setOpen] = React.useState(false);
   const [collateral, setCollateral] = React.useState(0);
   const [uiCollateral, setUiCollateral] = React.useState(0);
@@ -106,7 +106,7 @@ const LendingReqModal = () => {
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
     rate: form.watch('interestRate'),
   });
-
+  console.log(hash, 'hash');
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (
@@ -188,17 +188,24 @@ const LendingReqModal = () => {
     const newInterestAddress = updateInterestAddress(data.interestModal);
     const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
     const loanAmount = parseEther(String(data?.loanAmount));
-    createTuliaPool(
-      loanAmount,
-      data.lendCoin.value,
-      data.borrowCoin.value,
-      data.borrowCoin.value,
-      data.interestRate,
-      10000,
-      newInterestAddress,
-      poolType,
-      optionalFlashLoanFeeRate
-    );
+    writeContract({
+      abi: TuliaPoolFactoryABI,
+      address: '0xF3D0a6a51c153445c563d37Ee1d3B8C2C268e468',
+      functionName: 'createTuliaPool',
+      args: [
+        account?.address as any,
+        data.lendCoin.value as any,
+        data.borrowCoin.value as any,
+        data.borrowCoin.value as any,
+        loanAmount as any,
+        data.interestRate as any,
+        10000 as any,
+        newInterestAddress as any,
+        poolType,
+        optionalFlashLoanFeeRate as any,
+      ],
+    });
+
     console.log(
       loanAmount,
       data.lendCoin.value,

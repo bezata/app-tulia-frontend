@@ -18,7 +18,7 @@ export type ILendingData = {
   wallet_address: string;
   Token: string;
   amount: number;
-  loan_state: number;
+  loan_state: string; // Update type to string for display purposes
   interestRate: bigint;
   numericValue: number | undefined;
   repaymentPeriod: bigint;
@@ -169,9 +169,13 @@ export const columns: ColumnDef<ILendingData>[] = [
     accessorKey: 'loan_state',
     header: 'Loan State',
     cell: ({ row }) => {
+      const loanState =
+        row.original.loan_state === 'Active'
+          ? 'text-green-200'
+          : 'text-red-200';
       return (
-        <div className="flex items-center ml-4">
-          <div>
+        <div className="flex items-center">
+          <div className={loanState}>
             <span>{row.original.loan_state}</span>
           </div>
         </div>
@@ -179,7 +183,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     },
   },
   {
-    accessorKey: 'repayment_period',
+    accessorKey: 'repaymentPeriod',
     header: ({ column }) => (
       <Button
         variant="ghost"

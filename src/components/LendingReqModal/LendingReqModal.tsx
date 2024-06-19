@@ -72,6 +72,7 @@ const LendingReqModal = () => {
   const [open, setOpen] = React.useState(false);
   const [collateral, setCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
+  const [feeAmount, setFeeAmount] = useState(0);
   const account = useAccount();
   const newDate = new Date();
   // Increment the current date by one
@@ -97,6 +98,13 @@ const LendingReqModal = () => {
     },
     resolver: zodResolver(schema),
   });
+
+  const calculateFlashFee = (
+    amount: number,
+    flashLoanFeeRate: number
+  ): number => {
+    return (amount * flashLoanFeeRate) / 10000;
+  };
 
   const interest = useCalculateInterest({
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
@@ -143,6 +151,7 @@ const LendingReqModal = () => {
           break;
 
         case InterestModal.FlashLoan:
+          calculatedInterest = (principal * rate) / BigInt(10000);
         case InterestModal.MarketBased:
           calculatedInterest = (principal * rate) / BigInt(10000);
           break;
@@ -261,6 +270,17 @@ const LendingReqModal = () => {
     setRewardApy(0);
     setCollateral(0);
   };
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'loanAmount' || name === 'interestRate') {
+        const loanAmount = parseFloat(value.loanAmount?.toString() || '0');
+        const interestRate = parseFloat(value.interestRate?.toString() || '0');
+        const calculatedFee = calculateFlashFee(loanAmount, interestRate);
+        setFeeAmount(calculatedFee);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   return (
     <Dialog open={open} setOpen={setOpen}>
@@ -442,9 +462,7 @@ const LendingReqModal = () => {
                   name="interestRate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col gap-1 col-span-2">
-                      <FormLabel htmlFor="interestRate">
-                        Interest Rate
-                      </FormLabel>
+                      <FormLabel htmlFor="interestRate">Interest Rate</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input type="number" defaultValue={0} {...field} />
@@ -512,10 +530,10 @@ const LendingReqModal = () => {
                   <div className="flex flex-col gap-4">
                     {/* Collateral Amount */}
                     <div className="flex flex-col border-b border-tulia_primary pb-4">
-                      <span className="text-sm font-semibold">
-                        Flash Loan Fee Rate
+                      <span className="text-sm font-semibold">Fee Amount</span>
+                      <span className="text-green-500">
+                        {feeAmount * 100} {borrowCoin?.label}
                       </span>
-                      <span className="text-green-500">{collateral} %</span>
                     </div>
                     {/* You will gain NUMBER THT Coin for this position */}
                     <div className="flex flex-col border-b border-tulia_primary pb-4">
@@ -525,7 +543,7 @@ const LendingReqModal = () => {
                           {`${String(rewardApy)}%`}{' '}
                           <span className="text-indigo-600">
                             {' '}
-                            {lendCoin?.label}{' '}
+                            {borrowCoin?.label}{' '}
                           </span>
                         </span>
                         <span> interest reward while waiting</span> in this lend
@@ -652,7 +670,7 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                         Collateral Amount
                       </span>
                       <span className="text-green-500">
-                        {collateral} {lendCoin?.label}
+                        {collateral} {borrowCoin?.label}
                       </span>
                     </div>
                     {/* You will gain NUMBER THT Coin for this position */}
@@ -672,7 +690,7 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                     </div>
                     <span className="text-xs text-gray-500">
                       Collateral amount is calculated based on the interest rate
-                      and the loan amount
+                      and the loan amount. It is taken from borrower.
                     </span>
                   </div>
                 </div>

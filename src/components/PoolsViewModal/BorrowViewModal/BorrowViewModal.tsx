@@ -229,21 +229,6 @@ function setLender(address _lender) external {
               actionButtonStyle="!bg-emerald-700 hover:!bg-emerald-800"
               cancelText="Cancel"
             />
-            <Alert
-              actionButton={
-                <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">
-                  Close Deal
-                </Button>
-              }
-              actionText="Close Deal"
-              description="Are you sure you want to close the loan deal?"
-              title="Close Loan Deal"
-              actionFunction={() => {
-                console.log('Closing loan deal');
-              }}
-              actionButtonStyle="!bg-red-900 hover:!bg-red-950"
-              cancelText="Cancel"
-            />
           </div>
         </div>
       </DialogContent>

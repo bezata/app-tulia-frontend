@@ -446,7 +446,7 @@ const LendingReqModal = () => {
                         <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Input type="number" defaultValue={0} {...field} />
+                            <Input type="number" min={1} {...field} />
                             <span className="absolute right-8 text-gray-500 top-2">
                               {'Day'}
                             </span>

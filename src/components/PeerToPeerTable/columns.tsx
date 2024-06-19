@@ -8,7 +8,9 @@ import USDCIcon from '../../../public/USDCIcon';
 import ArbIcon from '../../../public/ArbIcon';
 import DaiIcon from '../../../public/DaiIcon';
 import UniIcon from '../../../public/UniIcon';
+import { Button } from '../ui/button';
 import Image from 'next/image';
+import { ArrowUpDown } from 'lucide-react';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -70,27 +72,43 @@ export const columns: ColumnDef<ILendingData>[] = [
   },
   {
     accessorKey: 'amount',
-    header: 'Amount',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="hover:bg-transparent"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Amount
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       return (
-        <div className="flex items-center ml-4">
-          <div>
-            <span>{row.original.amount}</span>
-          </div>
-        </div>
+        <p className="text-gray-400 text-left ml-4">
+          {row.original.amount} {row.original.coin}
+        </p>
       );
     },
   },
   {
     accessorKey: 'interestRate',
-    header: 'Interest Rate',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="hover:bg-transparent"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Interest Rate
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       return (
         <div className="flex flex-col gap-2  ">
-          <div className="px-3  ml-4">
+          <div className="px-3  ml-5">
             <span>{row.original.interestRate}</span>
           </div>
-          <div className="flex px-2 ">
+          <div className="flex px-3  ml-4 ">
             <span className=" flex  px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
               <Image
                 src="/logo.png"
@@ -121,7 +139,16 @@ export const columns: ColumnDef<ILendingData>[] = [
   },
   {
     accessorKey: 'repayment_period',
-    header: 'Repayment Period',
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="hover:bg-transparent"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Repayment Period
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       return (
         <div className="flex items-center ml-4">

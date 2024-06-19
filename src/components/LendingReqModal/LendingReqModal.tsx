@@ -445,39 +445,12 @@ const LendingReqModal = () => {
                       <FormItem className="flex flex-col gap-1 col-span-2">
                         <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
                         <FormControl>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={'outline'}
-                                className={`flex items-center gap-1`}
-                              >
-                                {form.watch('endDate') ? (
-                                  format(form.watch('endDate'), 'PP')
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarDays className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                selected={form.watch('endDate')}
-                                onSelect={(date: Date | undefined) =>
-                                  date && form.setValue('endDate', date)
-                                }
-                                disabled={(date: Date) => {
-                                  const today = new Date();
-                                  today.setDate(today.getDate());
-                                  return date <= today;
-                                }}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
+                          <div className="relative">
+                            <Input type="number" min={1} {...field} />
+                            <span className="absolute right-8 text-gray-500 top-2">
+                              {'Day'}
+                            </span>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

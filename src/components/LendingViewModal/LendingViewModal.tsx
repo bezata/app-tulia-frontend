@@ -113,7 +113,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Lend Coin</span>
               <span className="text-sm text-gray-400">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center  gap-4">
                   {row.original.loanToken === 'ETH' && (
                     <EthIcon width={24} height={24} />
                   )}
@@ -139,7 +139,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Borrow Coin</span>
               <span className="text-sm text-gray-400">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center  gap-4">
                   {row.original.borrowToken === 'ETH' && (
                     <EthIcon width={24} height={24} />
                   )}

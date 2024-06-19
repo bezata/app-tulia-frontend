@@ -46,7 +46,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Coin Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.coin}
+              {row.original.amount} {row.original.Token}
             </span>
           </div>
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -103,14 +103,14 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Debt Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.coin}
+              {row.original.amount} {row.original.Token}
             </span>
           </div>
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Last Payment Date</span>
             <span className="text-sm text-gray-400">2024-12-12</span>
           </div>
-          <div className="col-span-6 flex flex-col">
+          {/* <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Loan State</span>
             {row.original.state === PoolState.Active ? (
               <span className="text-sm text-green-500">Active</span>
@@ -121,7 +121,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
             ) : (
               <span className="text-sm text-blue-500">Defaulted</span>
             )}
-          </div>
+          </div> */}
           <div className="col-span-12 flex gap-2 flex-col">
             {row.original.interest_modal === InterestModal.FlashLoan && (
               <div className=" flex flex-col items-center justify-center md:col-span-4 col-span-12 md:pt-0 pt-4 md:border-t-0 border-t border-tulia_primary w-full">

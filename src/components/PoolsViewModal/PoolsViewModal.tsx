@@ -40,7 +40,7 @@ const PoolsViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Coin Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.coin}
+              {row.original.amount} {row.original.Token}
             </span>
           </div>
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">

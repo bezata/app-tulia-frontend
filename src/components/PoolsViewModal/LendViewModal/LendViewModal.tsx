@@ -46,7 +46,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Loan Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.coin}
+              {row.original.amount} {row.original.Token}
             </span>
           </div>
 
@@ -99,7 +99,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             <span className="text-sm font-semibold">Collateral Amount</span>
             <span className="text-sm text-gray-400">1.05 ETH</span>
           </div>
-          <div className="col-span-4 flex flex-col">
+          {/* <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Loan State</span>
             {row.original.state === PoolState.Active ? (
               <span className="text-sm text-green-500">Active</span>
@@ -110,7 +110,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             ) : (
               <span className="text-sm text-blue-500">Defaulted</span>
             )}
-          </div>
+          </div> */}
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Repayment Period</span>
             <span className="text-sm text-gray-400">2024-12-12</span>

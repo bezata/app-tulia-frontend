@@ -46,6 +46,7 @@ import {
 import { CopyBlock } from 'react-code-blocks';
 import ArbIcon from '../../../public/ArbIcon';
 import { useAccount } from 'wagmi';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 const schema = z.object({
@@ -72,7 +73,11 @@ const LendingReqModal = () => {
   const [collateral, setCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
   const account = useAccount();
+  const newDate = new Date();
+  // Increment the current date by one
+  newDate.setDate(newDate.getDate() + 1);
 
+  const [date, setDate] = useState(newDate);
   const form = useForm<ILendRequest.ILendRequestInputs>({
     defaultValues: {
       lendCoin: {
@@ -87,7 +92,7 @@ const LendingReqModal = () => {
       },
       loanAmount: undefined,
       interestModal: InterestModal.Simple,
-      endDate: new Date(),
+      endDate: date,
       interestRate: undefined,
     },
     resolver: zodResolver(schema),

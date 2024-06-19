@@ -14,6 +14,12 @@ import Alert from '../Alert/Alert';
 import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import USDCIcon from '../../../public/USDCIcon';
+import ArbIcon from '../../../public/ArbIcon';
+import DaiIcon from '../../../public/DaiIcon';
+import UniIcon from '../../../public/UniIcon';
+import EthIcon from '../../../public/EthIcon';
+import BtcIcon from '../../../public/BtcIcon';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
@@ -103,6 +109,58 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Debt Payment Period</span>
               <span className="text-sm text-gray-400">2024-12-12</span>
+            </div>
+            <div className="col-span-6 flex flex-col">
+              <span className="text-sm font-semibold">Lend Coin</span>
+              <span className="text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  {row.original.lendCoin === 'ETH' && (
+                    <EthIcon width={24} height={24} />
+                  )}
+                  {row.original.lendCoin === 'BTC' && (
+                    <BtcIcon width={24} height={24} />
+                  )}
+                  {row.original.lendCoin === 'USDC' && (
+                    <USDCIcon width={24} height={24} />
+                  )}
+                  {row.original.lendCoin === 'ARB' && (
+                    <ArbIcon width={24} height={24} />
+                  )}
+                  {row.original.lendCoin === 'DAI' && (
+                    <DaiIcon width={24} height={24} />
+                  )}
+                  {row.original.lendCoin === 'UNI' && (
+                    <UniIcon width={24} height={24} />
+                  )}
+                  <span>{row.original.lendCoin}</span>
+                </div>
+              </span>
+            </div>
+            <div className="col-span-6 flex flex-col">
+              <span className="text-sm font-semibold">Borrow Coin</span>
+              <span className="text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  {row.original.borrowCoin === 'ETH' && (
+                    <EthIcon width={24} height={24} />
+                  )}
+                  {row.original.borrowCoin === 'BTC' && (
+                    <BtcIcon width={24} height={24} />
+                  )}
+                  {row.original.borrowCoin === 'USDC' && (
+                    <USDCIcon width={24} height={24} />
+                  )}
+                  {row.original.borrowCoin === 'ARB' && (
+                    <ArbIcon width={24} height={24} />
+                  )}
+                  {row.original.borrowCoin === 'DAI' && (
+                    <DaiIcon width={24} height={24} />
+                  )}
+                  {row.original.borrowCoin === 'UNI' && (
+                    <UniIcon width={24} height={24} />
+                  )}
+                  <span>{row.original.borrowCoin}</span>
+                </div>
+              </span>
             </div>
             <div className="col-span-12 flex flex-col">
               <Alert

@@ -661,10 +661,8 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
             </div>
           </form>
         </Form>
-      </DialogContent>{' '}
-      {openTxModal && (
         <TransactionProcessModal open={openTxModal} hash={hash} />
-      )}
+      </DialogContent>{' '}
     </Dialog>
   );
 };

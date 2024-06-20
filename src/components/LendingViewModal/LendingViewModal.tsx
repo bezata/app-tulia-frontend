@@ -39,9 +39,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   }, [openTransactionModal, router]);
   return (
     <>
-      <Dialog open={openTransactionModal} setOpen={setOpenTransactionModal}>
-        <TransactionProcessModal setOpen={setOpenTransactionModal} />
-      </Dialog>
       <Dialog>
         <DialogTrigger>
           <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">

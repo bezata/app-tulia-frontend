@@ -24,7 +24,7 @@ const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />
         <Dialog.Content className="fixed inset-0 flex items-center justify-center">
-          <DialogContent withoutClose>
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Transaction Process</DialogTitle>
               <DialogDescription>

@@ -19,8 +19,9 @@ import {
 } from '@/components/ui/table';
 import { Button } from '../ui/button';
 import { useAccount } from 'wagmi';
-import { Wallet } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react';
+import MetamaskLogo from '../../../public/Metamask.svg';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,9 +53,10 @@ export function PeerToPeerTable<TData, TValue>({
         <TableHeader className="bg-tulia_primary">
           {account.status === 'disconnected' && (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-12 text-center">
-                Please connect your wallet to continue.
-              </TableCell>
+              <TableCell
+                colSpan={columns.length}
+                className="h-12 text-center"
+              ></TableCell>
             </TableRow>
           )}
           {account.status === 'connected' &&
@@ -80,13 +82,16 @@ export function PeerToPeerTable<TData, TValue>({
             <TableRow>
               <TableCell
                 colSpan={columns.length}
-                className="h-48 text-center flex flex-col justify-center items-center"
+                className="h-80 text-center flex flex-col justify-center items-center"
               >
-                <Wallet className="w-48 h-48 text-tulia_primary/50" />
+                <Image
+                  className="w-48 h-48"
+                  src={MetamaskLogo}
+                  alt="Metamask Logo"
+                />
+
                 <span className="text-3xl font-bold">Connect your wallet</span>
-                <span className="text-sm text-gray-400">
-                  To continue, connect your wallet
-                </span>
+                <span className="text-sm text-gray-400">to continue</span>
               </TableCell>
             </TableRow>
           )}

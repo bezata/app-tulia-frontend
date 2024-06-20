@@ -11,6 +11,7 @@ import {
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, CalendarDays } from 'lucide-react';
+import { useTransaction, useWaitForTransactionReceipt } from 'wagmi';
 import {
   useCalculateInterest,
   useCalculateCompoundInterest,
@@ -27,6 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { useAppDispatch } from '@/lib/hooks';
 import {
   Form,
   FormControl,
@@ -62,6 +64,7 @@ const schema = z.object({
 const LendingReqModal = () => {
   const { writeContract, data: hash } = useWriteContract();
   const [open, setOpen] = React.useState(false);
+  const [openTxModal, setOpenTxModal] = useState<boolean>(false);
   const [collateral, setCollateral] = React.useState(0);
   const [uiCollateral, setUiCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
@@ -106,7 +109,8 @@ const LendingReqModal = () => {
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
     rate: form.watch('interestRate'),
   });
-  console.log(hash, 'hash');
+  const waitTransactionReceipt = useWaitForTransactionReceipt({ hash });
+
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (
@@ -226,6 +230,7 @@ const LendingReqModal = () => {
     setCollateral(0);
   };
 
+  const transactionReceipt = useTransaction({ hash });
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'loanAmount' || name === 'interestRate') {
@@ -237,6 +242,14 @@ const LendingReqModal = () => {
     });
     return () => subscription.unsubscribe();
   }, [form]);
+  console.log(waitTransactionReceipt?.status, 'waitTransactionReceipt');
+  useEffect(() => {
+    if (hash != undefined) {
+      setOpenTxModal(true);
+    }
+
+    console.log(transactionReceipt?.data, 'transactionReceipt');
+  }, [waitTransactionReceipt?.status, transactionReceipt?.data, form]);
   return (
     <Dialog open={open} setOpen={setOpen}>
       <DialogTrigger>
@@ -648,7 +661,10 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
             </div>
           </form>
         </Form>
-      </DialogContent>
+      </DialogContent>{' '}
+      {openTxModal && (
+        <TransactionProcessModal open={openTxModal} hash={hash} />
+      )}
     </Dialog>
   );
 };

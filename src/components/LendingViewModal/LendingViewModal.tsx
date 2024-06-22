@@ -20,6 +20,7 @@ import DaiIcon from '../../../public/DaiIcon';
 import UniIcon from '../../../public/UniIcon';
 import EthIcon from '../../../public/EthIcon';
 import BtcIcon from '../../../public/BtcIcon';
+import { formatEther } from 'viem';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
@@ -31,12 +32,12 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     if (openTransactionModal) {
       setTimeout(() => {
         toast.success('Transaction successful. Redirecting to My Pools.');
-        setOpenTransactionModal(false);
-        // Redirect to my pools
+        setOpenTransactionModal(true);
         router.push('/mypools');
       }, 5000);
     }
   }, [openTransactionModal, router]);
+
   return (
     <>
       <Dialog>
@@ -68,11 +69,10 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Loan Amount</span>
               <span className="text-sm text-gray-400">
-                {row.original.amount} {row.original.Token}
+                {formatEther(BigInt(row.original.amount))} {row.original.Token}
               </span>
             </div>
             <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
-              {/* Interest Details */}
               <span className="font-bold">
                 <Percent size={20} className="inline-block mr-2" />
                 Interest Details
@@ -80,19 +80,22 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             </div>
             <div className="col-span-4 flex flex-col">
               <span className="text-sm font-semibold">Interest Rate</span>
-              <span className="text-sm text-gray-400">5%</span>
+              <span className="text-sm text-gray-400">
+                {`${String(row.original.interestRate)}%`}
+              </span>
             </div>
             <div className="col-span-4 flex flex-col">
               <span className="text-sm font-semibold">Interest Modal</span>
-              <span className="text-sm text-gray-400">Simple</span>
+              <span>Simple</span>
             </div>
             <div className="col-span-4 flex flex-col">
               <span className="text-sm font-semibold text-primary">
                 Interest Discount
               </span>
-              <span className="text-sm text-green-500">+0.5% </span>
+              <span className="text-sm text-green-500">
+                {String(row.original.interestRate)}{' '}
+              </span>
             </div>
-            {/* Loan Details */}
             <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
               <span className="font-bold">
                 <LucideBanknote size={20} className="inline-block mr-2" />
@@ -101,11 +104,13 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             </div>
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Collateral Amount</span>
-              <span className="text-sm text-gray-400">1.05 ETH</span>
+              <span className="text-sm text-gray-400">0</span>
             </div>
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Debt Payment Period</span>
-              <span className="text-sm text-gray-400">2024-12-12</span>
+              <span className="text-sm text-gray-400">
+                {`${String(Number(row.original.repaymentPeriod) / 86400)} Days`}
+              </span>
             </div>
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Lend Coin</span>

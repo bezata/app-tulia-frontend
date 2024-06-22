@@ -12,11 +12,13 @@ import { Button } from '../ui/button';
 
 interface TransactionProcessModalProps {
   hash: `0x${string}` | undefined;
-  open: boolean;
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  open?: boolean;
 }
 
 const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
   hash,
+  setOpen,
   open,
 }: TransactionProcessModalProps) => {
   return (
@@ -24,7 +26,7 @@ const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50" />
         <Dialog.Content className="fixed inset-0 flex items-center justify-center">
-          <DialogContent>
+          <DialogContent withoutClose={true}>
             <DialogHeader>
               <DialogTitle>Transaction Process</DialogTitle>
               <DialogDescription>

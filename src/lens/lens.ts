@@ -32,7 +32,7 @@ export const useCalculateRewardApy = ({
 }: AdvancedAPYManagerProps) => {
   const { data: apy } = useReadContract({
     abi: AdvancedAPYManagerABI,
-    address: '0x6511B3C5B3Cc44bC16cb77C5fC5eCD27615c2F85',
+    address: '0xB617FeFB730DaDEC8f982bE620420dA320503e9f',
     functionName: 'calculateAPY',
     args: [loanAmount as any, durationSeconds as any],
   });
@@ -43,7 +43,7 @@ export const useCalculateRewardApy = ({
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
+    address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
     functionName: 'getTotalPools',
   });
 
@@ -54,7 +54,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
+    address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -65,7 +65,7 @@ export const useGetPoolDetails = (poolAddress: string) => {
 export const useGetAllPoolAddresses = () => {
   const { data: allPoolAddresses } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
+    address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
     functionName: 'getAllPoolAddresses',
   });
 
@@ -81,7 +81,7 @@ export const useGetAllPoolDetails = () => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
         abi: PoolOrganizerABI,
-        address: '0x80373F385cDFDeB74479049Fb5904d3bEb3998F3',
+        address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
         functionName: 'getPoolDetails',
         args: [address],
       }));

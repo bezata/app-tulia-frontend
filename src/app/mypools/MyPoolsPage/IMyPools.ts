@@ -3,9 +3,9 @@ export interface PoolDetail {
   loanAmount: bigint;
   creationTime: bigint;
   interestRate: bigint;
-  loanToken: string;
-  repaymentToken: string;
   numericValue: bigint;
   repaymentPeriod: bigint;
   loan_state: bigint;
+  loanToken: string;
+  repaymentToken: string;
 }

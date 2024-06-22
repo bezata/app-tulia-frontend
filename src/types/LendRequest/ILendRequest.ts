@@ -17,6 +17,7 @@ declare namespace ILendRequest {
       interestRate: number;
       InterestAddress: string;
       funded: boolean;
+      collateral: number;
     }
 
     type CryptoCurrency = {

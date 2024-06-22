@@ -35,14 +35,14 @@ export type IPoolsdata = {
   wallet_address: string;
   Token: string;
   amount: number;
-  type: number;
-  interest_modal: InterestModal;
+  loan_state: string; // Update type to string for display purposes
   interestRate: bigint;
-  repaymentPeriod: bigint;
-  loan_state: PoolState;
   numericValue: number | undefined;
+  repaymentPeriod: bigint;
   loanToken: string;
   borrowToken: string;
+  type?: number;
+  interest_modal: InterestModal;
 };
 
 export const columns: ColumnDef<IPoolsdata>[] = [

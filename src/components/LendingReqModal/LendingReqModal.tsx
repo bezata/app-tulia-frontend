@@ -28,7 +28,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { useAppDispatch } from '@/lib/hooks';
 import {
   Form,
   FormControl,
@@ -89,6 +88,7 @@ const LendingReqModal = () => {
       interestModal: InterestModal.Simple,
       endDate: undefined,
       interestRate: undefined,
+      collateral: 0,
     },
     resolver: zodResolver(schema),
   });
@@ -123,6 +123,7 @@ const LendingReqModal = () => {
           parseFloat(value.interestRate?.toString() || '0')
         );
         setCollateral(calculatedCollateral);
+        form.setValue('collateral', calculatedCollateral);
       }
     });
     return () => subscription.unsubscribe();
@@ -156,23 +157,17 @@ const LendingReqModal = () => {
     loanAmount: parseEther(form.watch('loanAmount')?.toString() || '0'),
     durationSeconds: 1000,
   });
-
   const calculateCollateral = (
     loanAmount: number,
     interestRate: number
   ): number => {
     const principal = parseFloat(loanAmount.toString());
     const rate = parseFloat(interestRate.toString());
-
     const interest = (principal * rate) / 100;
-    console.log(
-      `Principal: ${principal}, Rate: ${rate}, Interest: ${interest}`
-    );
     const total = principal + interest;
     setUiCollateral(total);
     return total;
   };
-
   useEffect(() => {
     if (calculateRewardAPY) {
       setRewardApy(Number(calculateRewardAPY));
@@ -180,13 +175,10 @@ const LendingReqModal = () => {
   }, [calculateRewardAPY]);
 
   const onSubmit = (data: ILendRequest.ILendRequestInputs) => {
-    const currentDate = Date.now();
-    const currentDateInSeconds = currentDate / 1000;
-    // @ts-ignore
-    const repaymentEndDateInSeconds = Number(new Date(data.endDate) / 1000);
-    const repaymentDifference = Math.trunc(
-      repaymentEndDateInSeconds - currentDateInSeconds
-    );
+    const endDate = form.watch('endDate');
+
+    const days = parseFloat(endDate);
+    const endDateInSeconds = !isNaN(days) ? days * 86400 : 0;
     const optionalFlashLoanFeeRate =
       data.interestModal === InterestModal.FlashLoan ? data.interestRate : 0;
     const newInterestAddress = updateInterestAddress(data.interestModal);
@@ -194,7 +186,7 @@ const LendingReqModal = () => {
     const loanAmount = parseEther(String(data?.loanAmount));
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0xF3D0a6a51c153445c563d37Ee1d3B8C2C268e468',
+      address: '0xD1E558833c56493924130b59B6777d78DD54b34e',
       functionName: 'createTuliaPool',
       args: [
         account?.address as any,
@@ -203,7 +195,7 @@ const LendingReqModal = () => {
         data.borrowCoin.value as any,
         loanAmount as any,
         data.interestRate as any,
-        10000 as any,
+        endDateInSeconds as any,
         newInterestAddress as any,
         poolType,
         optionalFlashLoanFeeRate as any,
@@ -215,8 +207,8 @@ const LendingReqModal = () => {
       data.lendCoin.value,
       data.borrowCoin.value,
       data.borrowCoin.value,
-      100000,
-      100000,
+      data.interestRate,
+      endDateInSeconds,
       newInterestAddress,
       poolType,
       optionalFlashLoanFeeRate
@@ -242,13 +234,11 @@ const LendingReqModal = () => {
     });
     return () => subscription.unsubscribe();
   }, [form]);
-  console.log(waitTransactionReceipt?.status, 'waitTransactionReceipt');
+
   useEffect(() => {
     if (hash != undefined) {
       setOpenTxModal(true);
     }
-
-    console.log(transactionReceipt?.data, 'transactionReceipt');
   }, [waitTransactionReceipt?.status, transactionReceipt?.data, form]);
   return (
     <Dialog open={open} setOpen={setOpen}>
@@ -660,8 +650,14 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
               </Button>
             </div>
           </form>
-        </Form>
-        <TransactionProcessModal open={openTxModal} hash={hash} />
+        </Form>{' '}
+        <div className="z-1">
+          <TransactionProcessModal
+            open={openTxModal}
+            setOpen={setOpenTxModal}
+            hash={hash}
+          />
+        </div>
       </DialogContent>{' '}
     </Dialog>
   );

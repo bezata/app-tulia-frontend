@@ -32,7 +32,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     <Dialog>
       <DialogTrigger>
         <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
-          manage
+          Manage
         </Button>
       </DialogTrigger>
       <DialogContent>

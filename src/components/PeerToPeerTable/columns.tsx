@@ -17,6 +17,7 @@ export type ILendingData = {
   lending_id: string;
   wallet_address: string;
   Token: string;
+  borrowTokenName: string;
   amount: number;
   loan_state: string;
   interestRate: bigint;
@@ -24,6 +25,7 @@ export type ILendingData = {
   repaymentPeriod: bigint;
   loanToken: string;
   borrowToken: string;
+  pool: string;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [

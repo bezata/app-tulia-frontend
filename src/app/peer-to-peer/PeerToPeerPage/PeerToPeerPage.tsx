@@ -42,6 +42,8 @@ const PeerToPeerPage = () => {
       loan_state: 'Active',
       loanToken: '0xD',
       borrowToken: 'ETH',
+      pool: '0x123456',
+      borrowTokenName: 'DAI',
     },
     {
       lending_id: '1',
@@ -54,6 +56,8 @@ const PeerToPeerPage = () => {
       loan_state: 'Pending',
       loanToken: '0xD',
       borrowToken: 'ETH',
+      pool: '0x123456',
+      borrowTokenName: 'DAI',
     },
   ]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -66,13 +70,12 @@ const PeerToPeerPage = () => {
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
+          console.log(allPoolDetails, 'allPoolDetails');
           let repaymentCurrency = { label: 'ARB', symbol: <ArbIcon /> };
-
-          console.log(poolDetail, 'poolDetail');
 
           let currency = { label: 'ETH', symbol: <EthIcon /> };
           // @ts-ignore
-          switch (poolDetail.loanToken.toLowerCase()) {
+          switch (poolDetail?.loanToken.toLowerCase()) {
             case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
               currency = { label: 'WETH', symbol: <EthIcon /> };
               break;
@@ -132,6 +135,8 @@ const PeerToPeerPage = () => {
             loan_state: loanState as any,
             loanToken: currency.symbol as any,
             borrowToken: repaymentCurrency.symbol as any,
+            pool: (poolDetail as PoolDetail)?.pool,
+            borrowTokenName: repaymentCurrency.label,
           };
         }
       );
@@ -167,6 +172,7 @@ const PeerToPeerPage = () => {
         </h2>
         <p className="text-sm text-gray-500 mb-4 flex items-center">
           {/* TODO: DCSELEK: Guzel bir aciklama ? Tekin bakmali */}
+          {/*ben beğendim kanka iyi olmuş */}
           <HelpCircle className="w-4 h-4 inline-block mr-1" />
           This is the open market lending page.Here you can see all the lending
           requests.

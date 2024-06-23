@@ -16,6 +16,7 @@ import {
   useAccountEffect,
 } from 'wagmi';
 import { useEffect, useState } from 'react';
+import { TokenABI } from './abi/Token';
 
 interface CalculationProps {
   principal: number;
@@ -43,7 +44,7 @@ export const useCalculateRewardApy = ({
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
+    address: '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
     functionName: 'getTotalPools',
   });
 
@@ -54,7 +55,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
+    address: '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -65,7 +66,7 @@ export const useGetPoolDetails = (poolAddress: string) => {
 export const useGetAllPoolAddresses = () => {
   const { data: allPoolAddresses } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
+    address: '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
     functionName: 'getAllPoolAddresses',
   });
 
@@ -76,11 +77,26 @@ export const useGetAllLenderPoolDetails = () => {
   const account = useAccount();
   const { data: allLenderPoolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
+    address: '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
     functionName: 'getAllLenderPoolDetails',
     args: [account?.address as any],
   });
   return allLenderPoolDetails as any;
+};
+
+export const useCheckCoinAllowance = (coinAddress: string) => {
+  const account = useAccount();
+  const { data: allowance } = useReadContract({
+    abi: TokenABI,
+    address: coinAddress as any,
+    functionName: 'allowance',
+    args: [
+      account?.address as any,
+      '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+    ],
+  });
+
+  return allowance as number | undefined;
 };
 
 export const useGetAllPoolDetails = () => {
@@ -92,7 +108,7 @@ export const useGetAllPoolDetails = () => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
         abi: PoolOrganizerABI,
-        address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
+        address: '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
         functionName: 'getPoolDetails',
         args: [address],
       }));
@@ -110,6 +126,7 @@ export const useGetAllPoolDetails = () => {
 
   return data;
 };
+
 
 export const useGetAllFundedPoolDetails = () => {
   const allPoolDetails = useGetAllPoolDetails();

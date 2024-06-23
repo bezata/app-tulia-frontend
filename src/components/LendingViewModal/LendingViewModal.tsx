@@ -23,6 +23,7 @@ import BtcIcon from '../../../public/BtcIcon';
 import { formatEther } from 'viem';
 import { useState, useEffect } from 'react';
 import { useCalculateRewardApy } from '@/lens/lens';
+import { useWriteContract, useReadContract } from 'wagmi';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
@@ -69,6 +70,8 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       }, 5000);
     }
   }, [openTransactionModal, router]);
+
+  const handleAcceptLendRequest = {};
 
   return (
     <>
@@ -138,7 +141,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
               <span className="text-sm font-semibold">Collateral Amount</span>
               <span className="text-sm text-gray-400">
                 {formatEther(BigInt(uiCollateral))}
-                {``} {row.original.Token}
+                {``} {row.original.borrowTokenName}
               </span>
             </div>
             <div className="col-span-6 flex flex-col">

@@ -186,7 +186,7 @@ const LendingReqModal = () => {
     const loanAmount = parseEther(String(data?.loanAmount));
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0xD1E558833c56493924130b59B6777d78DD54b34e',
+      address: '0x8Ec27B663A64c76c6839030EA15eeDa38E1DC283',
       functionName: 'createTuliaPool',
       args: [
         account?.address as any,
@@ -239,7 +239,7 @@ const LendingReqModal = () => {
     if (hash != undefined) {
       setOpenTxModal(true);
     }
-  }, [waitTransactionReceipt?.status, transactionReceipt?.data, form]);
+  }, [waitTransactionReceipt?.status, transactionReceipt?.data, form,hash]);
   return (
     <Dialog open={open} setOpen={setOpen}>
       <DialogTrigger>
@@ -489,7 +489,7 @@ const LendingReqModal = () => {
                       </span>
                     </div>
                     <span className="text-xs text-gray-500">
-                      Borrowers will pay a fee for the flash loan and accepit it
+                      Borrowers will pay a fee for the flash loan and accept it
                       with our mock flash loan contract.
                     </span>
                   </div>

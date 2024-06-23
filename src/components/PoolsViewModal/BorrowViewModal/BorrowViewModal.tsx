@@ -14,6 +14,7 @@ import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
+import { formatEther } from 'viem';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   return (
@@ -46,7 +47,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Coin Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.Token}
+              {formatEther(BigInt(row.original.amount))} {row.original.Token}
             </span>
           </div>
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -60,7 +61,9 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
             <span className="text-sm font-semibold">
               Interest Rate on Loan Amount
             </span>
-            <span className="text-sm text-gray-400">5% (0.05 ETH)</span>
+            <span className="text-sm text-gray-400">
+              {Number(row.original.interestRate)}%
+            </span>
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold text-primary">
@@ -103,12 +106,14 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Debt Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.Token}
+              {formatEther(BigInt(row.original.amount))} {row.original.Token}
             </span>
           </div>
           <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Last Payment Date</span>
-            <span className="text-sm text-gray-400">2024-12-12</span>
+            <span className="text-sm font-semibold">Repayment Period</span>
+            <span className="text-sm text-gray-400">
+              {Number(row.original.repaymentPeriod) / 10000}
+            </span>
           </div>
           {/* <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Loan State</span>

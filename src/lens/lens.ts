@@ -43,7 +43,7 @@ export const useCalculateRewardApy = ({
 export const useGetTotalPoolCount = () => {
   const { data: totalPoolCount } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
+    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
     functionName: 'getTotalPools',
   });
 
@@ -54,7 +54,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
+    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -65,11 +65,22 @@ export const useGetPoolDetails = (poolAddress: string) => {
 export const useGetAllPoolAddresses = () => {
   const { data: allPoolAddresses } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
+    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
     functionName: 'getAllPoolAddresses',
   });
 
   return allPoolAddresses as string[] | undefined;
+};
+
+export const useGetAllLenderPoolDetails = () => {
+  const account = useAccount();
+  const { data: allLenderPoolDetails } = useReadContract({
+    abi: PoolOrganizerABI,
+    address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
+    functionName: 'getAllLenderPoolDetails',
+    args: [account?.address as any],
+  });
+  return allLenderPoolDetails as any;
 };
 
 export const useGetAllPoolDetails = () => {
@@ -81,7 +92,7 @@ export const useGetAllPoolDetails = () => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
         abi: PoolOrganizerABI,
-        address: '0x419Fda8a9fb3C7FEC4dF89cB8Cf9d72C13756412',
+        address: '0x0832B561D1d97b03A9827940c245aA07D8A01430',
         functionName: 'getPoolDetails',
         args: [address],
       }));

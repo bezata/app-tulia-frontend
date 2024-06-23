@@ -43,7 +43,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     if (calculateRewardAPY) {
       setApy(Number(calculateRewardAPY));
     }
-  }, [calculateRewardAPY as any]);
+  }, [calculateRewardAPY as any, apy]);
 
   const calculateCollateral = (
     loanAmount: number,

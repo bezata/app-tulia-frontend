@@ -23,10 +23,15 @@ import EthIcon from '../../../../public/EthIcon';
 import UniIcon from '../../../../public/UniIcon';
 import USDCIcon from '../../../../public/USDCIcon';
 import { useCalculateRewardApy } from '@/lens/lens';
+import { useGetAllLenderPoolDetails } from '@/lens/lens';
 
 const MyPoolspage = () => {
   const account = useAccount();
   const allPoolDetails = useGetAllPoolDetails();
+  const allLenderPoolDetails = useGetAllLenderPoolDetails();
+
+  console.log(allLenderPoolDetails);
+
   const [data, setData] = useState<IPoolsdata[]>([
     {
       lending_id: Math.random().toString(),
@@ -76,7 +81,6 @@ const MyPoolspage = () => {
       loanAmount: BigInt(10000),
       durationSeconds: 1000,
     }) ?? 0;
-
   const totalPoolCount = useGetTotalPoolCount();
   const [poolCount, setPoolCount] = useState<number>(0);
   const [poolSection, setPoolSection] = useState<'lend' | 'borrow' | null>(
@@ -86,12 +90,92 @@ const MyPoolspage = () => {
     setPoolCount(totalPoolCount as any);
   }, [totalPoolCount]);
   React.useEffect(() => {
+    if (allLenderPoolDetails) {
+      const formattedData = allLenderPoolDetails.map(
+        (poolDetail: PoolDetail, index: number): IPoolsdata => {
+          let repaymentCurrency = { label: 'ARB', symbol: <ArbIcon /> };
+
+          console.log(poolDetail);
+
+          let currency = { label: 'ETH', symbol: <EthIcon /> };
+          // @ts-ignore
+          switch (poolDetail?.loanToken.toLowerCase()) {
+            case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
+              currency = { label: 'WETH', symbol: <EthIcon /> };
+              break;
+            case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
+              currency = { label: 'WBTC', symbol: <BtcIcon /> };
+              break;
+            case '0x569da455f23155612437eed8cff2106ae7e6c158':
+              currency = { label: 'USDC', symbol: <USDCIcon /> };
+              break;
+            case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
+              currency = { label: 'ARB', symbol: <ArbIcon /> };
+              break;
+            case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
+              currency = { label: 'DAI', symbol: <DaiIcon /> };
+              break;
+            case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
+              currency = { label: 'UNI', symbol: <UniIcon /> };
+              break;
+          }
+
+          // @ts-ignore
+          switch (poolDetail?.repaymentToken.toLowerCase()) {
+            case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
+              repaymentCurrency = {
+                label: 'WETH',
+                symbol: <EthIcon />,
+              };
+              break;
+            case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
+              repaymentCurrency = { label: 'WBTC', symbol: <BtcIcon /> };
+              break;
+            case '0x569da455f23155612437eed8cff2106ae7e6c158':
+              repaymentCurrency = { label: 'USDC', symbol: <USDCIcon /> };
+              break;
+            case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
+              repaymentCurrency = { label: 'ARB', symbol: <ArbIcon /> };
+              break;
+            case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
+              repaymentCurrency = { label: 'DAI', symbol: <DaiIcon /> };
+              break;
+            case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
+              repaymentCurrency = { label: 'UNI', symbol: <UniIcon /> };
+              break;
+          }
+
+          // @ts-ignore
+          const loanState = poolDetail?.funded ? 'Active' : 'Pending';
+
+          return {
+            numericValue: (Number(apy) / 10000) as number | undefined,
+            interestRate: poolDetail?.interestRate,
+            lending_id: (index + 1)?.toString(),
+            wallet_address: poolDetail?.lender.slice(0, 7),
+            Token: currency.label,
+            amount: Number(poolDetail?.loanAmount),
+            repaymentPeriod: poolDetail?.repaymentPeriod,
+            loan_state: loanState as any,
+            loanToken: currency.symbol as any,
+            borrowToken: repaymentCurrency.symbol as any,
+            type: 2,
+            interest_modal: InterestModal.Simple,
+          };
+        }
+      );
+      setData(formattedData);
+    }
+  }, [totalPoolCount, apy, allLenderPoolDetails]);
+
+  React.useEffect(() => {
+    setPoolCount(totalPoolCount as any);
+  }, [totalPoolCount]);
+  React.useEffect(() => {
     if (allPoolDetails) {
       const formattedData = allPoolDetails.map((detail, index): IPoolsdata => {
         const poolDetail = detail.result as unknown;
         let repaymentCurrency = { label: 'ARB', symbol: <ArbIcon /> };
-
-        console.log(poolDetail, 'poolDetail');
 
         let currency = { label: 'ETH', symbol: <EthIcon /> };
         // @ts-ignore
@@ -176,7 +260,7 @@ const MyPoolspage = () => {
   React.useEffect(() => {
     if (poolSection === 'lend') {
       setFilteredData(data.filter((item: any) => item.type === 2));
-    } else {
+    } else if (poolSection === 'borrow') {
       return setFilteredData(data.filter((item: any) => item.type === 1));
     }
   }, [poolSection, data]);

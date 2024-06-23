@@ -10,6 +10,7 @@ import {
 import { Button } from '../ui/button';
 import { IPoolsViewModalProps } from './IPoolsViewModal';
 import { LucideBanknote, Percent, UserCheck } from 'lucide-react';
+import { formatEther } from 'viem';
 
 const PoolsViewModal = ({ row }: IPoolsViewModalProps) => {
   return (
@@ -40,7 +41,7 @@ const PoolsViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Coin Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.Token}
+              {formatEther(BigInt(row.original.amount))} {row.original.Token}
             </span>
           </div>
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -52,7 +53,9 @@ const PoolsViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Interest Rate</span>
-            <span className="text-sm text-gray-400">5%</span>
+            <span className="text-sm text-gray-400">
+              {Number(row.original.interestRate)}%
+            </span>
           </div>
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
@@ -71,7 +74,9 @@ const PoolsViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Debt Payment Date</span>
-            <span className="text-sm text-gray-400">2024-12-12</span>
+            <span className="text-sm text-gray-400">
+              {Number(row.original.repaymentPeriod) / 10000}
+            </span>
           </div>
           <div className="col-span-12 flex flex-col">
             <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">

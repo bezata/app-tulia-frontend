@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,20 @@ import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
+import { formatEther } from 'viem';
+import { useCalculateRewardApy } from '@/lens/lens';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
+  const calculateRewardAPY = useCalculateRewardApy({
+    loanAmount: BigInt(row.original.amount),
+    durationSeconds: 1000,
+  });
+  const [apy, setApy] = React.useState<number>(0);
+  useEffect(() => {
+    if (calculateRewardAPY) {
+      setApy(Number(calculateRewardAPY));
+    }
+  }, [calculateRewardAPY as any, apy]);
   return (
     <Dialog>
       <DialogTrigger>
@@ -46,7 +58,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Loan Amount</span>
             <span className="text-sm text-gray-400">
-              {row.original.amount} {row.original.Token}
+              {formatEther(BigInt(row.original.amount))} {row.original.Token}
             </span>
           </div>
 
@@ -59,14 +71,15 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Rate</span>
-            <span className="text-sm text-gray-400">5%</span>
+            <span className="text-sm text-gray-400">
+              {Number(row.original.interestRate)}%
+            </span>
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold text-primary">
-              Interest Discount
+              Interest Boost From Tulia
             </span>
-            <span className="text-sm text-green-500">+0.5% </span>
-            <span className="text-sm text-green-500">(0.05 ETH)</span>
+            <span className="text-sm text-purple-400">+{apy / 10000}% </span>
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
@@ -85,7 +98,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 height={20}
                 className="flex"
               />
-              %12
+              {apy / 10000}%
             </span>
           </div>
           {/* Loan Details */}
@@ -113,7 +126,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div> */}
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Repayment Period</span>
-            <span className="text-sm text-gray-400">2024-12-12</span>
+            <span className="text-sm text-gray-400">
+              {Number(row.original.repaymentPeriod) / 86400} Days
+            </span>
           </div>
           <div className="col-span-12 flex gap-2 flex-col">
             {row.original.interest_modal === InterestModal.FlashLoan && (

@@ -29,6 +29,31 @@ export const PoolOrganizerABI = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'enum IPoolOrganizer.LoanState',
+        name: 'oldState',
+        type: 'uint8',
+      },
+      {
+        indexed: false,
+        internalType: 'enum IPoolOrganizer.LoanState',
+        name: 'newState',
+        type: 'uint8',
+      },
+    ],
+    name: 'LoanStateUpdated',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: 'address',
         name: 'vaultManager',
@@ -299,6 +324,11 @@ export const PoolOrganizerABI = [
             name: 'funded',
             type: 'bool',
           },
+          {
+            internalType: 'enum IPoolOrganizer.LoanState',
+            name: 'loanState',
+            type: 'uint8',
+          },
         ],
         internalType: 'struct IPoolOrganizer.PoolDetails[]',
         name: '',
@@ -316,6 +346,111 @@ export const PoolOrganizerABI = [
         internalType: 'address[]',
         name: '',
         type: 'address[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'borrower',
+        type: 'address',
+      },
+    ],
+    name: 'getBorrowerPoolDetails',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'address',
+            name: 'lender',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'borrower',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'creationTime',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'vault',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IERC20',
+            name: 'loanToken',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IERC20',
+            name: 'assetToken',
+            type: 'address',
+          },
+          {
+            internalType: 'contract IERC20',
+            name: 'repaymentToken',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'loanAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'interestRate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'repaymentPeriod',
+            type: 'uint256',
+          },
+          {
+            internalType: 'enum IPoolOrganizer.PoolType',
+            name: 'poolType',
+            type: 'uint8',
+          },
+          {
+            internalType: 'bool',
+            name: 'funded',
+            type: 'bool',
+          },
+          {
+            internalType: 'enum IPoolOrganizer.LoanState',
+            name: 'loanState',
+            type: 'uint8',
+          },
+        ],
+        internalType: 'struct IPoolOrganizer.PoolDetails[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+    ],
+    name: 'getLoanState',
+    outputs: [
+      {
+        internalType: 'enum IPoolOrganizer.LoanState',
+        name: '',
+        type: 'uint8',
       },
     ],
     stateMutability: 'view',
@@ -410,6 +545,11 @@ export const PoolOrganizerABI = [
             internalType: 'bool',
             name: 'funded',
             type: 'bool',
+          },
+          {
+            internalType: 'enum IPoolOrganizer.LoanState',
+            name: 'loanState',
+            type: 'uint8',
           },
         ],
         internalType: 'struct IPoolOrganizer.PoolDetails',
@@ -779,6 +919,24 @@ export const PoolOrganizerABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        internalType: 'enum IPoolOrganizer.LoanState',
+        name: 'newState',
+        type: 'uint8',
+      },
+    ],
+    name: 'updateLoanState',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {

@@ -478,7 +478,7 @@ const LendingReqModal = () => {
                       <span className="text-xs font-semibold">
                         You will gain{' '}
                         <span className="text-green-600">
-                          {`${String(rewardApy)}%`}{' '}
+                          {`${String(rewardApy / 10000)}%`}{' '}
                           <span className="text-indigo-600">
                             {' '}
                             {borrowCoin?.label}{' '}

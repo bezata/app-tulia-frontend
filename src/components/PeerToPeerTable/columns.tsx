@@ -18,7 +18,7 @@ export type ILendingData = {
   wallet_address: string;
   Token: string;
   amount: number;
-  loan_state: string; // Update type to string for display purposes
+  loan_state: string;
   interestRate: bigint;
   numericValue: number | undefined;
   repaymentPeriod: bigint;

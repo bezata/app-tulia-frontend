@@ -21,12 +21,44 @@ import UniIcon from '../../../public/UniIcon';
 import EthIcon from '../../../public/EthIcon';
 import BtcIcon from '../../../public/BtcIcon';
 import { formatEther } from 'viem';
+import { useState, useEffect } from 'react';
+import { useCalculateRewardApy } from '@/lens/lens';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
+  const loanAmount = Number(row.original.amount);
+  const interestRate = Number(row.original.interestRate);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [openTransactionModal, setOpenTransactionModal] =
     React.useState<boolean>(false);
+  const [uiCollateral, setUiCollateral] = useState<number>(0);
+  const [apy, setApy] = useState<number>(0);
+
+  const calculateRewardAPY = useCalculateRewardApy({
+    loanAmount: BigInt(loanAmount),
+    durationSeconds: 1000,
+  });
+
+  React.useEffect(() => {
+    if (calculateRewardAPY) {
+      setApy(Number(calculateRewardAPY));
+    }
+  }, [calculateRewardAPY as any]);
+
+  const calculateCollateral = (
+    loanAmount: number,
+    interestRate: number
+  ): number => {
+    const principal = parseFloat(loanAmount.toString());
+    const rate = parseFloat(interestRate.toString());
+    const interest = (principal * rate) / 100;
+    const total = principal + interest;
+    setUiCollateral(total);
+    return total;
+  };
+  useEffect(() => {
+    calculateCollateral(loanAmount, interestRate);
+  }, [loanAmount, interestRate]);
 
   React.useEffect(() => {
     if (openTransactionModal) {
@@ -93,7 +125,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                 Interest Discount
               </span>
               <span className="text-sm text-green-500">
-                {String(row.original.interestRate)}{' '}
+                {String(apy / 10000)}% {row.original.Token}
               </span>
             </div>
             <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -104,7 +136,10 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             </div>
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Collateral Amount</span>
-              <span className="text-sm text-gray-400">0</span>
+              <span className="text-sm text-gray-400">
+                {formatEther(BigInt(uiCollateral))}
+                {``} {row.original.Token}
+              </span>
             </div>
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Debt Payment Period</span>
@@ -115,7 +150,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Lend Coin</span>
               <span className="text-sm text-gray-400">
-                <div className="flex items-center  gap-4">
+                <div className="flex items-center ml-5 gap-4">
                   {row.original.loanToken === 'ETH' && (
                     <EthIcon width={24} height={24} />
                   )}
@@ -141,7 +176,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Borrow Coin</span>
               <span className="text-sm text-gray-400">
-                <div className="flex items-center  gap-4">
+                <div className="flex items-center ml-9  gap-4">
                   {row.original.borrowToken === 'ETH' && (
                     <EthIcon width={24} height={24} />
                   )}

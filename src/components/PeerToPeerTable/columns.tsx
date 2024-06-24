@@ -26,6 +26,8 @@ export type ILendingData = {
   loanToken: string;
   borrowToken: string;
   pool: string;
+  repaymentCurrencyAddress: string;
+  loanCurrencyAddress: string;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [

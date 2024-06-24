@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,6 @@ import { Button } from '../ui/button';
 import { ILendingViewModalProps } from './ILendingViewModal';
 import { LoaderIcon, LucideBanknote, Percent, UserCheck } from 'lucide-react';
 import Alert from '../Alert/Alert';
-import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import USDCIcon from '../../../public/USDCIcon';
 import ArbIcon from '../../../public/ArbIcon';
@@ -20,31 +18,35 @@ import DaiIcon from '../../../public/DaiIcon';
 import UniIcon from '../../../public/UniIcon';
 import EthIcon from '../../../public/EthIcon';
 import BtcIcon from '../../../public/BtcIcon';
-import { formatEther } from 'viem';
-import { useState, useEffect } from 'react';
-import { useCalculateRewardApy } from '@/lens/lens';
-import { useWriteContract, useReadContract } from 'wagmi';
+import { formatEther, parseEther } from 'viem';
+import { useCalculateRewardApy, useCheckCoinAllowance } from '@/lens/lens';
+import { toast } from 'sonner';
+import { useWriteContract } from 'wagmi';
+import { TokenABI } from '@/lens/abi/Token';
+import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
   const loanAmount = Number(row.original.amount);
   const interestRate = Number(row.original.interestRate);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [openTransactionModal, setOpenTransactionModal] =
-    React.useState<boolean>(false);
+    useState<boolean>(false);
   const [uiCollateral, setUiCollateral] = useState<number>(0);
   const [apy, setApy] = useState<number>(0);
+  const [allowance, setAllowance] = useState<number>(0);
+  const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
+
+  const { writeContract, data: hash } = useWriteContract();
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(loanAmount),
     durationSeconds: 1000,
   });
 
-  React.useEffect(() => {
-    if (calculateRewardAPY) {
-      setApy(Number(calculateRewardAPY));
-    }
-  }, [calculateRewardAPY as any, apy]);
+  const checkAllowance = useCheckCoinAllowance(
+    row.original.loanCurrencyAddress
+  );
 
   const calculateCollateral = (
     loanAmount: number,
@@ -57,21 +59,75 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     setUiCollateral(total);
     return total;
   };
-  useEffect(() => {
-    calculateCollateral(loanAmount, interestRate);
-  }, [loanAmount, interestRate]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setApy(Number(calculateRewardAPY));
+    calculateCollateral(loanAmount, interestRate);
+  }, [calculateRewardAPY, loanAmount, interestRate]);
+
+  useEffect(() => {
+    const fetchAllowance = async () => {
+      const currentAllowance = checkAllowance;
+      if (currentAllowance) {
+        setAllowance(Number(currentAllowance));
+      }
+      fetchAllowance();
+      if (Number(currentAllowance) < Number(loanAmount)) {
+        setApprovalNeeded(false);
+      }
+    };
+  }, [checkAllowance, loanAmount]);
+
+  const fundLoan = async () => {
+    writeContract({
+      address: row.original.pool as any,
+      abi: TuliaPoolABI,
+      functionName: 'fundLoan',
+    });
+    return hash as string | undefined;
+  };
+
+  useEffect(() => {
     if (openTransactionModal) {
       setTimeout(() => {
         toast.success('Transaction successful. Redirecting to My Pools.');
-        setOpenTransactionModal(true);
         router.push('/mypools');
       }, 5000);
     }
   }, [openTransactionModal, router]);
 
-  const handleAcceptLendRequest = {};
+  const handleAcceptLendRequest = async () => {
+    try {
+      setLoading(true);
+      const currentAllowance = checkAllowance;
+      setAllowance(Number(currentAllowance));
+
+      if (Number(currentAllowance) < Number(loanAmount)) {
+        toast.error('Insufficient allowance');
+        await writeContract({
+          address: row.original.repaymentCurrencyAddress as any,
+          abi: TokenABI,
+          functionName: 'approve',
+          args: [
+            '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+            parseEther(String(1000000000), 'wei'),
+          ],
+        });
+        setApprovalNeeded(true);
+      } else {
+        setApprovalNeeded(false);
+      }
+
+      if (Number(currentAllowance) >= Number(loanAmount)) {
+        setOpenTransactionModal(true);
+      }
+    } catch (error) {
+      console.error('Error handling lend request:', error);
+      toast.error('An error occurred while processing the request');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -203,31 +259,55 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
               </span>
             </div>
             <div className="col-span-12 flex flex-col">
-              <Alert
-                actionButton={
-                  loading ? (
-                    <Button className="capitalize tulia_main_button w-full">
-                      <LoaderIcon size={16} className="animate-spin mr-2" />
-                    </Button>
-                  ) : (
-                    <Button className="capitalize tulia_main_button w-full">
-                      Accept Lend Request
-                    </Button>
-                  )
-                }
-                title="Accept Lend Request"
-                disabled={loading}
-                description="Are you sure you want to accept this lend request?"
-                cancelText="Cancel"
-                actionText="Accept"
-                actionFunction={() => {
-                  setLoading(true);
-                  setTimeout(() => {
-                    setLoading(false);
-                    setOpenTransactionModal(true);
-                  }, 2000);
-                }}
-              />
+              {approvalNeeded ? (
+                <Button
+                  onClick={() =>
+                    writeContract({
+                      address: row.original.loanCurrencyAddress as any,
+                      abi: TokenABI,
+                      functionName: 'approve',
+                      args: [
+                        '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+                        parseEther(String(1000000000), 'wei'),
+                      ],
+                    })
+                  }
+                  className="capitalize tulia_main_button w-full"
+                >
+                  Approve Transaction
+                </Button>
+              ) : (
+                <Alert
+                  actionButton={
+                    loading ? (
+                      <Button className="capitalize tulia_main_button w-full">
+                        <LoaderIcon size={16} className="animate-spin mr-2" />
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={handleAcceptLendRequest}
+                        className="capitalize tulia_main_button w-full"
+                      >
+                        Accept Lend Request
+                      </Button>
+                    )
+                  }
+                  title="Accept Lend Request"
+                  disabled={loading}
+                  description="Are you sure you want to accept this lend request?"
+                  cancelText="Cancel"
+                  actionText="Accept"
+                  actionFunction={() => {
+                    if (!approvalNeeded) {
+                      setLoading(true);
+                      setTimeout(() => {
+                        setLoading(false);
+                        setOpenTransactionModal(true);
+                      }, 2000);
+                    }
+                  }}
+                />
+              )}
             </div>
           </div>
         </DialogContent>

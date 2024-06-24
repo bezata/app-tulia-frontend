@@ -27,6 +27,8 @@ interface AdvancedAPYManagerProps {
   durationSeconds: number;
 }
 
+
+
 export const useCalculateRewardApy = ({
   loanAmount,
   durationSeconds,
@@ -97,6 +99,17 @@ export const useCheckCoinAllowance = (coinAddress: string) => {
   });
 
   return allowance as number | undefined;
+};
+
+export const useApproveCoin = (coinAddress: string, amount: number) => {
+  const { writeContract, data: hash } = useWriteContract();
+  writeContract({
+    address: coinAddress as any,
+    abi: TokenABI,
+    functionName: 'approve',
+    args: ['0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA', amount],
+  });
+  return hash as string | undefined;
 };
 
 export const useGetAllPoolDetails = () => {

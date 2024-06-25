@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -17,16 +17,28 @@ import Image from 'next/image';
 import { formatEther } from 'viem';
 import { useWriteContract } from 'wagmi';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
+import { useCalculateRewardApy } from '@/lens/lens';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
-  // const { writeContract: repay } = useWriteContract();
-  // const handleRepayment() => {
-  //   writeContract({
-  //     TuliaPoolABI,
-  //     address: row.original.,
-  //     functionName = 'repay',
+  const [apy, setApy] = React.useState<number>(0);
 
-  //   })
+  const calculateRewardAPY = useCalculateRewardApy({
+    loanAmount: BigInt(row.original.amount),
+    durationSeconds: Number(row.original.repaymentPeriod),
+  });
+  useEffect(() => {
+    setApy(calculateRewardAPY ?? 0);
+  }, [calculateRewardAPY]);
+
+  const { writeContract: repay } = useWriteContract();
+  const handlerepayment = () => {
+    repay({
+      abi: TuliaPoolABI,
+      address: row.original.pool as any,
+      functionName: 'repay',
+    });
+  };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -79,7 +91,9 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
             <span className="text-sm font-semibold text-primary">
               Interest Discount
             </span>
-            <span className="text-sm text-green-500">+0.5% (0.05 ETH)</span>
+            <span className="text-sm text-green-500">
+              {Number(apy) / 10000}%{' '}
+            </span>
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
@@ -90,7 +104,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
             <span className="text-sm text-green-500">120 ETH</span>{' '}
-            <span className="flex px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+            <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -98,7 +112,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
                 height={20}
                 className="flex"
               />
-              %12
+              {Number(apy) / 10000}%{' '}
             </span>
           </div>
 
@@ -122,7 +136,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Repayment Period</span>
             <span className="text-sm text-gray-400">
-              {Number(row.original.repaymentPeriod) / 10000}
+              {Number(row.original.repaymentPeriod) / 86400} Days
             </span>
           </div>
           {/* <div className="col-span-6 flex flex-col">
@@ -171,7 +185,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
                       wrapLongLines
                       showLineNumbers
                       text={`
-              // SPDX-License-Identifier: MIT
+               SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -190,13 +204,13 @@ constructor(address _lender) {
     admin = msg.sender;
 }
 
-// This function initiates a flash loan request
+ This function initiates a flash loan request
 function requestFlashLoan(address token, uint256 amount, bytes calldata data) external {
     require(msg.sender == admin, "Only admin can initiate flash loan");
     lender.flashLoan(this, token, amount, data);
 }
 
-// This is the callback function that the lender will call
+ This is the callback function that the lender will call
 function onFlashLoan(
     address initiator,
     address token,
@@ -207,11 +221,11 @@ function onFlashLoan(
     require(msg.sender == address(lender), "Only lender can call this function");
     require(initiator == address(this), "Unrecognized initiator");
 
-    // Placeholder for custom logic to utilize the flash loaned amount
-    // Example: arbitrage, collateral swap, etc.
-    // data can be used to pass custom parameters needed for the operation
+     Placeholder for custom logic to utilize the flash loaned amount
+     Example: arbitrage, collateral swap, etc.
+     data can be used to pass custom parameters needed for the operation
 
-    // Repay the flash loan
+     Repay the flash loan
     uint256 totalRepayment = amount + fee;
     IERC20(token).safeTransfer(msg.sender, totalRepayment);
 
@@ -239,7 +253,7 @@ function setLender(address _lender) external {
               description="Are you sure you want to repay the loan?"
               title="Repay Loan"
               actionFunction={() => {
-                console.log('Repaying loan');
+                handlerepayment();
               }}
               actionButtonStyle="!bg-emerald-700 hover:!bg-emerald-800"
               cancelText="Cancel"

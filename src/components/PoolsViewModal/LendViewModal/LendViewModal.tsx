@@ -20,7 +20,7 @@ import { useCalculateRewardApy } from '@/lens/lens';
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
-    durationSeconds: 1000,
+    durationSeconds: Number(row.original.repaymentPeriod),
   });
   const [apy, setApy] = React.useState<number>(0);
   useEffect(() => {
@@ -90,7 +90,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
             <span className="text-sm text-green-500">120 ETH</span>{' '}
-            <span className="flex px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
+            <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
                 src="/logo.png"
                 alt="Logo"

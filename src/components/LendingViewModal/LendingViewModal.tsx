@@ -50,7 +50,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(loanAmount),
-    durationSeconds: 1000,
+    durationSeconds: Number(row.original.repaymentPeriod),
   });
 
   useEffect(() => {

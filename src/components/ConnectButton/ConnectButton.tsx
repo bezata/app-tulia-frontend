@@ -12,19 +12,42 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import IHeader from '../Header/IHeader';
-
-const navigationMenuItems: IHeader.INavigation[] = [
-  {
-    title: 'My Pools',
-    slug: '/mypools',
-  },
-];
+import { parseEther, parseUnits } from 'viem';
+import { useWriteContract } from 'wagmi';
+import { BulkMinterABI } from '@/lens/abi/BulkMinter';
 
 const CustomConnectButton = () => {
   const { open } = useWeb3Modal();
   const account = useAccount();
-
+  const { writeContract, data: mintAllHash } = useWriteContract();
   const [connected, setConnected] = useState(false);
+
+  const handleGetTestTokens = () => {
+    const tokenGweiAmount = parseEther('100');
+    const mintAmount = Array(6).fill(tokenGweiAmount);
+
+    writeContract({
+      abi: BulkMinterABI,
+      address: '0xf237f2ecdD431bd18286f16AC7c9F485ccD701aF' as any,
+      functionName: 'mintAll',
+      args: [mintAmount],
+    });
+
+    return mintAllHash;
+  };
+
+  const navigationMenuItems: IHeader.INavigation[] = [
+    {
+      title: 'Get Test Tokens',
+      onClick: handleGetTestTokens,
+      type: 'function',
+    },
+    {
+      title: 'My Pools',
+      slug: '/mypools',
+      type: 'link',
+    },
+  ];
 
   useEffect(() => {
     if (account.status === 'connected') {
@@ -53,13 +76,22 @@ const CustomConnectButton = () => {
             <NavigationMenuList>
               {navigationMenuItems.map((item, index) => (
                 <NavigationMenuItem key={index}>
-                  <Link
-                    href={item.slug}
-                    target={item?.target}
-                    className={`${navigationMenuTriggerStyle()} duration-500 flex`}
-                  >
-                    {item.title}
-                  </Link>
+                  {item.type === 'link' ? (
+                    <Link
+                      href={item.slug!}
+                      target={item?.target}
+                      className={`${navigationMenuTriggerStyle()} duration-500 flex`}
+                    >
+                      {item.title}
+                    </Link>
+                  ) : item.type === 'function' ? (
+                    <button
+                      onClick={item.onClick}
+                      className={`${navigationMenuTriggerStyle()} duration-500 flex`}
+                    >
+                      {item.title}
+                    </button>
+                  ) : null}
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>

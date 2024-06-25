@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { useWriteContract } from 'wagmi';
 import { TokenABI } from '@/lens/abi/Token';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
+import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
@@ -57,6 +58,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     if (approveSuccess) {
       toast.success('Approve transaction successful');
       setApprovalNeeded(false);
+      setLoading(false);
     }
   }, [approveSuccess]);
 
@@ -136,6 +138,11 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
 
   return (
     <>
+      <TransactionProcessModal
+        hash={hash}
+        setOpen={setOpenTransactionModal}
+        open={openTransactionModal}
+      />
       <Dialog>
         <DialogTrigger>
           <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
@@ -302,6 +309,9 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                   description="Are you sure you want to accept this lend request?"
                   cancelText="Cancel"
                   actionText="Accept"
+                  cancelFunction={() => {
+                    setLoading(false);
+                  }}
                   actionFunction={() => {
                     setLoading(true);
                     setTimeout(() => {

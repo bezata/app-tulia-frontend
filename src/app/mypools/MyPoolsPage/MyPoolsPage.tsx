@@ -331,6 +331,7 @@ const MyPoolspage = () => {
   }, []);
 
   React.useEffect(() => {
+    console.log(data);
     if (poolSection === 'lend') {
       setFilteredData(data.filter((item: any) => item.type === 2));
     } else if (poolSection === 'borrow') {

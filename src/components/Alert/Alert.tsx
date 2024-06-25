@@ -21,6 +21,7 @@ interface AlertProps {
   cancelFunction?: () => void;
   disabled?: boolean;
   actionButtonStyle?: string;
+  triggerClassName?: string;
 }
 
 function Alert({
@@ -33,10 +34,11 @@ function Alert({
   disabled = false,
   cancelFunction,
   actionButtonStyle = '',
+  triggerClassName = '',
 }: AlertProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger disabled={disabled}>
+      <AlertDialogTrigger disabled={disabled} className={triggerClassName}>
         {actionButton}
       </AlertDialogTrigger>
       <AlertDialogContent>

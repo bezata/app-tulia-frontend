@@ -9,7 +9,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { IPoolsViewModalProps } from '../IPoolsViewModal';
-import { CodeIcon, LucideBanknote, Percent, UserCheck } from 'lucide-react';
+import {
+  CodeIcon,
+  Gift,
+  LucideBanknote,
+  Percent,
+  UserCheck,
+} from 'lucide-react';
 import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
@@ -270,6 +276,36 @@ function setLender(address _lender) external {
                 </Dialog>
               </div>
             )}
+            <div className="col-span-12 flex flex-row border-gray-500 pb-2 border-b-[0.5px] gap-4">
+              <Alert
+                actionButton={
+                  <Button className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]">
+                    Claim Interest <Gift size={16} className="ml-2" />
+                  </Button>
+                }
+                actionText="Claim Rewards"
+                description="Are you sure you want to claim the rewards?"
+                title="Claim Rewards"
+                actionFunction={() => {}}
+                actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
+                triggerClassName="w-full"
+                cancelText="Cancel"
+              />
+              <Alert
+                actionButton={
+                  <Button className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]">
+                    Claim Rewards <Gift size={16} className="ml-2" />
+                  </Button>
+                }
+                actionText="Claim Rewards"
+                description="Are you sure you want to claim the rewards?"
+                title="Claim Rewards"
+                actionFunction={() => {}}
+                actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
+                triggerClassName="w-full"
+                cancelText="Cancel"
+              />
+            </div>
             <Alert
               actionButton={
                 <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">

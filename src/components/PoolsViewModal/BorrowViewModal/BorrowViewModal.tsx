@@ -15,8 +15,18 @@ import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
 import { formatEther } from 'viem';
+import { useWriteContract } from 'wagmi';
+import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
+  // const { writeContract: repay } = useWriteContract();
+  // const handleRepayment() => {
+  //   writeContract({
+  //     TuliaPoolABI,
+  //     address: row.original.,
+  //     functionName = 'repay',
+
+  //   })
   return (
     <Dialog>
       <DialogTrigger>

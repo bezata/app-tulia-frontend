@@ -8,4 +8,5 @@ export interface PoolDetail {
   loan_state: bigint;
   loanToken: string;
   repaymentToken: string;
+  pool: string;
 }

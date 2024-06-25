@@ -37,15 +37,31 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
 
-  const { writeContract, data: hash } = useWriteContract();
+  const {
+    writeContract: approve,
+    data: approveHash,
+    isSuccess: approveSuccess,
+  } = useWriteContract();
+  const {
+    writeContract: fundLoanTx,
+    data: hash,
+    isSuccess: fundLoanSuccess,
+  } = useWriteContract();
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(loanAmount),
     durationSeconds: 1000,
   });
 
+  useEffect(() => {
+    if (approveSuccess) {
+      toast.success('Approve transaction successful');
+      setApprovalNeeded(false);
+    }
+  }, [approveSuccess]);
+
   const checkAllowance = useCheckCoinAllowance(
-    row.original.loanCurrencyAddress
+    row.original.repaymentCurrencyAddress
   );
 
   const calculateCollateral = (
@@ -70,16 +86,14 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       const currentAllowance = checkAllowance;
       if (currentAllowance) {
         setAllowance(Number(currentAllowance));
-      }
-      fetchAllowance();
-      if (Number(currentAllowance) < Number(loanAmount)) {
-        setApprovalNeeded(false);
+        setApprovalNeeded(Number(currentAllowance) < loanAmount);
       }
     };
+    fetchAllowance();
   }, [checkAllowance, loanAmount]);
 
   const fundLoan = async () => {
-    writeContract({
+    fundLoanTx({
       address: row.original.pool as any,
       abi: TuliaPoolABI,
       functionName: 'fundLoan',
@@ -91,41 +105,36 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     if (openTransactionModal) {
       setTimeout(() => {
         toast.success('Transaction successful. Redirecting to My Pools.');
-        router.push('/mypools');
+        // router.push('/mypools');
       }, 5000);
     }
   }, [openTransactionModal, router]);
 
-  const handleAcceptLendRequest = async () => {
-    try {
-      setLoading(true);
-      const currentAllowance = checkAllowance;
-      setAllowance(Number(currentAllowance));
+  const handleAcceptLendRequest = () => {
+    setLoading(true);
+    const currentAllowance = checkAllowance;
+    setAllowance(Number(currentAllowance));
 
-      if (Number(currentAllowance) < Number(loanAmount)) {
-        toast.error('Insufficient allowance');
-        await writeContract({
-          address: row.original.repaymentCurrencyAddress as any,
-          abi: TokenABI,
-          functionName: 'approve',
-          args: [
-            '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
-            parseEther(String(1000000000), 'wei'),
-          ],
-        });
-        setApprovalNeeded(true);
-      } else {
-        setApprovalNeeded(false);
-      }
-
-      if (Number(currentAllowance) >= Number(loanAmount)) {
-        setOpenTransactionModal(true);
-      }
-    } catch (error) {
-      console.error('Error handling lend request:', error);
-      toast.error('An error occurred while processing the request');
-    } finally {
+    if (Number(currentAllowance) < loanAmount) {
+      toast.error('Insufficient allowance');
+      approve({
+        address: row.original.repaymentCurrencyAddress as any,
+        abi: TokenABI,
+        functionName: 'approve',
+        args: [
+          '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+          parseEther(String(1000000000), 'wei'),
+        ],
+      });
+      setApprovalNeeded(true);
+    }
+    if (approveSuccess == true) {
       setLoading(false);
+      setApprovalNeeded(false);
+    }
+
+    if (Number(currentAllowance) >= loanAmount) {
+      setOpenTransactionModal(true);
     }
   };
 
@@ -262,7 +271,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
               {approvalNeeded ? (
                 <Button
                   onClick={() =>
-                    writeContract({
+                    approve({
                       address: row.original.loanCurrencyAddress as any,
                       abi: TokenABI,
                       functionName: 'approve',

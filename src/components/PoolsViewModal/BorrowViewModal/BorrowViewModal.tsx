@@ -15,12 +15,17 @@ import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
 import { formatEther } from 'viem';
-import { useWriteContract } from 'wagmi';
+import { useAccount, useWriteContract } from 'wagmi';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import { useCalculateRewardApy } from '@/lens/lens';
+import { RewardManagerABI } from '@/lens/abi/RewardManager';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   const [apy, setApy] = React.useState<number>(0);
+  const account = useAccount();
+  const [isLender, setIsLender] = React.useState<boolean>(false);
+  const { writeContract: claimRewards, data: claimRewardsHash } =
+    useWriteContract();
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
@@ -30,12 +35,30 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     setApy(calculateRewardAPY ?? 0);
   }, [calculateRewardAPY]);
 
+  useEffect(() => {
+    if (row.original.wallet_address === account.address) {
+      setIsLender(true);
+    }
+    if (row.original.wallet_address !== account.address) {
+      setIsLender(false);
+    }
+  }, [row.original.wallet_address, account.address]);
+
   const { writeContract: repay } = useWriteContract();
   const handlerepayment = () => {
     repay({
       abi: TuliaPoolABI,
       address: row.original.pool as any,
       functionName: 'repay',
+    });
+  };
+
+  const handleClaimRewards = () => {
+    claimRewards({
+      abi: RewardManagerABI,
+      address: '0x7d6a4f2f3d0f9e6e5a9e5e5f4f3d0f9e6e5a9e5e',
+      functionName: 'claimRewards',
+      args: [row.original.pool, isLender],
     });
   };
 

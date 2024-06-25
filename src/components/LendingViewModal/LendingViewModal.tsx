@@ -132,10 +132,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       setLoading(false);
       setApprovalNeeded(false);
     }
-
-    if (Number(currentAllowance) >= loanAmount) {
-      setOpenTransactionModal(true);
-    }
   };
 
   return (
@@ -307,13 +303,11 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                   cancelText="Cancel"
                   actionText="Accept"
                   actionFunction={() => {
-                    if (!approvalNeeded) {
-                      setLoading(true);
-                      setTimeout(() => {
-                        setLoading(false);
-                        setOpenTransactionModal(true);
-                      }, 2000);
-                    }
+                    setLoading(true);
+                    setTimeout(() => {
+                      setLoading(false);
+                      setOpenTransactionModal(true);
+                    }, 2000);
                   }}
                 />
               )}

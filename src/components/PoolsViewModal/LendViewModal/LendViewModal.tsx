@@ -16,8 +16,20 @@ import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
 import { formatEther } from 'viem';
 import { useCalculateRewardApy } from '@/lens/lens';
+import { useWriteContract } from 'wagmi';
+import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
+import { RewardManagerABI } from '@/lens/abi/RewardManager';
+import { VaultManagerABI } from '@/lens/abi/VaultManager';
+import { useAccount } from 'wagmi';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
+  const account = useAccount();
+  const [isLender, setIsLender] = React.useState(false);
+  const { writeContract: reclaimAndCloseDeal, data: reclaimAndCloseDealHash } =
+    useWriteContract();
+  const { writeContract: claimInterest, data: claimInterestHash } =
+    useWriteContract();
+  const { writeContract: claimLoanInterest, data: hash } = useWriteContract();
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
     durationSeconds: Number(row.original.repaymentPeriod),
@@ -28,6 +40,42 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       setApy(Number(calculateRewardAPY));
     }
   }, [calculateRewardAPY as any, apy]);
+
+  useEffect(() => {
+    if (String(account?.address) === String(row.original.wallet_address)) {
+      setIsLender(true);
+    }
+    if (String(account?.address) != String(row.original.wallet_address)) {
+      setIsLender(false);
+    }
+  }, [account?.status, account?.address, row.original.wallet_address]);
+
+  const handleReclaimAndCloseDeal = () => {
+    reclaimAndCloseDeal({
+      abi: TuliaPoolABI,
+      address: row.original.pool as any,
+      functionName: 'reclaimLoanAndClosePool',
+    });
+  };
+
+  const handleClaimInterest = () => {
+    claimInterest({
+      abi: RewardManagerABI,
+      address: row.original.pool as any,
+      functionName: 'claimRewards',
+      args: [row.original.pool, isLender],
+    });
+  };
+
+  const handleLoanInterest = () => {
+    claimLoanInterest({
+      abi: VaultManagerABI,
+      address: row.original.pool as any,
+      functionName: 'distributeInterest',
+      args: [row.original.pool, row.original.wallet_address],
+    });
+  };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -229,10 +277,10 @@ function setLender(address _lender) external {
                 </Button>
               }
               actionText="Close Deal"
-              description="Are you sure you want to close the loan deal?"
+              description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
               title="Close Loan Deal"
               actionFunction={() => {
-                console.log('Closing loan deal');
+                handleReclaimAndCloseDeal();
               }}
               actionButtonStyle="!bg-red-900 hover:!bg-red-950"
               cancelText="Cancel"

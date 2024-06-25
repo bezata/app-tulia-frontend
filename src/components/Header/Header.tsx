@@ -75,7 +75,7 @@ const Header = () => {
                     {navigationMenuItems.map((item, index) => (
                       <NavigationMenuItem key={index}>
                         <Link
-                          href={item.slug}
+                          href={item.slug || ''}
                           target={item?.target}
                           className={`${navigationMenuTriggerStyle()} duration-500 px-5 border`}
                         >
@@ -118,7 +118,7 @@ const Header = () => {
               {navigationMenuItems.map((item, index) => (
                 <NavigationMenuItem key={index}>
                   <Link
-                    href={item.slug}
+                    href={item.slug || ''}
                     target={item?.target}
                     className={`${navigationMenuTriggerStyle()} duration-500 px-5`}
                   >

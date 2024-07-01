@@ -12,7 +12,8 @@ export const siweConfig = createSIWEConfig({
     domain: typeof window !== 'undefined' ? window.location.host : '',
     uri: typeof window !== 'undefined' ? window.location.origin : '',
     chains: [mainnet.id, sepolia.id],
-    statement: 'Hi there! Please sign this message to verify your identity.',
+    statement:
+      'Welcome to Tulia Protocol! Please sign in to continue. We need your sign to authenticate you.',
   }),
   createMessage: ({ address, ...args }: SIWECreateMessageArgs) =>
     formatMessage(args, address),

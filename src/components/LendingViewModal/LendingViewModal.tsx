@@ -36,6 +36,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const [apy, setApy] = useState<number>(0);
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
+  const [currentLoanState, setLoanState] = useState<string>('');
 
   const {
     writeContract: approve,
@@ -47,6 +48,11 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     data: hash,
     isSuccess: fundLoanSuccess,
   } = useWriteContract();
+
+  const loanState = row.original.loan_state;
+  useEffect(() => {
+    setLoanState(loanState);
+  }, [loanState]);
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(loanAmount),
@@ -303,11 +309,17 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                   cancelText="Cancel"
                   actionText="Accept"
                   actionFunction={() => {
-                    setLoading(true);
-                    setTimeout(() => {
+                    if (currentLoanState === 'Pending') {
+                      toast.error('Loan needs to be activated by lender!');
                       setLoading(false);
-                      setOpenTransactionModal(true);
-                    }, 2000);
+                    } else {
+                      fundLoan();
+                      setLoading(true);
+                      setTimeout(() => {
+                        setLoading(false);
+                        setOpenTransactionModal(true);
+                      }, 2000);
+                    }
                   }}
                 />
               )}

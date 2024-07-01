@@ -9,4 +9,5 @@ export interface PoolDetail {
   loanToken: string;
   repaymentToken: string;
   pool: string;
+  funded: boolean;
 }

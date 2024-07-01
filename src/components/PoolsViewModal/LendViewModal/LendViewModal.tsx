@@ -306,21 +306,7 @@ function setLender(address _lender) external {
                 cancelText="Cancel"
               />
             </div>
-            <Alert
-              actionButton={
-                <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">
-                  Close Deal
-                </Button>
-              }
-              actionText="Close Deal"
-              description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
-              title="Close Loan Deal"
-              actionFunction={() => {
-                handleReclaimAndCloseDeal();
-              }}
-              actionButtonStyle="!bg-red-900 hover:!bg-red-950"
-              cancelText="Cancel"
-            />
+
             <Alert
               actionButton={
                 <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">

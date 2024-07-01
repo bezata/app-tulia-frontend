@@ -346,7 +346,13 @@ const LendingReqModal = () => {
                             </FormControl>
                             <Label htmlFor="simple">
                               Simple{' '}
-                              <span className="text-green-500">- 5%</span>
+                              <span className="text-green-500">
+                                -{' '}
+                                {form.watch('interestRate')
+                                  ? form.watch('interestRate')
+                                  : 0}
+                                {'%'}
+                              </span>
                             </Label>
                           </div>
                           <div
@@ -386,7 +392,13 @@ const LendingReqModal = () => {
                             </FormControl>
                             <Label htmlFor="flashLoan">
                               Flash Loan{' '}
-                              <span className="text-green-500">- 5%</span>
+                              <span className="text-green-500">
+                                -{' '}
+                                {form.watch('interestRate')
+                                  ? form.watch('interestRate')
+                                  : 0}
+                                {'%'}
+                              </span>
                             </Label>
                           </div>
                           <div

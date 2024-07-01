@@ -27,7 +27,17 @@ interface AdvancedAPYManagerProps {
   durationSeconds: number;
 }
 
+export const useGetAllBorrowerPoolDetails = () => {
+  const account = useAccount();
+  const { data: borrowerPoolDetails } = useReadContract({
+    abi: PoolOrganizerABI,
+    address: '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+    functionName: 'getBorrowerPoolDetails',
+    args: [account?.address as any],
+  });
 
+  return borrowerPoolDetails as any;
+};
 
 export const useCalculateRewardApy = ({
   loanAmount,

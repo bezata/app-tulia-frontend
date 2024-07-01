@@ -8,9 +8,14 @@ import {
 } from '@/components/MyPoolsTable/columns';
 import { useAppDispatch } from '@/lib/hooks';
 import { HelpCircle, Landmark, MoveLeft } from 'lucide-react';
-import React from 'react';
-import { useState } from 'react';
-import { useGetAllPoolDetails, useGetTotalPoolCount } from '@/lens/lens';
+import React, { useState, useEffect } from 'react';
+import {
+  useGetAllPoolDetails,
+  useGetTotalPoolCount,
+  useCalculateRewardApy,
+  useGetAllLenderPoolDetails,
+  useGetAllBorrowerPoolDetails,
+} from '@/lens/lens';
 import { PoolDetail } from './IMyPools';
 import ChooseSectionCard from '@/components/ChooseSectionCard/ChooseSectionCard';
 import { Button } from '@/components/ui/button';
@@ -22,46 +27,45 @@ import DaiIcon from '../../../../public/DaiIcon';
 import EthIcon from '../../../../public/EthIcon';
 import UniIcon from '../../../../public/UniIcon';
 import USDCIcon from '../../../../public/USDCIcon';
-import { useCalculateRewardApy } from '@/lens/lens';
-import { useGetAllLenderPoolDetails } from '@/lens/lens';
 
 const MyPoolspage = () => {
   const account = useAccount();
-  const allPoolDetails = useGetAllPoolDetails();
   const allLenderPoolDetails = useGetAllLenderPoolDetails();
-
-  console.log(allLenderPoolDetails);
-
-  const [data, setData] = useState<IPoolsdata[]>([]);
+  const allBorrowerPoolDetails = useGetAllBorrowerPoolDetails();
+  const totalPoolCount = useGetTotalPoolCount();
   const apy =
     useCalculateRewardApy({
       loanAmount: BigInt(10000),
       durationSeconds: 1000,
     }) ?? 0;
-  const totalPoolCount = useGetTotalPoolCount();
+
+  const [data, setData] = useState<IPoolsdata[]>([]);
+  const [filteredData, setFilteredData] = useState<IPoolsdata[]>([]);
   const [poolCount, setPoolCount] = useState<number>(0);
   const [poolSection, setPoolSection] = useState<'lend' | 'borrow' | null>(
     null
   );
-  React.useEffect(() => {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
     setPoolCount(totalPoolCount as any);
   }, [totalPoolCount]);
-  React.useEffect(() => {
-    if (allLenderPoolDetails) {
-      const formattedData = allLenderPoolDetails.map(
+
+  useEffect(() => {
+    const formatPoolDetails = (poolDetails: PoolDetail[], type: 1 | 2) => {
+      return poolDetails.map(
         (poolDetail: PoolDetail, index: number): IPoolsdata => {
+          let currency = {
+            label: 'ETH',
+            symbol: <EthIcon />,
+            address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
+          };
           let repaymentCurrency = {
             label: 'ARB',
             symbol: <ArbIcon />,
             address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
           };
 
-          let currency = {
-            label: 'ETH',
-            symbol: <EthIcon />,
-            address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
-          };
-          // @ts-ignore
           switch (poolDetail?.loanToken.toLowerCase()) {
             case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
               currency = {
@@ -107,8 +111,7 @@ const MyPoolspage = () => {
               break;
           }
 
-          // @ts-ignore
-          switch (poolDetail.repaymentToken.toLowerCase()) {
+          switch (poolDetail?.repaymentToken.toLowerCase()) {
             case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
               repaymentCurrency = {
                 label: 'WETH',
@@ -153,7 +156,6 @@ const MyPoolspage = () => {
               break;
           }
 
-          // @ts-ignore
           const loanState = poolDetail?.funded ? 'Active' : 'Pending';
 
           return {
@@ -167,9 +169,9 @@ const MyPoolspage = () => {
             loan_state: loanState as any,
             loanToken: currency.symbol as any,
             borrowToken: repaymentCurrency.symbol as any,
-            type: 2,
+            type,
             interest_modal: InterestModal.Simple,
-            pool: (poolDetail as PoolDetail)?.pool,
+            pool: poolDetail?.pool,
             borrowTokenName: repaymentCurrency.label,
             loanCurrencyAddress: currency.address,
             repaymentCurrencyAddress: repaymentCurrency.address,
@@ -177,167 +179,32 @@ const MyPoolspage = () => {
           };
         }
       );
-      setData(formattedData);
+    };
+
+    if (allLenderPoolDetails) {
+      const lenderData = formatPoolDetails(allLenderPoolDetails, 2);
+      setData(prevData => [...prevData, ...lenderData]);
     }
-  }, [totalPoolCount, apy, allLenderPoolDetails]);
 
-  React.useEffect(() => {
-    setPoolCount(totalPoolCount as any);
-  }, [totalPoolCount]);
-  React.useEffect(() => {
-    if (allPoolDetails) {
-      const formattedData = allPoolDetails.map((detail, index): IPoolsdata => {
-        const poolDetail = detail.result as unknown;
-
-        // @ts-ignore
-        let repaymentCurrency = {
-          label: 'ARB',
-          symbol: <ArbIcon />,
-          address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
-        };
-
-        let currency = {
-          label: 'ETH',
-          symbol: <EthIcon />,
-          address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
-        };
-        // @ts-ignore
-        switch (poolDetail?.loanToken.toLowerCase()) {
-          case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
-            currency = {
-              label: 'WETH',
-              symbol: <EthIcon />,
-              address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
-            };
-            break;
-          case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
-            currency = {
-              label: 'WBTC',
-              symbol: <BtcIcon />,
-              address: '0x3e34d176dc568414f3db022c2de8c4076e3b6043',
-            };
-            break;
-          case '0x569da455f23155612437eed8cff2106ae7e6c158':
-            currency = {
-              label: 'USDC',
-              symbol: <USDCIcon />,
-              address: '0x569da455f23155612437eed8cff2106ae7e6c158',
-            };
-            break;
-          case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
-            currency = {
-              label: 'ARB',
-              symbol: <ArbIcon />,
-              address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
-            };
-            break;
-          case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
-            currency = {
-              label: 'DAI',
-              symbol: <DaiIcon />,
-              address: '0xc399e512ff58882305a9c38f2c6d806f6f77f178',
-            };
-            break;
-          case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
-            currency = {
-              label: 'UNI',
-              symbol: <UniIcon />,
-              address: '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d',
-            };
-            break;
-        }
-
-        // @ts-ignore
-        switch (poolDetail.repaymentToken.toLowerCase()) {
-          case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
-            repaymentCurrency = {
-              label: 'WETH',
-              symbol: <EthIcon />,
-              address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
-            };
-            break;
-          case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
-            repaymentCurrency = {
-              label: 'WBTC',
-              symbol: <BtcIcon />,
-              address: '0x3e34d176dc568414f3db022c2de8c4076e3b6043',
-            };
-            break;
-          case '0x569da455f23155612437eed8cff2106ae7e6c158':
-            repaymentCurrency = {
-              label: 'USDC',
-              symbol: <USDCIcon />,
-              address: '0x569da455f23155612437eed8cff2106ae7e6c158',
-            };
-            break;
-          case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
-            repaymentCurrency = {
-              label: 'ARB',
-              symbol: <ArbIcon />,
-              address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
-            };
-            break;
-          case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
-            repaymentCurrency = {
-              label: 'DAI',
-              symbol: <DaiIcon />,
-              address: '0xc399e512ff58882305a9c38f2c6d806f6f77f178',
-            };
-            break;
-          case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
-            repaymentCurrency = {
-              label: 'UNI',
-              symbol: <UniIcon />,
-              address: '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d',
-            };
-            break;
-        }
-
-        // @ts-ignore
-        const loanState = poolDetail?.funded ? 'Active' : 'Pending';
-
-        return {
-          numericValue: (Number(apy) / 10000) as number,
-          interestRate: (poolDetail as PoolDetail)?.interestRate,
-          lending_id: (index + 1)?.toString(),
-          wallet_address: (poolDetail as PoolDetail)?.lender.slice(0, 7),
-          Token: currency.label,
-          amount: Number((poolDetail as PoolDetail)?.loanAmount),
-          repaymentPeriod: (poolDetail as PoolDetail)?.repaymentPeriod,
-          loan_state: loanState as any,
-          loanToken: currency.symbol as any,
-          borrowToken: repaymentCurrency.symbol as any,
-          type: 1,
-          interest_modal: InterestModal.Simple,
-          pool: (poolDetail as PoolDetail)?.pool,
-          borrowTokenName: repaymentCurrency.label,
-          loanCurrencyAddress: currency.address,
-          repaymentCurrencyAddress: repaymentCurrency.address,
-          pool_state: PoolState.Defaulted,
-        };
-      });
-
-      setData(formattedData);
+    if (allBorrowerPoolDetails) {
+      const borrowerData = formatPoolDetails(allBorrowerPoolDetails, 1);
+      setData(prevData => [...prevData, ...borrowerData]);
     }
-  }, [allPoolDetails, totalPoolCount, apy]);
+  }, [allLenderPoolDetails, allBorrowerPoolDetails, totalPoolCount, apy]);
 
-  const [filteredData, setFilteredData] = React.useState<IPoolsdata[]>(data);
-  const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (poolSection === 'lend') {
+      setFilteredData(data.filter((item: IPoolsdata) => item.type === 2));
+    } else if (poolSection === 'borrow') {
+      setFilteredData(data.filter((item: IPoolsdata) => item.type === 1));
+    }
+  }, [poolSection, data]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setPoolSection(null);
     };
   }, []);
-
-  React.useEffect(() => {
-    console.log(data);
-    if (poolSection === 'lend') {
-      setFilteredData(data.filter((item: any) => item.type === 2));
-    } else if (poolSection === 'borrow') {
-      return setFilteredData(data.filter((item: any) => item.type === 1));
-    }
-  }, [poolSection, data]);
 
   if (account.status === 'disconnected') {
     return <ConnectYourWalletPage />;
@@ -352,13 +219,11 @@ const MyPoolspage = () => {
             My Pools
           </h2>
           <p className="text-sm text-gray-500 mb-4 flex items-center">
-            {/* TODO: DCSELEK: Guzel bir aciklama ? Tekin bakmali */}
             <HelpCircle className="w-4 h-4 inline-block mr-1" />
             You can see the pools you have created here.
           </p>
         </div>
 
-        {/* Back to card button */}
         {!poolSection && (
           <div className="grid grid-cols-12 gap-8">
             <ChooseSectionCard
@@ -391,7 +256,7 @@ const MyPoolspage = () => {
               </Button>
               <h2 className="text-md font-light mb-4 ">
                 All Pools (Total: {Number(filteredData.length)})
-              </h2>{' '}
+              </h2>
             </div>
             <MyPoolsTable columns={columns} data={filteredData} />
           </>
@@ -399,6 +264,8 @@ const MyPoolspage = () => {
       </div>
     );
   }
+
+  return null;
 };
 
 export default MyPoolspage;

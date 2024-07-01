@@ -9,7 +9,13 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { IPoolsViewModalProps } from '../IPoolsViewModal';
-import { CodeIcon, LucideBanknote, Percent, UserCheck } from 'lucide-react';
+import {
+  CodeIcon,
+  Gift,
+  LucideBanknote,
+  Percent,
+  UserCheck,
+} from 'lucide-react';
 import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
@@ -266,6 +272,23 @@ function setLender(address _lender) external {
                 </Dialog>
               </div>
             )}
+            <Alert
+              actionButton={
+                <Button className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-full">
+                  Claim Rewards <Gift size={16} className="ml-2" />
+                </Button>
+              }
+              actionText="Claim Rewards"
+              description="Are you sure you want to claim the rewards?"
+              title="Claim Rewards"
+              actionFunction={() => {
+                handleClaimRewards();
+              }}
+              actionButtonStyle="!bg-primary/50 hover:!bg-primary/20"
+              cancelText="Cancel"
+            />
+            {/* seperator */}
+            <div className="w-full h-[1px] bg-gray-500"></div>
             <Alert
               actionButton={
                 <Button className="capitalize border-tulia_primary bg-emerald-700 hover:bg-emerald-800 w-full">

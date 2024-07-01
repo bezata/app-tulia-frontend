@@ -18,8 +18,10 @@ interface AlertProps {
   cancelText: string;
   actionText: string;
   actionFunction: () => void;
+  cancelFunction?: () => void;
   disabled?: boolean;
   actionButtonStyle?: string;
+  triggerClassName?: string;
 }
 
 function Alert({
@@ -30,11 +32,13 @@ function Alert({
   actionText,
   actionFunction,
   disabled = false,
+  cancelFunction,
   actionButtonStyle = '',
+  triggerClassName = '',
 }: AlertProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger disabled={disabled}>
+      <AlertDialogTrigger disabled={disabled} className={triggerClassName}>
         {actionButton}
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -43,7 +47,13 @@ function Alert({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
+          <AlertDialogCancel
+            onClick={() => {
+              cancelFunction && cancelFunction();
+            }}
+          >
+            {cancelText}
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={actionFunction}
             className={`tulia_main_button ${actionButtonStyle}`}

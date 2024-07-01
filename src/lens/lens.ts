@@ -96,28 +96,32 @@ export const useGetAllLenderPoolDetails = () => {
   return allLenderPoolDetails as any;
 };
 
-export const useCheckCoinAllowance = (coinAddress: string) => {
+export const useCheckCoinAllowance = (
+  coinAddress: string,
+  approveAddress: 'string'
+) => {
   const account = useAccount();
   const { data: allowance } = useReadContract({
     abi: TokenABI,
     address: coinAddress as any,
     functionName: 'allowance',
-    args: [
-      account?.address as any,
-      '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
-    ],
+    args: [account?.address as any, approveAddress as any],
   });
 
   return allowance as number | undefined;
 };
 
-export const useApproveCoin = (coinAddress: string, amount: number) => {
+export const useApproveCoin = (
+  coinAddress: string,
+  amount: number,
+  approveAddress: string
+) => {
   const { writeContract, data: hash } = useWriteContract();
   writeContract({
     address: coinAddress as any,
     abi: TokenABI,
     functionName: 'approve',
-    args: ['0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA', amount],
+    args: [approveAddress, amount],
   });
   return hash as string | undefined;
 };

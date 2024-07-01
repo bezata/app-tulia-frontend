@@ -29,12 +29,7 @@ import { VaultManagerABI } from '@/lens/abi/VaultManager';
 import { TokenABI } from '@/lens/abi/Token';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
-import USDCIcon from '../../../../public/USDCIcon';
-import ArbIcon from '../../../../public/ArbIcon';
-import DaiIcon from '../../../../public/DaiIcon';
-import UniIcon from '../../../../public/UniIcon';
-import EthIcon from '../../../../public/EthIcon';
-import BtcIcon from '../../../../public/BtcIcon';
+
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -53,8 +48,12 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
   const checkAllowance = useCheckCoinAllowance(
-    row.original.loanCurrencyAddress
+    row.original.loanCurrencyAddress as any,
+    row.original.pool as any
   );
+
+  const { writeContract: activateLoan, data: activateLoanHash } =
+    useWriteContract();
 
   useEffect(() => {
     if (calculateRewardAPY) {
@@ -115,6 +114,14 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
+  const activatePendingLoan = () => {
+    activateLoan({
+      abi: TuliaPoolABI,
+      address: row.original.pool as any,
+      functionName: 'fundLoan',
+    });
+  };
+
   const handleLoanInterest = () => {
     claimLoanInterest({
       abi: VaultManagerABI,
@@ -129,10 +136,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       address: row.original.loanCurrencyAddress as any,
       abi: TokenABI,
       functionName: 'approve',
-      args: [
-        '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
-        parseEther(String(1000000000), 'wei'),
-      ],
+      args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
     });
   };
   useEffect(() => {
@@ -145,26 +149,30 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        {isFunded === false ? (
-          approvalNeeded ? (
-            <Button
-              onClick={handleApprove}
-              className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
-            >
-              Approve Transaction
-            </Button>
-          ) : (
-            <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
-              Activate Loan
-            </Button>
-          )
+      {isFunded === false ? (
+        approvalNeeded ? (
+          <Button
+            onClick={handleApprove}
+            className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+          >
+            Approve Transaction
+          </Button>
         ) : (
+          <Button
+            onClick={activatePendingLoan}
+            className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+          >
+            Activate Loan
+          </Button>
+        )
+      ) : (
+        <DialogTrigger>
           <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
             Manage
           </Button>
-        )}
-      </DialogTrigger>
+        </DialogTrigger>
+      )}
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Manage Your Lending Pool</DialogTitle>

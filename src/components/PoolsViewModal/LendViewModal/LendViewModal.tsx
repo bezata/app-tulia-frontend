@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -20,41 +20,83 @@ import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
-import { formatEther } from 'viem';
-import { useCalculateRewardApy } from '@/lens/lens';
+import { formatEther, parseEther } from 'viem';
+import { useCalculateRewardApy, useCheckCoinAllowance } from '@/lens/lens';
 import { useWriteContract } from 'wagmi';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import { RewardManagerABI } from '@/lens/abi/RewardManager';
 import { VaultManagerABI } from '@/lens/abi/VaultManager';
+import { TokenABI } from '@/lens/abi/Token';
 import { useAccount } from 'wagmi';
+import { toast } from 'sonner';
+import USDCIcon from '../../../../public/USDCIcon';
+import ArbIcon from '../../../../public/ArbIcon';
+import DaiIcon from '../../../../public/DaiIcon';
+import UniIcon from '../../../../public/UniIcon';
+import EthIcon from '../../../../public/EthIcon';
+import BtcIcon from '../../../../public/BtcIcon';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
-  const [isLender, setIsLender] = React.useState(false);
-  const { writeContract: reclaimAndCloseDeal, data: reclaimAndCloseDealHash } =
-    useWriteContract();
-  const { writeContract: claimInterest, data: claimInterestHash } =
-    useWriteContract();
-  const { writeContract: claimLoanInterest, data: hash } = useWriteContract();
+  const [isLender, setIsLender] = useState(false);
+  const [isFunded, setIsFunded] = useState(false);
+  const { writeContract: reclaimAndCloseDeal } = useWriteContract();
+  const { writeContract: claimInterest } = useWriteContract();
+  const { writeContract: claimLoanInterest } = useWriteContract();
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
     durationSeconds: Number(row.original.repaymentPeriod),
   });
-  const [apy, setApy] = React.useState<number>(0);
+  const [apy, setApy] = useState<number>(0);
+  const [allowance, setAllowance] = useState<number>(0);
+  const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
+  const { writeContract: approve, isSuccess: approveSuccess } =
+    useWriteContract();
+  const checkAllowance = useCheckCoinAllowance(
+    row.original.loanCurrencyAddress
+  );
+
   useEffect(() => {
     if (calculateRewardAPY) {
       setApy(Number(calculateRewardAPY));
     }
-  }, [calculateRewardAPY as any, apy]);
+  }, [calculateRewardAPY]);
+
+  useEffect(() => {
+    if (row.original.loan_state === 'Funded') {
+      setIsFunded(true);
+    } else if (row.original.loan_state === 'Pending') {
+      setIsFunded(false);
+    }
+  }, [row.original.loan_state]);
 
   useEffect(() => {
     if (String(account?.address) === String(row.original.wallet_address)) {
       setIsLender(true);
-    }
-    if (String(account?.address) != String(row.original.wallet_address)) {
+    } else {
       setIsLender(false);
     }
   }, [account?.status, account?.address, row.original.wallet_address]);
+
+  useEffect(() => {
+    const fetchAllowance = async () => {
+      const currentAllowance = checkAllowance;
+      if (currentAllowance) {
+        setAllowance(Number(currentAllowance));
+        setApprovalNeeded(
+          Number(currentAllowance) < Number(row.original.amount)
+        );
+      }
+    };
+    fetchAllowance();
+  }, [checkAllowance, row.original.amount]);
+
+  useEffect(() => {
+    if (approveSuccess) {
+      toast.success('Approve transaction successful');
+      setApprovalNeeded(false);
+    }
+  }, [approveSuccess]);
 
   const handleReclaimAndCloseDeal = () => {
     reclaimAndCloseDeal({
@@ -82,12 +124,46 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
+  const handleApprove = () => {
+    approve({
+      address: row.original.loanCurrencyAddress as any,
+      abi: TokenABI,
+      functionName: 'approve',
+      args: [
+        '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+        parseEther(String(1000000000), 'wei'),
+      ],
+    });
+  };
+  useEffect(() => {
+    if (allowance < row.original.amount) {
+      setApprovalNeeded(true);
+    } else if (allowance >= row.original.amount) {
+      setApprovalNeeded(false);
+    }
+  }, [allowance, row.original.amount]);
+
   return (
     <Dialog>
       <DialogTrigger>
-        <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
-          Manage
-        </Button>
+        {isFunded === false ? (
+          approvalNeeded ? (
+            <Button
+              onClick={handleApprove}
+              className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+            >
+              Approve Transaction
+            </Button>
+          ) : (
+            <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
+              Activate Loan
+            </Button>
+          )
+        ) : (
+          <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
+            Manage
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -306,21 +382,7 @@ function setLender(address _lender) external {
                 cancelText="Cancel"
               />
             </div>
-            <Alert
-              actionButton={
-                <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">
-                  Close Deal
-                </Button>
-              }
-              actionText="Close Deal"
-              description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
-              title="Close Loan Deal"
-              actionFunction={() => {
-                handleReclaimAndCloseDeal();
-              }}
-              actionButtonStyle="!bg-red-900 hover:!bg-red-950"
-              cancelText="Cancel"
-            />
+
             <Alert
               actionButton={
                 <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">

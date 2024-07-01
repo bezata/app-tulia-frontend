@@ -149,7 +149,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
 
   return (
     <Dialog>
-      {isFunded === false ? (
+      {row.original.loan_state === 'Pending' ? (
         approvalNeeded ? (
           <Button
             onClick={handleApprove}

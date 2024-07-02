@@ -96,28 +96,42 @@ export const useGetAllLenderPoolDetails = () => {
   return allLenderPoolDetails as any;
 };
 
-export const useCheckCoinAllowance = (coinAddress: string) => {
+export const useCheckCoinAllowance = (
+  coinAddress: string,
+  approveAddress: 'string'
+) => {
   const account = useAccount();
   const { data: allowance } = useReadContract({
     abi: TokenABI,
     address: coinAddress as any,
     functionName: 'allowance',
-    args: [
-      account?.address as any,
-      '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
-    ],
+    args: [account?.address as any, approveAddress as any],
   });
 
   return allowance as number | undefined;
 };
 
-export const useApproveCoin = (coinAddress: string, amount: number) => {
+export const useGetLoanState = (poolAddress: string) => {
+  const { data: loanState } = useReadContract({
+    abi: TuliaPoolABI,
+    address: poolAddress as any,
+    functionName: 'getLoanState',
+  });
+
+  return loanState as number | undefined;
+};
+
+export const useApproveCoin = (
+  coinAddress: string,
+  amount: number,
+  approveAddress: string
+) => {
   const { writeContract, data: hash } = useWriteContract();
   writeContract({
     address: coinAddress as any,
     abi: TokenABI,
     functionName: 'approve',
-    args: ['0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA', amount],
+    args: [approveAddress, amount],
   });
   return hash as string | undefined;
 };
@@ -166,6 +180,28 @@ export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
     address: '0x771EE257Ccea2918474d881cfB6e11e2B34e9e93',
     functionName: 'calculateInterest',
     args: [principal, rate],
+  });
+
+  return { interest: data as number | undefined };
+};
+
+export const useCalculateClaimableInterest = ({ pool, isLender }: any) => {
+  const { data } = useReadContract({
+    abi: RewardManagerABI,
+    address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
+    functionName: 'calculateClaimableRewards',
+    args: [pool, isLender],
+  });
+
+  return { interest: data as number | undefined };
+};
+
+export const useVaultManagerInterest = ({ pool }: any) => {
+  const { data } = useReadContract({
+    abi: VaultManagerABI,
+    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+    functionName: 'calculateClaimableInterest',
+    args: [pool],
   });
 
   return { interest: data as number | undefined };

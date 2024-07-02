@@ -29,12 +29,7 @@ import { VaultManagerABI } from '@/lens/abi/VaultManager';
 import { TokenABI } from '@/lens/abi/Token';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
-import USDCIcon from '../../../../public/USDCIcon';
-import ArbIcon from '../../../../public/ArbIcon';
-import DaiIcon from '../../../../public/DaiIcon';
-import UniIcon from '../../../../public/UniIcon';
-import EthIcon from '../../../../public/EthIcon';
-import BtcIcon from '../../../../public/BtcIcon';
+import { useCalculateClaimableInterest } from '@/lens/lens';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -50,11 +45,16 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const [apy, setApy] = useState<number>(0);
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
+  const [claimableInterest, setClaimableInterest] = useState<number>(0);
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
   const checkAllowance = useCheckCoinAllowance(
-    row.original.loanCurrencyAddress
+    row.original.loanCurrencyAddress as any,
+    row.original.pool as any
   );
+
+  const { writeContract: activateLoan, data: activateLoanHash } =
+    useWriteContract();
 
   useEffect(() => {
     if (calculateRewardAPY) {
@@ -106,12 +106,31 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
+  const currentClaimableInterest = useCalculateClaimableInterest({
+    pool: row.original.pool,
+    isLender: isLender,
+  });
+
+  useEffect(() => {
+    if (currentClaimableInterest?.interest !== undefined) {
+      setClaimableInterest(currentClaimableInterest.interest);
+    }
+  }, [currentClaimableInterest]);
+
   const handleClaimInterest = () => {
     claimInterest({
       abi: RewardManagerABI,
-      address: row.original.pool as any,
+      address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
       functionName: 'claimRewards',
       args: [row.original.pool, isLender],
+    });
+  };
+
+  const activatePendingLoan = () => {
+    activateLoan({
+      abi: TuliaPoolABI,
+      address: row.original.pool as any,
+      functionName: 'fundLoan',
     });
   };
 
@@ -129,10 +148,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       address: row.original.loanCurrencyAddress as any,
       abi: TokenABI,
       functionName: 'approve',
-      args: [
-        '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
-        parseEther(String(1000000000), 'wei'),
-      ],
+      args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
     });
   };
   useEffect(() => {
@@ -145,26 +161,30 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        {isFunded === false ? (
-          approvalNeeded ? (
-            <Button
-              onClick={handleApprove}
-              className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
-            >
-              Approve Transaction
-            </Button>
-          ) : (
-            <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
-              Activate Loan
-            </Button>
-          )
+      {row.original.loan_state === 'Pending' ? (
+        approvalNeeded ? (
+          <Button
+            onClick={handleApprove}
+            className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+          >
+            Approve Transaction
+          </Button>
         ) : (
+          <Button
+            onClick={activatePendingLoan}
+            className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+          >
+            Activate Loan
+          </Button>
+        )
+      ) : (
+        <DialogTrigger>
           <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
             Manage
           </Button>
-        )}
-      </DialogTrigger>
+        </DialogTrigger>
+      )}
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Manage Your Lending Pool</DialogTitle>
@@ -219,7 +239,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
-            <span className="text-sm text-green-500">120 ETH</span>{' '}
+            <span className="text-sm text-green-500 ">
+              {Number(claimableInterest) / 10000000}
+            </span>{' '}
             <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
                 src="/logo.png"
@@ -376,7 +398,9 @@ function setLender(address _lender) external {
                 actionText="Claim Rewards"
                 description="Are you sure you want to claim the rewards?"
                 title="Claim Rewards"
-                actionFunction={() => {}}
+                actionFunction={() => {
+                  handleClaimInterest;
+                }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"
                 cancelText="Cancel"

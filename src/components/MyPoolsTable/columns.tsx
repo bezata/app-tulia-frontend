@@ -14,12 +14,16 @@ import { Button } from '../ui/button';
 import { ArrowUpDown } from 'lucide-react';
 import Image from 'next/image';
 import { formatEther } from 'viem';
+import { useGetLoanState } from '@/lens/lens';
+import React from 'react';
 
 export enum PoolState {
   Active = 'Active',
   Pending = 'Pending',
+  Funded = 'Funded',
   Closed = 'Closed',
   Defaulted = 'Defaulted',
+  Repaid = 'Repaid',
 }
 export enum InterestModal {
   Simple = 'Simple',
@@ -28,8 +32,6 @@ export enum InterestModal {
   MarketBased = 'Market Based',
 }
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type IPoolsdata = {
   lending_id: string;
   wallet_address: string;
@@ -39,8 +41,8 @@ export type IPoolsdata = {
   loan_state: string;
   interestRate: bigint;
   numericValue: number | undefined;
-   interest_modal: InterestModal;
-    pool_state: PoolState;
+  interest_modal: InterestModal;
+  pool_state: PoolState;
   repaymentPeriod: bigint;
   loanToken: string;
   borrowToken: string;
@@ -50,6 +52,35 @@ export type IPoolsdata = {
   type: number;
 };
 
+const LoanStateCell: React.FC<{ pool: string }> = ({ pool }) => {
+  const loanState = useGetLoanState(pool);
+  let displayState = '';
+
+  switch (loanState) {
+    case 1:
+      displayState = PoolState.Active;
+      break;
+    case 0:
+      displayState = PoolState.Pending;
+      break;
+    case 2:
+      displayState = PoolState.Funded;
+      break;
+    case 6:
+      displayState = PoolState.Closed;
+      break;
+    case 4:
+      displayState = PoolState.Defaulted;
+      break;
+    case 5:
+      displayState = PoolState.Repaid;
+      break;
+    default:
+      displayState = 'Pending';
+  }
+
+  return <span className="mr-4">{displayState}</span>;
+};
 
 export const columns: ColumnDef<IPoolsdata>[] = [
   {
@@ -235,9 +266,7 @@ export const columns: ColumnDef<IPoolsdata>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center ml-4">
-          <div>
-            <span>{row.original.loan_state}</span>
-          </div>
+          <LoanStateCell pool={row.original.pool} />
         </div>
       );
     },

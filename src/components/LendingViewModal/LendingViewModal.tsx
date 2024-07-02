@@ -69,7 +69,8 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   }, [approveSuccess]);
 
   const checkAllowance = useCheckCoinAllowance(
-    row.original.repaymentCurrencyAddress
+    row.original.repaymentCurrencyAddress,
+    row.original.pool as any
   );
 
   const calculateCollateral = (
@@ -104,7 +105,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     fundLoanTx({
       address: row.original.pool as any,
       abi: TuliaPoolABI,
-      functionName: 'fundLoan',
+      functionName: 'activateLoan',
     });
     return hash as string | undefined;
   };
@@ -129,10 +130,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
         address: row.original.repaymentCurrencyAddress as any,
         abi: TokenABI,
         functionName: 'approve',
-        args: [
-          '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
-          parseEther(String(1000000000), 'wei'),
-        ],
+        args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
       });
       setApprovalNeeded(true);
     }
@@ -285,7 +283,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                       abi: TokenABI,
                       functionName: 'approve',
                       args: [
-                        '0x72d905c8adc86b4Eb6d2D437FB60CB59b7b329bA',
+                        row.original.pool,
                         parseEther(String(1000000000), 'wei'),
                       ],
                     })

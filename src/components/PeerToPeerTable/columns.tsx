@@ -12,6 +12,9 @@ import { Button } from '../ui/button';
 import Image from 'next/image';
 import { ArrowUpDown } from 'lucide-react';
 import { formatEther } from 'viem';
+import { useGetLoanState } from '@/lens/lens';
+import React from 'react';
+import { PoolState } from '../MyPoolsTable/columns';
 
 export type ILendingData = {
   lending_id: string;
@@ -28,6 +31,36 @@ export type ILendingData = {
   pool: string;
   repaymentCurrencyAddress: string;
   loanCurrencyAddress: string;
+};
+
+const LoanStateCell: React.FC<{ pool: string }> = ({ pool }) => {
+  const loanState = useGetLoanState(pool);
+  let displayState = '';
+
+  switch (loanState) {
+    case 1:
+      displayState = PoolState.Active;
+      break;
+    case 0:
+      displayState = PoolState.Pending;
+      break;
+    case 2:
+      displayState = PoolState.Funded;
+      break;
+    case 6:
+      displayState = PoolState.Closed;
+      break;
+    case 4:
+      displayState = PoolState.Defaulted;
+      break;
+    case 5:
+      displayState = PoolState.Repaid;
+      break;
+    default:
+      displayState = PoolState.Pending;
+  }
+
+  return <span className="ml-3">{displayState}</span>;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [
@@ -173,17 +206,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     accessorKey: 'loan_state',
     header: 'Loan State',
     cell: ({ row }) => {
-      const loanState =
-        row.original.loan_state === 'Active'
-          ? 'text-green-200'
-          : 'text-red-200';
-      return (
-        <div className="flex items-center">
-          <div className={loanState}>
-            <span>{row.original.loan_state}</span>
-          </div>
-        </div>
-      );
+      return <LoanStateCell pool={row.original.pool} />;
     },
   },
   {

@@ -49,7 +49,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       variant: 'wide',
       subvariant: 'default',
       hiddenUI: [HiddenUI.Appearance, HiddenUI.PoweredBy, HiddenUI.WalletMenu],
-
+      fee: 0.002,
       components: {
         MuiAppBar: { root: { backgroundColor: 'rgba(125, 44, 197, 0.06)' } },
         MuiButton: { root: { borderRadius: 30 } },

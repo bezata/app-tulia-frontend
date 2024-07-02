@@ -66,7 +66,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     args: [row.original.pool],
   });
 
-
   const { writeContract: activateLoan, data: activateLoanHash } =
     useWriteContract();
 
@@ -229,6 +228,18 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             <span className="text-sm font-semibold">Loan Amount</span>
             <span className="text-sm text-gray-400">
               {formatEther(BigInt(row.original.amount))} {row.original.Token}
+            </span>
+          </div>
+          <div className="col-span-12 border-gray-500 pb-2 border-b-[0.5px]">
+            <span className="font-bold">
+              <UserCheck size={20} className="inline-block mr-2" />
+              Borrower&apos;s Information
+            </span>
+          </div>
+          <div className="col-span-6 flex flex-col">
+            <span className="text-sm font-semibold">Wallet Address</span>
+            <span className="text-sm text-gray-400">
+              {row.original.wallet_address}
             </span>
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -23,16 +23,23 @@ import Image from 'next/image';
 import { formatEther } from 'viem';
 import { useAccount, useWriteContract } from 'wagmi';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
-import { useCalculateRewardApy } from '@/lens/lens';
+import {
+  useCalculateClaimableInterest,
+  useCalculateRewardApy,
+} from '@/lens/lens';
 import { RewardManagerABI } from '@/lens/abi/RewardManager';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   const [apy, setApy] = React.useState<number>(0);
   const account = useAccount();
   const [isLender, setIsLender] = React.useState<boolean>(false);
-  const { writeContract: claimRewards, data: claimRewardsHash } =
-    useWriteContract();
-
+  const [claimableInterest, setClaimableInterest] = React.useState<number>(0);
+  const {
+    writeContract: claimRewards,
+    data: claimRewardsHash,
+    error: claimRewardsError,
+  } = useWriteContract();
+  console.log(claimRewardsError);
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
     durationSeconds: Number(row.original.repaymentPeriod),
@@ -59,10 +66,21 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
+  const currentClaimableInterest = useCalculateClaimableInterest({
+    pool: row.original.pool,
+    isLender: isLender,
+  });
+
+  useEffect(() => {
+    if (currentClaimableInterest?.interest !== undefined) {
+      setClaimableInterest(currentClaimableInterest.interest);
+    }
+  }, [currentClaimableInterest]);
+
   const handleClaimRewards = () => {
     claimRewards({
       abi: RewardManagerABI,
-      address: '0x7d6a4f2f3d0f9e6e5a9e5e5f4f3d0f9e6e5a9e5e',
+      address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
       functionName: 'claimRewards',
       args: [row.original.pool, isLender],
     });
@@ -132,7 +150,9 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
-            <span className="text-sm text-green-500">120 ETH</span>{' '}
+            <span className="text-sm text-green-500">
+              {Number(claimableInterest) / 10000000}
+            </span>{' '}
             <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
                 src="/logo.png"
@@ -282,7 +302,7 @@ function setLender(address _lender) external {
               description="Are you sure you want to claim the rewards?"
               title="Claim Rewards"
               actionFunction={() => {
-                handleClaimRewards();
+                handleClaimRewards;
               }}
               actionButtonStyle="!bg-primary/50 hover:!bg-primary/20"
               cancelText="Cancel"

@@ -185,6 +185,28 @@ export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
   return { interest: data as number | undefined };
 };
 
+export const useCalculateClaimableInterest = ({ pool, isLender }: any) => {
+  const { data } = useReadContract({
+    abi: RewardManagerABI,
+    address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
+    functionName: 'calculateClaimableRewards',
+    args: [pool, isLender],
+  });
+
+  return { interest: data as number | undefined };
+};
+
+export const useVaultManagerInterest = ({ pool }: any) => {
+  const { data } = useReadContract({
+    abi: VaultManagerABI,
+    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+    functionName: 'calculateClaimableInterest',
+    args: [pool],
+  });
+
+  return { interest: data as number | undefined };
+};
+
 export const useCalculateCompoundInterest = ({
   principal,
   rate,

@@ -66,7 +66,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     args: [row.original.pool],
   });
 
-  console.log(vaultManagerReward);
 
   const { writeContract: activateLoan, data: activateLoanHash } =
     useWriteContract();

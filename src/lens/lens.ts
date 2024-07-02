@@ -111,6 +111,16 @@ export const useCheckCoinAllowance = (
   return allowance as number | undefined;
 };
 
+export const useGetLoanState = (poolAddress: string) => {
+  const { data: loanState } = useReadContract({
+    abi: TuliaPoolABI,
+    address: poolAddress as any,
+    functionName: 'getLoanState',
+  });
+
+  return loanState as number | undefined;
+};
+
 export const useApproveCoin = (
   coinAddress: string,
   amount: number,

@@ -10,7 +10,6 @@ import { useAppDispatch } from '@/lib/hooks';
 import { HelpCircle, Landmark, MoveLeft } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import {
-  useGetAllPoolDetails,
   useGetTotalPoolCount,
   useCalculateRewardApy,
   useGetAllLenderPoolDetails,
@@ -27,6 +26,7 @@ import DaiIcon from '../../../../public/DaiIcon';
 import EthIcon from '../../../../public/EthIcon';
 import UniIcon from '../../../../public/UniIcon';
 import USDCIcon from '../../../../public/USDCIcon';
+import { useGetLoanState } from '@/lens/lens';
 
 const MyPoolspage = () => {
   const account = useAccount();

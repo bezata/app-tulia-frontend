@@ -30,7 +30,7 @@ import { TokenABI } from '@/lens/abi/Token';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 import { useCalculateClaimableInterest } from '@/lens/lens';
-import { useApproveCoin } from '@/lens/lens';
+import { useReadContract } from 'wagmi';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -51,12 +51,22 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
   const [claimableInterest, setClaimableInterest] = useState<number>(0);
+  const [currentVaultManagerReward, setCurrentVaultManagerReward] =
+    useState<number>(0);
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
   const checkAllowance = useCheckCoinAllowance(
     row.original.loanCurrencyAddress as any,
     row.original.pool as any
   );
+  const { data: vaultManagerReward } = useReadContract({
+    abi: VaultManagerABI,
+    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+    functionName: 'calculateClaimableInterest',
+    args: [row.original.pool],
+  });
+
+  console.log(vaultManagerReward);
 
   const { writeContract: activateLoan, data: activateLoanHash } =
     useWriteContract();
@@ -66,6 +76,11 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       setApy(Number(calculateRewardAPY));
     }
   }, [calculateRewardAPY]);
+  useEffect(() => {
+    if (vaultManagerReward) {
+      setCurrentVaultManagerReward(Number(vaultManagerReward));
+    }
+  }, [vaultManagerReward]);
 
   const calculateCollateral = (
     loanAmount: number,
@@ -163,6 +178,8 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   }, [allowance, row.original.amount]);
 
+  const formattedInterest = formatEther(BigInt(currentVaultManagerReward));
+
   return (
     <Dialog>
       {row.original.loan_state === 'Pending' ? (
@@ -231,9 +248,11 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold text-primary">
-              Interest Boost From Tulia
+              Claimable Interest
             </span>
-            <span className="text-sm text-purple-400">+{apy / 10000}% </span>
+            <span className="text-sm text-purple-400">
+              {formattedInterest.slice(0, 7)} {row.original.Token}{' '}
+            </span>
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
@@ -242,7 +261,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             </span>
           </div>
           <div className="col-span-3 flex flex-col">
-            <span className="text-sm font-semibold">Claimable Interest </span>
+            <span className="text-sm font-semibold">Claimable Rewards </span>
             <span className="text-sm text-green-500 ">
               {Number(claimableInterest) / 10000000}
             </span>{' '}
@@ -387,16 +406,17 @@ function setLender(address _lender) external {
                     Claim Interest <Gift size={16} className="ml-2" />
                   </Button>
                 }
-                actionText="Claim Rewards"
+                actionText="Claim Interest"
                 description="Are you sure you want to claim the rewards?"
                 title="Claim Rewards"
                 actionFunction={() => {
                   writeContract({
                     abi: VaultManagerABI,
-                    address: row.original.pool as any,
+                    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
                     functionName: 'distributeInterest',
-                    args: [row.original.pool, row.original.wallet_address],
+                    args: [row.original.pool, account?.address],
                   });
+                  console.log('claim interest', account?.address);
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"

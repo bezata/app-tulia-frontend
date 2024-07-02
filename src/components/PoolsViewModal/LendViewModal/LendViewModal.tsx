@@ -30,14 +30,19 @@ import { TokenABI } from '@/lens/abi/Token';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 import { useCalculateClaimableInterest } from '@/lens/lens';
+import { useReadContract } from 'wagmi';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
   const [isLender, setIsLender] = useState(false);
   const [isFunded, setIsFunded] = useState(false);
-  const { writeContract: reclaimAndCloseDeal } = useWriteContract();
-  const { writeContract: claimInterest } = useWriteContract();
-  const { writeContract: claimLoanInterest } = useWriteContract();
+  const [uiCollateral, setUiCollateral] = useState<number>(0);
+  const {
+    writeContract,
+    data: hash,
+    error: contractError,
+  } = useWriteContract();
+
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
     durationSeconds: Number(row.original.repaymentPeriod),
@@ -46,12 +51,21 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
   const [claimableInterest, setClaimableInterest] = useState<number>(0);
+  const [currentVaultManagerReward, setCurrentVaultManagerReward] =
+    useState<number>(0);
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
   const checkAllowance = useCheckCoinAllowance(
     row.original.loanCurrencyAddress as any,
     row.original.pool as any
   );
+  const { data: vaultManagerReward } = useReadContract({
+    abi: VaultManagerABI,
+    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+    functionName: 'calculateClaimableInterest',
+    args: [row.original.pool],
+  });
+
 
   const { writeContract: activateLoan, data: activateLoanHash } =
     useWriteContract();
@@ -61,6 +75,28 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       setApy(Number(calculateRewardAPY));
     }
   }, [calculateRewardAPY]);
+  useEffect(() => {
+    if (vaultManagerReward) {
+      setCurrentVaultManagerReward(Number(vaultManagerReward));
+    }
+  }, [vaultManagerReward]);
+
+  const calculateCollateral = (
+    loanAmount: number,
+    interestRate: number
+  ): number => {
+    const principal = parseFloat(loanAmount.toString());
+    const rate = parseFloat(interestRate.toString());
+    const interest = (principal * rate) / 100;
+    const total = principal + interest;
+    const netTotal = formatEther(BigInt(total));
+    setUiCollateral(Number(netTotal));
+    return total;
+  };
+
+  useEffect(() => {
+    calculateCollateral(row.original.amount, Number(row.original.interestRate));
+  }, [row.original.amount, row.original.interestRate]);
 
   useEffect(() => {
     if (row.original.loan_state === 'Funded') {
@@ -99,7 +135,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   }, [approveSuccess]);
 
   const handleReclaimAndCloseDeal = () => {
-    reclaimAndCloseDeal({
+    writeContract({
       abi: TuliaPoolABI,
       address: row.original.pool as any,
       functionName: 'reclaimLoanAndClosePool',
@@ -117,29 +153,11 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   }, [currentClaimableInterest]);
 
-  const handleClaimInterest = () => {
-    claimInterest({
-      abi: RewardManagerABI,
-      address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
-      functionName: 'claimRewards',
-      args: [row.original.pool, isLender],
-    });
-  };
-
   const activatePendingLoan = () => {
     activateLoan({
       abi: TuliaPoolABI,
       address: row.original.pool as any,
       functionName: 'fundLoan',
-    });
-  };
-
-  const handleLoanInterest = () => {
-    claimLoanInterest({
-      abi: VaultManagerABI,
-      address: row.original.pool as any,
-      functionName: 'distributeInterest',
-      args: [row.original.pool, row.original.wallet_address],
     });
   };
 
@@ -158,6 +176,8 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       setApprovalNeeded(false);
     }
   }, [allowance, row.original.amount]);
+
+  const formattedInterest = formatEther(BigInt(currentVaultManagerReward));
 
   return (
     <Dialog>
@@ -227,9 +247,11 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold text-primary">
-              Interest Boost From Tulia
+              Claimable Interest
             </span>
-            <span className="text-sm text-purple-400">+{apy / 10000}% </span>
+            <span className="text-sm text-purple-400">
+              {formattedInterest.slice(0, 7)} {row.original.Token}{' '}
+            </span>
           </div>
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Interest Modal</span>
@@ -238,7 +260,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             </span>
           </div>
           <div className="col-span-3 flex flex-col">
-            <span className="text-sm font-semibold">Claimable Interest </span>
+            <span className="text-sm font-semibold">Claimable Rewards </span>
             <span className="text-sm text-green-500 ">
               {Number(claimableInterest) / 10000000}
             </span>{' '}
@@ -262,7 +284,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Collateral Amount</span>
-            <span className="text-sm text-gray-400">1.05 ETH</span>
+            <span className="text-sm text-gray-400">
+              {uiCollateral} {row.original.Token}
+            </span>
           </div>
           {/* <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Loan State</span>
@@ -381,10 +405,18 @@ function setLender(address _lender) external {
                     Claim Interest <Gift size={16} className="ml-2" />
                   </Button>
                 }
-                actionText="Claim Rewards"
+                actionText="Claim Interest"
                 description="Are you sure you want to claim the rewards?"
                 title="Claim Rewards"
-                actionFunction={() => {}}
+                actionFunction={() => {
+                  writeContract({
+                    abi: VaultManagerABI,
+                    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+                    functionName: 'distributeInterest',
+                    args: [row.original.pool, account?.address],
+                  });
+                  console.log('claim interest', account?.address);
+                }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"
                 cancelText="Cancel"
@@ -399,7 +431,14 @@ function setLender(address _lender) external {
                 description="Are you sure you want to claim the rewards?"
                 title="Claim Rewards"
                 actionFunction={() => {
-                  handleClaimInterest;
+                  writeContract({
+                    abi: RewardManagerABI,
+                    address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
+                    functionName: 'claimRewards',
+                    args: [row.original.pool, false],
+                  });
+
+                  console.log('claim rewards');
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"
@@ -417,7 +456,11 @@ function setLender(address _lender) external {
               description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
               title="Close Loan Deal"
               actionFunction={() => {
-                handleReclaimAndCloseDeal();
+                writeContract({
+                  abi: TuliaPoolABI,
+                  address: row.original.pool as any,
+                  functionName: 'reclaimLoanAndClosePool',
+                });
               }}
               actionButtonStyle="!bg-red-900 hover:!bg-red-950"
               cancelText="Cancel"

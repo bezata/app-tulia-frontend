@@ -116,7 +116,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
       }
     };
     fetchVaultAllowance();
-  }, [checkVaultAllowance, row.original.amount]);
+  }, [checkVaultAllowance, row.original.amount, vaultAllowance]);
 
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
@@ -420,10 +420,11 @@ function setLender(address _lender) external {
               description="Are you sure you want to repay the loan?"
               title="Repay Loan"
               actionFunction={() => {
-                if (approvalNeededForVault === true) {
+                if (Number(vaultAllowance) < row.original.amount) {
                   toast.error('Please approve the vault first');
                   handleVaultApprove();
-                } else {
+                }
+                if (Number(vaultAllowance) >= row.original.amount) {
                   writeContract({
                     abi: TuliaPoolABI,
                     address: row.original.pool as any,

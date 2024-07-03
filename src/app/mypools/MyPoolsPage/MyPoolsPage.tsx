@@ -65,133 +65,126 @@ const MyPoolspage = () => {
             symbol: <ArbIcon />,
             address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
           };
-           console.log(poolDetails, 'poolDetails');
-           switch (poolDetail?.loanToken.toLowerCase()) {
-             case '0xD34738726C013a0184965A5C6603C0AA7BCF6B80':
-               currency = {
-                 label: 'WETH',
-                 symbol: <EthIcon />,
-                 address: '0xD34738726C013a0184965A5C6603C0AA7BCF6B80',
-               };
-               break;
-             case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
-               currency = {
-                 label: 'WBTC',
-                 symbol: <BtcIcon />,
-                 address: '0x3e34d176dc568414f3db022c2de8c4076e3b6043',
-               };
-               break;
-             case '0x569da455f23155612437eed8cff2106ae7e6c158':
-               currency = {
-                 label: 'USDC',
-                 symbol: <USDCIcon />,
-                 address: '0x569da455f23155612437eed8cff2106ae7e6c158',
-               };
-               break;
-             case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
-               currency = {
-                 label: 'ARB',
-                 symbol: <ArbIcon />,
-                 address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
-               };
-               break;
-             case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
-               currency = {
-                 label: 'DAI',
-                 symbol: <DaiIcon />,
-                 address: '0xc399e512ff58882305a9c38f2c6d806f6f77f178',
-               };
-               break;
-             case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
-               currency = {
-                 label: 'UNI',
-                 symbol: <UniIcon />,
-                 address: '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d',
-               };
-               break;
-           }
+          switch (poolDetail?.loanToken.toLowerCase()) {
+            case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
+              currency = {
+                label: 'WETH',
+                symbol: <EthIcon />,
+                address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
+              };
+              break;
+            case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
+              currency = {
+                label: 'WBTC',
+                symbol: <BtcIcon />,
+                address: '0x3e34d176dc568414f3db022c2de8c4076e3b6043',
+              };
+              break;
+            case '0x569da455f23155612437eed8cff2106ae7e6c158':
+              currency = {
+                label: 'USDC',
+                symbol: <USDCIcon />,
+                address: '0x569da455f23155612437eed8cff2106ae7e6c158',
+              };
+              break;
+            case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
+              currency = {
+                label: 'ARB',
+                symbol: <ArbIcon />,
+                address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
+              };
+              break;
+            case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
+              currency = {
+                label: 'DAI',
+                symbol: <DaiIcon />,
+                address: '0xc399e512ff58882305a9c38f2c6d806f6f77f178',
+              };
+              break;
+            case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
+              currency = {
+                label: 'UNI',
+                symbol: <UniIcon />,
+                address: '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d',
+              };
+              break;
+          }
 
-           switch (poolDetail?.repaymentToken.toLowerCase()) {
-             case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
-               repaymentCurrency = {
-                 label: 'WETH',
-                 symbol: <EthIcon />,
-                 address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
-               };
-               break;
-             case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
-               repaymentCurrency = {
-                 label: 'WBTC',
-                 symbol: <BtcIcon />,
-                 address: '0x3e34d176dc568414f3db022c2de8c4076e3b6043',
-               };
-               break;
-             case '0x569da455f23155612437eed8cff2106ae7e6c158':
-               repaymentCurrency = {
-                 label: 'USDC',
-                 symbol: <USDCIcon />,
-                 address: '0x569da455f23155612437eed8cff2106ae7e6c158',
-               };
-               break;
-             case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
-               repaymentCurrency = {
-                 label: 'ARB',
-                 symbol: <ArbIcon />,
-                 address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
-               };
-               break;
-             case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
-               repaymentCurrency = {
-                 label: 'DAI',
-                 symbol: <DaiIcon />,
-                 address: '0xc399e512ff58882305a9c38f2c6d806f6f77f178',
-               };
-               break;
-             case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
-               repaymentCurrency = {
-                 label: 'UNI',
-                 symbol: <UniIcon />,
-                 address: '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d',
-               };
-               break;
-           }
+          switch (poolDetail?.repaymentToken.toLowerCase()) {
+            case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
+              repaymentCurrency = {
+                label: 'WETH',
+                symbol: <EthIcon />,
+                address: '0xd34738726c013a0184965a5c6603c0aa7bcf6b80',
+              };
+              break;
+            case '0x3e34d176dc568414f3db022c2de8c4076e3b6043':
+              repaymentCurrency = {
+                label: 'WBTC',
+                symbol: <BtcIcon />,
+                address: '0x3e34d176dc568414f3db022c2de8c4076e3b6043',
+              };
+              break;
+            case '0x569da455f23155612437eed8cff2106ae7e6c158':
+              repaymentCurrency = {
+                label: 'USDC',
+                symbol: <USDCIcon />,
+                address: '0x569da455f23155612437eed8cff2106ae7e6c158',
+              };
+              break;
+            case '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58':
+              repaymentCurrency = {
+                label: 'ARB',
+                symbol: <ArbIcon />,
+                address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
+              };
+              break;
+            case '0xc399e512ff58882305a9c38f2c6d806f6f77f178':
+              repaymentCurrency = {
+                label: 'DAI',
+                symbol: <DaiIcon />,
+                address: '0xc399e512ff58882305a9c38f2c6d806f6f77f178',
+              };
+              break;
+            case '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d':
+              repaymentCurrency = {
+                label: 'UNI',
+                symbol: <UniIcon />,
+                address: '0x5632a6d2e2af12f20f69f78ee85ab2ae77f9949d',
+              };
+              break;
+          }
 
-           const loanState = poolDetail?.funded ? 'Active' : 'Pending';
+          const loanState = poolDetail?.funded ? 'Active' : 'Pending';
 
-           return {
-             numericValue: (Number(apy) / 10000) as number | undefined,
-             interestRate: poolDetail?.interestRate,
-             lending_id: (index + 1)?.toString(),
-             wallet_address: poolDetail?.lender.slice(0, 7),
-             Token: currency.label,
-             amount: Number(poolDetail?.loanAmount),
-             repaymentPeriod: poolDetail?.repaymentPeriod,
-             loan_state: loanState as any,
-             loanToken: currency.symbol as any,
-             borrowToken: repaymentCurrency.symbol as any,
-             type,
-             interest_modal: InterestModal.Simple,
-             pool: poolDetail?.pool,
-             borrowTokenName: repaymentCurrency.label,
-             loanCurrencyAddress: currency.address,
-             repaymentCurrencyAddress: repaymentCurrency.address,
-             pool_state: PoolState.Defaulted,
-             borrower: poolDetail?.borrower,
-             vault: poolDetail?.vault,
-           };
+          return {
+            numericValue: (Number(apy) / 10000) as number | undefined,
+            interestRate: poolDetail?.interestRate,
+            lending_id: (index + 1)?.toString(),
+            wallet_address: poolDetail?.lender.slice(0, 7),
+            Token: currency.label,
+            amount: Number(poolDetail?.loanAmount),
+            repaymentPeriod: poolDetail?.repaymentPeriod,
+            loan_state: loanState as any,
+            loanToken: currency.symbol as any,
+            borrowToken: repaymentCurrency.symbol as any,
+            type,
+            interest_modal: InterestModal.Simple,
+            pool: poolDetail?.pool,
+            borrowTokenName: repaymentCurrency.label,
+            loanCurrencyAddress: currency.address,
+            repaymentCurrencyAddress: repaymentCurrency.address,
+            pool_state: PoolState.Defaulted,
+            borrower: poolDetail?.borrower,
+            vault: poolDetail?.vault,
+          };
         }
       );
     };
 
-    if (allLenderPoolDetails) {
-      const lenderData = formatPoolDetails(allLenderPoolDetails, 2);
-      setData(prevData => [...prevData, ...lenderData]);
-    }
-
-    if (allBorrowerPoolDetails) {
-      const borrowerData = formatPoolDetails(allBorrowerPoolDetails, 1);
-      setData(prevData => [...prevData, ...borrowerData]);
-    }
+    const lenderData = formatPoolDetails(allLenderPoolDetails || [], 2);
+    const borrowerData = formatPoolDetails(allBorrowerPoolDetails || [], 1);
+    setData([...lenderData, ...borrowerData]);
   }, [allLenderPoolDetails, allBorrowerPoolDetails, totalPoolCount, apy]);
 
   useEffect(() => {

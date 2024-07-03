@@ -38,17 +38,68 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
   const [currentLoanState, setLoanState] = useState<string>('');
+  const [approveTransactionStatus, setApprove] = useState<string>('');
+  const [lendRequestTransactionStatus, setLendRequest] = useState<string>('');
 
   const {
     writeContract: approve,
     data: approveHash,
     isSuccess: approveSuccess,
+    status: approveStatus,
   } = useWriteContract();
+  useEffect(() => {
+    if (approveStatus === 'success') {
+      toast.success('Approve transaction successful');
+      setApprovalNeeded(false);
+      setLoading(false);
+      setApprove('success');
+    }
+    if (approveStatus === 'error') {
+      toast.error('Approve transaction failed');
+      setLoading(false);
+      setApprove('error');
+    }
+    if (approveStatus === 'pending') {
+      toast.info('Approve transaction pending');
+      setLoading(true);
+      setApprove('pending');
+    }
+  }, [approveStatus]);
   const {
     writeContract: fundLoanTx,
     data: hash,
     isSuccess: fundLoanSuccess,
+    status: fundLoanStatus,
   } = useWriteContract();
+
+  useEffect(() => {
+    if (fundLoanStatus === 'success') {
+      setLendRequest('success');
+    }
+    if (fundLoanStatus === 'error') {
+      setLendRequest('error');
+    }
+    if (fundLoanStatus === 'pending') {
+      setLendRequest('pending');
+    }
+  }, [fundLoanStatus]);
+
+  useEffect(() => {
+    if (lendRequestTransactionStatus === 'success') {
+      toast.success('Transaction successful');
+      setOpenTransactionModal(true);
+      setLoading(false);
+    }
+    if (lendRequestTransactionStatus === 'error') {
+      toast.error('Transaction failed');
+      setOpenTransactionModal(false);
+      setLoading(false);
+    }
+    if (lendRequestTransactionStatus === 'pending') {
+      toast.info('Transaction pending');
+      setLoading(true);
+    }
+  }, [lendRequestTransactionStatus]);
 
   const loanState = row.original.loan_state;
   useEffect(() => {
@@ -59,14 +110,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     loanAmount: BigInt(loanAmount),
     durationSeconds: Number(row.original.repaymentPeriod),
   });
-
-  useEffect(() => {
-    if (approveSuccess) {
-      toast.success('Approve transaction successful');
-      setApprovalNeeded(false);
-      setLoading(false);
-    }
-  }, [approveSuccess]);
 
   const checkAllowance = useCheckCoinAllowance(
     row.original.repaymentCurrencyAddress,
@@ -114,7 +157,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     if (openTransactionModal) {
       setTimeout(() => {
         toast.success('Transaction successful. Redirecting to My Pools.');
-        // router.push('/mypools');
+        router.push('/mypools');
       }, 5000);
     }
   }, [openTransactionModal, router]);
@@ -319,7 +362,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                       setLoading(true);
                       setTimeout(() => {
                         setLoading(false);
-                        setOpenTransactionModal(true);
                       }, 2000);
                     }
                   }}

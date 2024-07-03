@@ -35,7 +35,7 @@ const PoolsViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Wallet Address</span>
             <span className="text-sm text-gray-400">
-              {row.original.wallet_address}
+              {row.original.wallet_address.slice(0, 7)}
             </span>
           </div>
           <div className="col-span-6 flex flex-col">

@@ -10,9 +10,15 @@ export function CardDemo() {
       <CardSkeletonContainer>
         <Skeleton />
       </CardSkeletonContainer>
-      <CardTitle>Coming Soon</CardTitle>
-      <CardDescription>
-        Conventional lending will be public on the mainnet. Stay tuned
+      <CardTitle className="text-center font-extrabold">
+        Conventional Meets Innovation
+      </CardTitle>
+      <CardDescription className="text-center">
+        Dive into the future with Tulia Protocol! Our groundbreaking DeFi
+        solutions are already transforming the lending landscape. Coming soon:
+        our conventional lending options will also be available on the mainnet.
+        Stay tuned for the full experience—where tradition and innovation
+        converge to empower your financial freedom.
       </CardDescription>
     </Card>
   );

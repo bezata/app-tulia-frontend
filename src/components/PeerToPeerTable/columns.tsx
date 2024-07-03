@@ -84,7 +84,7 @@ export const columns: ColumnDef<ILendingData>[] = [
       return (
         <div className="flex items-center ">
           <div>
-            <span>{row.original.wallet_address}</span>
+            <span>{row.original.wallet_address.slice(0, 7)}</span>
           </div>
         </div>
       );

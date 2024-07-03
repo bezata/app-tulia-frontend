@@ -25,9 +25,11 @@ import { useWriteContract } from 'wagmi';
 import { TokenABI } from '@/lens/abi/Token';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
+import { useAccount } from 'wagmi';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
+  const account = useAccount();
   const loanAmount = Number(row.original.amount);
   const interestRate = Number(row.original.interestRate);
   const [loading, setLoading] = useState<boolean>(false);
@@ -91,12 +93,10 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       setLoading(false);
     }
     if (lendRequestTransactionStatus === 'error') {
-      toast.error('Transaction failed');
       setOpenTransactionModal(false);
       setLoading(false);
     }
     if (lendRequestTransactionStatus === 'pending') {
-      toast.info('Transaction pending');
       setLoading(true);
     }
   }, [lendRequestTransactionStatus]);
@@ -185,7 +185,13 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
         open={openTransactionModal}
       />
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger
+          onClick={() => {
+            if (account?.address === row.original.wallet_address) {
+              toast.error('You cannot lend to yourself!');
+            }
+          }}
+        >
           <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
             Request Details
           </Button>
@@ -207,7 +213,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Wallet Address</span>
               <span className="text-sm text-gray-400">
-                {row.original.wallet_address}
+                {row.original.wallet_address.slice(0, 7)}
               </span>
             </div>
             <div className="col-span-6 flex flex-col">
@@ -357,6 +363,9 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                     if (currentLoanState === 'Pending') {
                       toast.error('Loan needs to be activated by lender!');
                       setLoading(false);
+                    }
+                    if (account?.address === row.original.wallet_address) {
+                      toast.error('You cannot lend to yourself!');
                     } else {
                       fundLoan();
                       setLoading(true);

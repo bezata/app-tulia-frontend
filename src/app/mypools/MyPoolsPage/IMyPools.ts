@@ -10,4 +10,6 @@ export interface PoolDetail {
   repaymentToken: string;
   pool: string;
   funded: boolean;
+  borrower: string;
+  vault: string;
 }

@@ -31,9 +31,11 @@ import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 import { useCalculateClaimableInterest } from '@/lens/lens';
 import { useReadContract } from 'wagmi';
+import { useGetLoanState } from '@/lens/lens';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
+  const currentLoanState = useGetLoanState(row.original.pool);
   const [isLender, setIsLender] = useState(false);
   const [isFunded, setIsFunded] = useState(false);
   const [uiCollateral, setUiCollateral] = useState<number>(0);
@@ -53,10 +55,11 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const [claimableInterest, setClaimableInterest] = useState<number>(0);
   const [currentVaultManagerReward, setCurrentVaultManagerReward] =
     useState<number>(0);
+  const [newLoanState, setNewLoanState] = useState<number>(0);
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
   const checkAllowance = useCheckCoinAllowance(
-    row.original.loanCurrencyAddress as any,
+    row.original.Token as any,
     row.original.pool as any
   );
   const { data: vaultManagerReward } = useReadContract({
@@ -65,6 +68,10 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     functionName: 'calculateClaimableInterest',
     args: [row.original.pool],
   });
+
+  useEffect(() => {
+    setNewLoanState(currentLoanState as number);
+  }, [currentLoanState]);
 
   const { writeContract: activateLoan, data: activateLoanHash } =
     useWriteContract();
@@ -239,7 +246,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-6 flex flex-col">
             <span className="text-sm font-semibold">Wallet Address</span>
             <span className="text-sm text-gray-400">
-              {row.original.wallet_address}
+              {row.original.borrower.slice(0, 7)}
             </span>
           </div>
 
@@ -273,7 +280,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Rewards </span>
             <span className="text-sm text-green-500 ">
-              {Number(claimableInterest) / 10000000}
+              {Number(claimableInterest) / 10000000} {row.original.Token}
             </span>{' '}
             <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
@@ -467,11 +474,15 @@ function setLender(address _lender) external {
               description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
               title="Close Loan Deal"
               actionFunction={() => {
-                writeContract({
-                  abi: TuliaPoolABI,
-                  address: row.original.pool as any,
-                  functionName: 'reclaimLoanAndClosePool',
-                });
+                if (Number(currentLoanState) > 1) {
+                  toast.error('Loan is not in a state to be closed.');
+                } else {
+                  writeContract({
+                    abi: TuliaPoolABI,
+                    address: row.original.pool as any,
+                    functionName: 'reclaimLoanAndClosePool',
+                  });
+                }
               }}
               actionButtonStyle="!bg-red-900 hover:!bg-red-950"
               cancelText="Cancel"

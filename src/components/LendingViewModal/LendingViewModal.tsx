@@ -126,12 +126,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
 
     if (Number(currentAllowance) < loanAmount) {
       toast.error('Insufficient allowance');
-      approve({
-        address: row.original.repaymentCurrencyAddress as any,
-        abi: TokenABI,
-        functionName: 'approve',
-        args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
-      });
       setApprovalNeeded(true);
     }
     if (approveSuccess == true) {
@@ -279,7 +273,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                 <Button
                   onClick={() =>
                     approve({
-                      address: row.original.loanCurrencyAddress as any,
+                      address: row.original.repaymentCurrencyAddress as any,
                       abi: TokenABI,
                       functionName: 'approve',
                       args: [

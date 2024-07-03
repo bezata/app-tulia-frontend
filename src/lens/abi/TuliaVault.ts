@@ -2,6 +2,11 @@ export const TuliaVaultABI = [
   {
     inputs: [
       {
+        internalType: 'contract IERC20',
+        name: 'asset',
+        type: 'address',
+      },
+      {
         internalType: 'string',
         name: 'name',
         type: 'string',
@@ -16,30 +21,25 @@ export const TuliaVaultABI = [
     type: 'constructor',
   },
   {
-    inputs: [],
-    name: 'ECDSAInvalidSignature',
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'target',
+        type: 'address',
+      },
+    ],
+    name: 'AddressEmptyCode',
     type: 'error',
   },
   {
     inputs: [
       {
-        internalType: 'uint256',
-        name: 'length',
-        type: 'uint256',
+        internalType: 'address',
+        name: 'account',
+        type: 'address',
       },
     ],
-    name: 'ECDSAInvalidSignatureLength',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 's',
-        type: 'bytes32',
-      },
-    ],
-    name: 'ECDSAInvalidSignatureS',
+    name: 'AddressInsufficientBalance',
     type: 'error',
   },
   {
@@ -131,60 +131,106 @@ export const TuliaVaultABI = [
   {
     inputs: [
       {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
+      {
         internalType: 'uint256',
-        name: 'deadline',
+        name: 'assets',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'max',
         type: 'uint256',
       },
     ],
-    name: 'ERC2612ExpiredSignature',
+    name: 'ERC4626ExceededMaxDeposit',
     type: 'error',
   },
   {
     inputs: [
       {
         internalType: 'address',
-        name: 'signer',
+        name: 'receiver',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'max',
+        type: 'uint256',
+      },
+    ],
+    name: 'ERC4626ExceededMaxMint',
+    type: 'error',
+  },
+  {
+    inputs: [
       {
         internalType: 'address',
         name: 'owner',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'max',
+        type: 'uint256',
+      },
     ],
-    name: 'ERC2612InvalidSigner',
+    name: 'ERC4626ExceededMaxRedeem',
     type: 'error',
   },
   {
     inputs: [
       {
         internalType: 'address',
-        name: 'account',
+        name: 'owner',
         type: 'address',
       },
       {
         internalType: 'uint256',
-        name: 'currentNonce',
+        name: 'assets',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'max',
         type: 'uint256',
       },
     ],
-    name: 'InvalidAccountNonce',
+    name: 'ERC4626ExceededMaxWithdraw',
     type: 'error',
   },
   {
     inputs: [],
-    name: 'InvalidShortString',
+    name: 'FailedInnerCall',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'MathOverflowedMulDiv',
     type: 'error',
   },
   {
     inputs: [
       {
-        internalType: 'string',
-        name: 'str',
-        type: 'string',
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
       },
     ],
-    name: 'StringTooLong',
+    name: 'SafeERC20FailedOperation',
     type: 'error',
   },
   {
@@ -214,8 +260,33 @@ export const TuliaVaultABI = [
   },
   {
     anonymous: false,
-    inputs: [],
-    name: 'EIP712DomainChanged',
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+    ],
+    name: 'Deposit',
     type: 'event',
   },
   {
@@ -244,17 +315,41 @@ export const TuliaVaultABI = [
     type: 'event',
   },
   {
-    inputs: [],
-    name: 'DOMAIN_SEPARATOR',
-    outputs: [
+    anonymous: false,
+    inputs: [
       {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
+        indexed: true,
+        internalType: 'address',
+        name: 'sender',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
+    name: 'Withdraw',
+    type: 'event',
   },
   {
     inputs: [
@@ -305,6 +400,19 @@ export const TuliaVaultABI = [
     type: 'function',
   },
   {
+    inputs: [],
+    name: 'asset',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -327,13 +435,38 @@ export const TuliaVaultABI = [
     inputs: [
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: 'shares',
         type: 'uint256',
       },
     ],
-    name: 'burn',
-    outputs: [],
-    stateMutability: 'nonpayable',
+    name: 'convertToAssets',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
+      },
+    ],
+    name: 'convertToShares',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -350,43 +483,43 @@ export const TuliaVaultABI = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'eip712Domain',
-    outputs: [
-      {
-        internalType: 'bytes1',
-        name: 'fields',
-        type: 'bytes1',
-      },
-      {
-        internalType: 'string',
-        name: 'name',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: 'version',
-        type: 'string',
-      },
+    inputs: [
       {
         internalType: 'uint256',
-        name: 'chainId',
+        name: 'assets',
         type: 'uint256',
       },
       {
         internalType: 'address',
-        name: 'verifyingContract',
+        name: 'receiver',
         type: 'address',
       },
+    ],
+    name: 'deposit',
+    outputs: [
       {
-        internalType: 'bytes32',
-        name: 'salt',
-        type: 'bytes32',
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
       {
-        internalType: 'uint256[]',
-        name: 'extensions',
-        type: 'uint256[]',
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'maxDeposit',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -396,17 +529,80 @@ export const TuliaVaultABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'to',
+        name: '',
         type: 'address',
       },
+    ],
+    name: 'maxMint',
+    outputs: [
       {
         internalType: 'uint256',
-        name: 'amount',
+        name: '',
         type: 'uint256',
       },
     ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'maxRedeem',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'maxWithdraw',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
+    ],
     name: 'mint',
-    outputs: [],
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -426,12 +622,12 @@ export const TuliaVaultABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
       },
     ],
-    name: 'nonces',
+    name: 'previewDeposit',
     outputs: [
       {
         internalType: 'uint256',
@@ -445,43 +641,86 @@ export const TuliaVaultABI = [
   {
     inputs: [
       {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+    ],
+    name: 'previewMint',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+    ],
+    name: 'previewRedeem',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
+      },
+    ],
+    name: 'previewWithdraw',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'shares',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
+      {
         internalType: 'address',
         name: 'owner',
         type: 'address',
       },
-      {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address',
-      },
+    ],
+    name: 'redeem',
+    outputs: [
       {
         internalType: 'uint256',
-        name: 'value',
+        name: '',
         type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'deadline',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint8',
-        name: 'v',
-        type: 'uint8',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'r',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes32',
-        name: 's',
-        type: 'bytes32',
       },
     ],
-    name: 'permit',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -493,6 +732,19 @@ export const TuliaVaultABI = [
         internalType: 'string',
         name: '',
         type: 'string',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'totalAssets',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -559,6 +811,35 @@ export const TuliaVaultABI = [
         internalType: 'bool',
         name: '',
         type: 'bool',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'assets',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'owner',
+        type: 'address',
+      },
+    ],
+    name: 'withdraw',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'nonpayable',

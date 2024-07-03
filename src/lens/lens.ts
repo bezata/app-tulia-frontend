@@ -17,6 +17,7 @@ import {
 } from 'wagmi';
 import { useEffect, useState } from 'react';
 import { TokenABI } from './abi/Token';
+import { TuliaVaultABI } from './abi/TuliaVault';
 
 interface CalculationProps {
   principal: number;
@@ -109,6 +110,18 @@ export const useCheckCoinAllowance = (
   });
 
   return allowance as number | undefined;
+};
+
+export const useCheckVaultAllowance = (poolAddress: string) => {
+  const account = useAccount();
+  const { data: vaultAllowance } = useReadContract({
+    abi: TuliaVaultABI,
+    address: poolAddress as any,
+    functionName: 'allowance',
+    args: [account?.address as any, poolAddress as any],
+  });
+
+  return vaultAllowance as number | undefined;
 };
 
 export const useGetLoanState = (poolAddress: string) => {

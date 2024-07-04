@@ -52,6 +52,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const [apy, setApy] = useState<number>(0);
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
+  const [activateLoanCheck, setActivateLoanCheck] = useState('');
   const [claimableInterest, setClaimableInterest] = useState<number>(0);
   const [currentVaultManagerReward, setCurrentVaultManagerReward] =
     useState<number>(0);
@@ -72,9 +73,35 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   useEffect(() => {
     setNewLoanState(currentLoanState as number);
   }, [currentLoanState]);
+  const {
+    writeContract: activateLoan,
+    data: activateLoanHash,
+    status: activeLoanStatus,
+  } = useWriteContract();
 
-  const { writeContract: activateLoan, data: activateLoanHash } =
-    useWriteContract();
+  useEffect(() => {
+    if (activeLoanStatus === 'success') {
+      setActivateLoanCheck('success');
+    }
+    if (activeLoanStatus === 'error') {
+      setActivateLoanCheck('error');
+    }
+    if (activeLoanStatus === 'pending') {
+      setActivateLoanCheck('pending');
+    }
+  }, [activeLoanStatus]);
+
+  useEffect(() => {
+    if (activateLoanCheck === 'success') {
+      toast.success('Loan activated successfully');
+    }
+    if (activateLoanCheck === 'error') {
+      toast.error('Error activating loan');
+    }
+    if (activateLoanCheck === 'pending') {
+      toast.info('Loan activation pending');
+    }
+  }, [activateLoanCheck]);
 
   useEffect(() => {
     if (calculateRewardAPY) {
@@ -139,14 +166,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       setApprovalNeeded(false);
     }
   }, [approveSuccess]);
-
-  const handleReclaimAndCloseDeal = () => {
-    writeContract({
-      abi: TuliaPoolABI,
-      address: row.original.pool as any,
-      functionName: 'reclaimLoanAndClosePool',
-    });
-  };
 
   const currentClaimableInterest = useCalculateClaimableInterest({
     pool: row.original.pool,
@@ -264,11 +283,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             </span>
           </div>
           <div className="col-span-3 flex flex-col">
-            <span className="text-sm font-semibold text-primary">
-              Claimable Interest
-            </span>
+            <span className="text-sm font-semibold ">Claimable Interest</span>
             <span className="text-sm text-purple-400">
-              {formattedInterest.slice(0, 7)} {row.original.Token}{' '}
+              {formattedInterest.slice(0, 8)} {row.original.Token}{' '}
             </span>
           </div>
           <div className="col-span-3 flex flex-col">
@@ -474,7 +491,7 @@ function setLender(address _lender) external {
               description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
               title="Close Loan Deal"
               actionFunction={() => {
-                if (Number(currentLoanState) > 1) {
+                if (Number(newLoanState) > 1) {
                   toast.error('Loan is not in a state to be closed.');
                 } else {
                   writeContract({

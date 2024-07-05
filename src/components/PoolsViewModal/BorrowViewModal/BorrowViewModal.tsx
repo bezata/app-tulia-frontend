@@ -256,7 +256,8 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
             <span className="text-sm text-green-500">
-              {Number(claimableInterest) / 10000000} {row.original.Token}
+              {Number(claimableInterest) / 10000000}{' '}
+              {row.original.borrowTokenName}
             </span>{' '}
             <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
@@ -280,13 +281,14 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Collateral Amount</span>
             <span className="text-sm text-gray-400">
-              {uiCollateral} {row.original.Token}
+              {uiCollateral} {row.original.borrowTokenName}
             </span>
           </div>
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Debt Amount</span>
             <span className="text-sm text-gray-400">
-              {formatEther(BigInt(row.original.amount))} {row.original.Token}
+              {formatEther(BigInt(row.original.amount))}{' '}
+              {row.original.borrowTokenName}
             </span>
           </div>
           <div className="col-span-4 flex flex-col">

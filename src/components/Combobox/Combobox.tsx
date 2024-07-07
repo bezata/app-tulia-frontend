@@ -28,7 +28,7 @@ import UniIcon from '../../../public/UniIcon';
 
 const cryptoCurrencies: ILendRequest.CryptoCurrency[] = [
   {
-    label: 'WETH',
+    label: 'ETH',
     value: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
     symbol: <EthIcon />,
   },

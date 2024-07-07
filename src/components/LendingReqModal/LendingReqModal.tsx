@@ -84,12 +84,12 @@ const LendingReqModal = () => {
     defaultValues: {
       lendCoin: {
         label: 'WETH',
-        value: '0x38A3FfF5C1FebDA2CF33725d96A71271a48b257a',
+        value: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
         symbol: <EthIcon />,
       },
       borrowCoin: {
         label: 'ARB',
-        value: '0x348f6BFAdd2F95906094692eE879f28CB2af1eC9',
+        value: '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e',
         symbol: <ArbIcon />,
       },
       loanAmount: undefined,
@@ -177,7 +177,7 @@ const LendingReqModal = () => {
         newAddress = '0x1B1d3f3bdfa7D28eF818c268b59A20e5932dC706';
         break;
       case InterestModal.Simple:
-        newAddress = '0x771EE257Ccea2918474d881cfB6e11e2B34e9e93';
+        newAddress = '0x06D98c1AA31d84c51F150d6cC929E3095796Fae2';
         break;
       case InterestModal.FlashLoan:
         newAddress = '0x9a07dc388a44c5A87eD6e5D0D5bB810FC3B7cDA8';

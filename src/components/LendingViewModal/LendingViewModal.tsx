@@ -161,7 +161,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       }, 5000);
     }
   }, [openTransactionModal, router]);
-console.log(row.original.repaymentCurrencyAddress);
 const handleAcceptLendRequest = () => {
   setLoading(true);
   const currentAllowance = checkAllowance;

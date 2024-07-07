@@ -145,11 +145,16 @@ export const useCheckVaultAllowance = (poolAddress: string) => {
 };
 
 export const useGetLoanState = (poolAddress: string) => {
-  const { data: loanState } = useReadContract({
+  const queryClient = useQueryClient();
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const { data: loanState, queryKey } = useReadContract({
     abi: TuliaPoolABI,
     address: poolAddress as any,
     functionName: 'getLoanState',
   });
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey });
+  }, [blockNumber]);
 
   return loanState as number | undefined;
 };

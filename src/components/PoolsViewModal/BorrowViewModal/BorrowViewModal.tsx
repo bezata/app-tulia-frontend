@@ -75,6 +75,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
+
   const currentClaimableInterest = useCalculateClaimableInterest({
     pool: row.original.pool,
     isLender: isLender,
@@ -422,10 +423,6 @@ function setLender(address _lender) external {
               description="Are you sure you want to repay the loan?"
               title="Repay Loan"
               actionFunction={() => {
-                if (Number(vaultAllowance) < row.original.amount) {
-                  toast.error('Please approve the vault first');
-                  handleVaultApprove();
-                }
                 if (Number(vaultAllowance) >= row.original.amount) {
                   writeContract({
                     abi: TuliaPoolABI,

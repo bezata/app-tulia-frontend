@@ -60,7 +60,7 @@ const LoanStateCell: React.FC<{ pool: string }> = ({ pool }) => {
       displayState = PoolState.Pending;
   }
 
-  return <span className="ml-3">{displayState}</span>;
+  return <span>{displayState}</span>;
 };
 
 export const columns: ColumnDef<ILendingData>[] = [

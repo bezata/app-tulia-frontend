@@ -7,27 +7,27 @@ import DaiIcon from '../../public/DaiIcon';
 import UniIcon from '../../public/UniIcon';
 
 const tokenAddressMap = {
-  '0xD34738726C013a0184965A5C6603C0AA7BCF6B80': {
+  '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4': {
     name: 'WETH',
     icon: <EthIcon />,
   },
-  '0x3E34D176dc568414f3DB022C2DE8c4076e3B6043': {
+  '0x6ff9e328b50f1d81ec7a828EB1C7F27b4A3e0e09': {
     name: 'WBTC',
     icon: <BtcIcon />,
   },
-  '0x569da455F23155612437eEd8CfF2106aE7e6C158': {
+  '0x15E38De09a6453Ae9D1acc591b47baa5dA5C03dE': {
     name: 'USDC',
     icon: <USDCIcon />,
   },
-  '0xdB722aD58d55cE8FdCa16c86462BCBa8739E3e58': {
+  '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e ': {
     name: 'ARB',
     icon: <ArbIcon />,
   },
-  '0xc399E512Ff58882305A9C38f2C6d806f6F77f178': {
+  '0x90bD86E8E74D6A28a4cDEABf3c6Db2890818AD7B': {
     name: 'DAI',
     icon: <DaiIcon />,
   },
-  '0x5632a6D2E2aF12f20f69F78ee85AB2aE77F9949d': {
+  '0x087E9fb036843d25E6F7bC6D6531258A10749fE7': {
     name: 'UNI',
     icon: <UniIcon />,
   },

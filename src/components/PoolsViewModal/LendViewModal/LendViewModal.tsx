@@ -63,7 +63,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     isSuccess: approveSuccess,
     error: approveError,
   } = useWriteContract();
-  console.log(approveError);
   const checkAllowance = useCheckCoinAllowance(
     row.original.Token as any,
     row.original.pool as any
@@ -93,7 +92,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     status: activeLoanStatus,
     error: activeLoanError,
   } = useWriteContract();
-  console.log(activeLoanError);
   useEffect(() => {
     if (activeLoanStatus === 'success') {
       setActivateLoanCheck('success');

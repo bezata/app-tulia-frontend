@@ -59,102 +59,102 @@ const MyPoolspage = () => {
           let repaymentCurrency = {
             label: 'ARB',
             symbol: <ArbIcon />,
-            address: '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e',
+            address: '0x416a4ca8a82c6adc2fd49a417c4d5f9ccfbbde1e',
           };
 
           let currency = {
             label: 'ETH',
             symbol: <EthIcon />,
-            address: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
+            address: '0x2abfb11cbf39b135237bdf6c04782718253ba7d4',
           };
           // @ts-ignore
           switch (poolDetail?.loanToken.toLowerCase()) {
-            case '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4':
+            case '0x2abfb11cbf39b135237bdf6c04782718253ba7d4':
               currency = {
                 label: 'WETH',
                 symbol: <EthIcon />,
-                address: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
+                address: '0x2abfb11cbf39b135237bdf6c04782718253ba7d4',
               };
               break;
-            case '0x6ff9e328b50f1d81ec7a828EB1C7F27b4A3e0e09':
+            case '0x6ff9e328b50f1d81ec7a828eb1c7f27b4a3e0e09':
               currency = {
                 label: 'WBTC',
                 symbol: <BtcIcon />,
-                address: '0x6ff9e328b50f1d81ec7a828EB1C7F27b4A3e0e09',
+                address: '0x6ff9e328b50f1d81ec7a828eb1c7f27b4a3e0e09',
               };
               break;
-            case '0x15E38De09a6453Ae9D1acc591b47baa5dA5C03dE':
+            case '0x15e38de09a6453ae9d1acc591b47baa5da5c03de':
               currency = {
                 label: 'USDC',
                 symbol: <USDCIcon />,
-                address: '0x15E38De09a6453Ae9D1acc591b47baa5dA5C03dE',
+                address: '0x15e38de09a6453ae9d1acc591b47baa5da5c03de',
               };
               break;
-            case '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e':
+            case '0x416a4ca8a82c6adc2fd49a417c4d5f9ccfbbde1e':
               currency = {
                 label: 'ARB',
                 symbol: <ArbIcon />,
-                address: '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e',
+                address: '0x416a4ca8a82c6adc2fd49a417c4d5f9ccfbbde1e',
               };
               break;
-            case '0x90bD86E8E74D6A28a4cDEABf3c6Db2890818AD7B':
+            case '0x90bd86e8e74d6a28a4cdeabf3c6db2890818ad7b':
               currency = {
                 label: 'DAI',
                 symbol: <DaiIcon />,
-                address: '0x90bD86E8E74D6A28a4cDEABf3c6Db2890818AD7B',
+                address: '0x90bd86e8e74d6a28a4cdeabf3c6db2890818ad7b',
               };
               break;
-            case '0x087E9fb036843d25E6F7bC6D6531258A10749fE7':
+            case '0x087e9fb036843d25e6f7bc6d6531258a10749fe7':
               currency = {
                 label: 'UNI',
                 symbol: <UniIcon />,
-                address: '0x087E9fb036843d25E6F7bC6D6531258A10749fE7',
+                address: '0x087e9fb036843d25e6f7bc6d6531258a10749fe7',
               };
               break;
           }
 
           // @ts-ignore
-          switch (poolDetail.repaymentToken.toLowerCase()) {
-            case '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4':
+          switch (poolDetail?.repaymentToken.toLowerCase()) {
+            case '0x2abfb11cbf39b135237bdf6c04782718253ba7d4':
               repaymentCurrency = {
                 label: 'WETH',
                 symbol: <EthIcon />,
-                address: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
+                address: '0x2abfb11cbf39b135237bdf6c04782718253ba7d4',
               };
               break;
-            case '0x6ff9e328b50f1d81ec7a828EB1C7F27b4A3e0e09':
+            case '0x6ff9e328b50f1d81ec7a828eb1c7f27b4a3e0e09':
               repaymentCurrency = {
                 label: 'WBTC',
                 symbol: <BtcIcon />,
-                address: '0x6ff9e328b50f1d81ec7a828EB1C7F27b4A3e0e09',
+                address: '0x6ff9e328b50f1d81ec7a828eb1c7f27b4a3e0e09',
               };
               break;
-            case '0x15E38De09a6453Ae9D1acc591b47baa5dA5C03dE':
+            case '0x15e38de09a6453ae9d1acc591b47baa5da5c03de':
               repaymentCurrency = {
                 label: 'USDC',
                 symbol: <USDCIcon />,
-                address: '0x15E38De09a6453Ae9D1acc591b47baa5dA5C03dE',
+                address: '0x15e38de09a6453ae9d1acc591b47baa5da5c03de',
               };
               break;
-            case '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e':
+            case '0x416a4ca8a82c6adc2fd49a417c4d5f9ccfbbde1e':
               repaymentCurrency = {
                 label: 'ARB',
                 symbol: <ArbIcon />,
-                address: '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e',
+                address: '0x416a4ca8a82c6adc2fd49a417c4d5f9ccfbbde1e',
               };
               break;
-            case '0x90bD86E8E74D6A28a4cDEABf3c6Db2890818AD7B':
+            case '0x90bd86e8e74d6a28a4cdeabf3c6db2890818ad7b':
               repaymentCurrency = {
                 label: 'DAI',
                 symbol: <DaiIcon />,
-                address: '0x90bD86E8E74D6A28a4cDEABf3c6Db2890818AD7B',
+                address: '0x90bd86e8e74d6a28a4cdeabf3c6db2890818ad7b',
               };
               break;
-            case '0x087E9fb036843d25E6F7bC6D6531258A10749fE7':
+            case '0x087e9fb036843d25e6f7bc6d6531258a10749fe7':
               repaymentCurrency = {
                 label: 'UNI',
                 symbol: <UniIcon />,
-                address: '0x087E9fb036843d25E6F7bC6D6531258A10749fE7',
+                address: '0x087e9fb036843d25e6f7bc6d6531258a10749fe7',
               };
               break;
           }

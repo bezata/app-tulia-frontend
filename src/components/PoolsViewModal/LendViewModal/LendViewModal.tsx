@@ -44,10 +44,10 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     data: hash,
     error: contractError,
   } = useWriteContract();
-
+  
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
-    durationSeconds: Number(row.original.repaymentPeriod),
+    durationSeconds: Number(currentLoanState),
   });
   const [apy, setApy] = useState<number>(0);
   const [allowance, setAllowance] = useState<number>(0);
@@ -58,8 +58,12 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     useState<number>(0);
   const [uiLoanState, setUiLoanState] = useState<string>('');
   const [newLoanState, setNewLoanState] = useState<number>(0);
-  const { writeContract: approve, isSuccess: approveSuccess } =
-    useWriteContract();
+  const {
+    writeContract: approve,
+    isSuccess: approveSuccess,
+    error: approveError,
+  } = useWriteContract();
+  console.log(approveError);
   const checkAllowance = useCheckCoinAllowance(
     row.original.Token as any,
     row.original.pool as any
@@ -87,8 +91,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     writeContract: activateLoan,
     data: activateLoanHash,
     status: activeLoanStatus,
+    error: activeLoanError,
   } = useWriteContract();
-
+  console.log(activeLoanError);
   useEffect(() => {
     if (activeLoanStatus === 'success') {
       setActivateLoanCheck('success');
@@ -198,7 +203,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
 
   const handleApprove = () => {
     approve({
-      address: row.original.loanToken as any,
+      address: row.original.loanCurrencyAddress as any,
       abi: TokenABI,
       functionName: 'approve',
       args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
@@ -217,7 +222,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
 
   return (
     <Dialog>
-      {row.original.loan_state === 'Pending' ? (
+      {newLoanState === 0 ? (
         approvalNeeded ? (
           <Button
             onClick={handleApprove}

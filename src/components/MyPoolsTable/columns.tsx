@@ -50,6 +50,8 @@ export type IPoolsdata = {
   repaymentCurrencyAddress: string;
   loanCurrencyAddress: string;
   type: number;
+  borrower: string;
+  vault: string;
 };
 
 const LoanStateCell: React.FC<{ pool: string }> = ({ pool }) => {

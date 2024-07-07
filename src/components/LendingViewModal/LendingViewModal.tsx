@@ -25,9 +25,11 @@ import { useWriteContract } from 'wagmi';
 import { TokenABI } from '@/lens/abi/Token';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
+import { useAccount } from 'wagmi';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
+  const account = useAccount();
   const loanAmount = Number(row.original.amount);
   const interestRate = Number(row.original.interestRate);
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,17 +40,66 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
   const [currentLoanState, setLoanState] = useState<string>('');
+  const [approveTransactionStatus, setApprove] = useState<string>('');
+  const [lendRequestTransactionStatus, setLendRequest] = useState<string>('');
 
   const {
     writeContract: approve,
     data: approveHash,
     isSuccess: approveSuccess,
+    status: approveStatus,
   } = useWriteContract();
+  useEffect(() => {
+    if (approveStatus === 'success') {
+      toast.success('Approve transaction successful');
+      setApprovalNeeded(false);
+      setLoading(false);
+      setApprove('success');
+    }
+    if (approveStatus === 'error') {
+      toast.error('Approve transaction failed');
+      setLoading(false);
+      setApprove('error');
+    }
+    if (approveStatus === 'pending') {
+      toast.info('Approve transaction pending');
+      setLoading(true);
+      setApprove('pending');
+    }
+  }, [approveStatus]);
   const {
     writeContract: fundLoanTx,
     data: hash,
     isSuccess: fundLoanSuccess,
+    status: fundLoanStatus,
   } = useWriteContract();
+
+  useEffect(() => {
+    if (fundLoanStatus === 'success') {
+      setLendRequest('success');
+    }
+    if (fundLoanStatus === 'error') {
+      setLendRequest('error');
+    }
+    if (fundLoanStatus === 'pending') {
+      setLendRequest('pending');
+    }
+  }, [fundLoanStatus]);
+
+  useEffect(() => {
+    if (lendRequestTransactionStatus === 'success') {
+      toast.success('Transaction successful');
+      setOpenTransactionModal(true);
+      setLoading(false);
+    }
+    if (lendRequestTransactionStatus === 'error') {
+      setOpenTransactionModal(false);
+      setLoading(false);
+    }
+    if (lendRequestTransactionStatus === 'pending') {
+      setLoading(true);
+    }
+  }, [lendRequestTransactionStatus]);
 
   const loanState = row.original.loan_state;
   useEffect(() => {
@@ -59,14 +110,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     loanAmount: BigInt(loanAmount),
     durationSeconds: Number(row.original.repaymentPeriod),
   });
-
-  useEffect(() => {
-    if (approveSuccess) {
-      toast.success('Approve transaction successful');
-      setApprovalNeeded(false);
-      setLoading(false);
-    }
-  }, [approveSuccess]);
 
   const checkAllowance = useCheckCoinAllowance(
     row.original.repaymentCurrencyAddress,
@@ -114,7 +157,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
     if (openTransactionModal) {
       setTimeout(() => {
         toast.success('Transaction successful. Redirecting to My Pools.');
-        // router.push('/mypools');
+        router.push('/mypools');
       }, 5000);
     }
   }, [openTransactionModal, router]);
@@ -126,12 +169,6 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
 
     if (Number(currentAllowance) < loanAmount) {
       toast.error('Insufficient allowance');
-      approve({
-        address: row.original.repaymentCurrencyAddress as any,
-        abi: TokenABI,
-        functionName: 'approve',
-        args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
-      });
       setApprovalNeeded(true);
     }
     if (approveSuccess == true) {
@@ -148,7 +185,13 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
         open={openTransactionModal}
       />
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger
+          onClick={() => {
+            if (account?.address === row.original.wallet_address) {
+              toast.error('You cannot lend to yourself!');
+            }
+          }}
+        >
           <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
             Request Details
           </Button>
@@ -170,7 +213,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <div className="col-span-6 flex flex-col">
               <span className="text-sm font-semibold">Wallet Address</span>
               <span className="text-sm text-gray-400">
-                {row.original.wallet_address}
+                {row.original.wallet_address.slice(0, 7)}
               </span>
             </div>
             <div className="col-span-6 flex flex-col">
@@ -279,7 +322,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                 <Button
                   onClick={() =>
                     approve({
-                      address: row.original.loanCurrencyAddress as any,
+                      address: row.original.repaymentCurrencyAddress as any,
                       abi: TokenABI,
                       functionName: 'approve',
                       args: [
@@ -320,12 +363,14 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
                     if (currentLoanState === 'Pending') {
                       toast.error('Loan needs to be activated by lender!');
                       setLoading(false);
+                    }
+                    if (account?.address === row.original.wallet_address) {
+                      toast.error('You cannot lend to yourself!');
                     } else {
                       fundLoan();
                       setLoading(true);
                       setTimeout(() => {
                         setLoading(false);
-                        setOpenTransactionModal(true);
                       }, 2000);
                     }
                   }}

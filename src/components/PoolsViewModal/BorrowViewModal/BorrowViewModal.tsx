@@ -30,7 +30,9 @@ import {
   useCalculateClaimableInterest,
   useCalculateRewardApy,
   useCheckCoinAllowance,
+  useCheckVaultAllowance,
 } from '@/lens/lens';
+import { TuliaVaultABI } from '@/lens/abi/TuliaVault';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -40,6 +42,9 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
   const [uiCollateral, setUiCollateral] = useState<number>(0);
+  const [approvalNeededForVault, setApprovalNeededForVault] =
+    useState<boolean>(false);
+  const [vaultAllowance, setVaultAllowance] = useState<number>(0);
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
@@ -86,6 +91,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     row.original.pool as any
   );
 
+  const checkVaultAllowance = useCheckVaultAllowance(row.original.pool as any);
   useEffect(() => {
     const fetchAllowance = async () => {
       const currentAllowance = checkAllowance;
@@ -98,6 +104,19 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     };
     fetchAllowance();
   }, [checkAllowance, row.original.amount]);
+
+  useEffect(() => {
+    const fetchVaultAllowance = async () => {
+      const currentVaultAllowance = vaultAllowance;
+      if (currentVaultAllowance) {
+        setVaultAllowance(Number(currentVaultAllowance));
+        setApprovalNeededForVault(
+          Number(currentVaultAllowance) < Number(row.original.amount)
+        );
+      }
+    };
+    fetchVaultAllowance();
+  }, [checkVaultAllowance, row.original.amount, vaultAllowance]);
 
   const { writeContract: approve, isSuccess: approveSuccess } =
     useWriteContract();
@@ -114,9 +133,25 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
       address: row.original.loanCurrencyAddress as any,
       abi: TokenABI,
       functionName: 'approve',
-      args: [row.original.pool as any, parseEther(String(1000000000), 'wei')],
+      args: [
+        row.original.pool as any,
+        parseEther(String(100000000000000), 'wei'),
+      ],
     });
   };
+
+  const handleVaultApprove = () => {
+    approve({
+      address: row.original.vault as any,
+      abi: TuliaVaultABI,
+      functionName: 'approve',
+      args: [
+        row.original.pool as any,
+        parseEther(String(100000000000000), 'wei'),
+      ],
+    });
+  };
+
   const calculateCollateral = (
     loanAmount: number,
     interestRate: number
@@ -221,7 +256,8 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Interest </span>
             <span className="text-sm text-green-500">
-              {Number(claimableInterest) / 10000000}
+              {Number(claimableInterest) / 10000000}{' '}
+              {row.original.borrowTokenName}
             </span>{' '}
             <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
@@ -245,13 +281,14 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Collateral Amount</span>
             <span className="text-sm text-gray-400">
-              {uiCollateral} {row.original.Token}
+              {uiCollateral} {row.original.borrowTokenName}
             </span>
           </div>
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Debt Amount</span>
             <span className="text-sm text-gray-400">
-              {formatEther(BigInt(row.original.amount))} {row.original.Token}
+              {formatEther(BigInt(row.original.amount))}{' '}
+              {row.original.borrowTokenName}
             </span>
           </div>
           <div className="col-span-4 flex flex-col">
@@ -385,12 +422,17 @@ function setLender(address _lender) external {
               description="Are you sure you want to repay the loan?"
               title="Repay Loan"
               actionFunction={() => {
-                writeContract({
-                  abi: TuliaPoolABI,
-                  address: row.original.pool as any,
-                  functionName: 'repay',
-                });
-                console.log('repay');
+                if (Number(vaultAllowance) < row.original.amount) {
+                  toast.error('Please approve the vault first');
+                  handleVaultApprove();
+                }
+                if (Number(vaultAllowance) >= row.original.amount) {
+                  writeContract({
+                    abi: TuliaPoolABI,
+                    address: row.original.pool as any,
+                    functionName: 'repay',
+                  });
+                }
               }}
               actionButtonStyle="!bg-emerald-700 hover:bg-emerald-800"
               cancelText="Cancel"

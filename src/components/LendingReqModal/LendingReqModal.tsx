@@ -11,7 +11,7 @@ import {
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, CalendarDays } from 'lucide-react';
-import { useTransaction, useWaitForTransactionReceipt } from 'wagmi';
+import { useTransaction } from 'wagmi';
 import {
   useCalculateInterest,
   useCalculateCompoundInterest,
@@ -41,6 +41,7 @@ import { toast } from 'sonner';
 import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
 import { useWriteContract } from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
+import { useRouter } from 'next/navigation';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -61,14 +62,21 @@ const schema = z.object({
 });
 
 const LendingReqModal = () => {
-  const { writeContract, data: hash } = useWriteContract();
+  const router = useRouter();
+  const {
+    writeContract,
+    data: hash,
+    status: openPoolRequest,
+  } = useWriteContract();
   const [open, setOpen] = React.useState(false);
   const [openTxModal, setOpenTxModal] = useState<boolean>(false);
   const [collateral, setCollateral] = React.useState(0);
   const [uiCollateral, setUiCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
   const [feeAmount, setFeeAmount] = useState(0);
+  const [openPoolRequestStatus, setOpenPoolRequestStatus] = useState('idle');
   const account = useAccount();
+
   const newDate = new Date();
   newDate.setDate(newDate.getDate() + 1);
   const [date, setDate] = useState(newDate);
@@ -100,6 +108,40 @@ const LendingReqModal = () => {
     return (amount * flashLoanFeeRate) / 10000;
   };
 
+  useEffect(() => {
+    if (openPoolRequest === 'success') {
+      setOpenPoolRequestStatus('success');
+    }
+    if (openPoolRequest === 'error') {
+      setOpenPoolRequestStatus('error');
+    }
+    if (openPoolRequest === 'pending') {
+      setOpenPoolRequestStatus('pending');
+    }
+  }, [openPoolRequest]);
+
+  useEffect(() => {
+    if (openTxModal) {
+      setTimeout(() => {
+        toast.success('Transaction successful. Redirecting to My Pools.');
+        router.push('/mypools');
+      }, 10000);
+    }
+  }, [openTxModal, router]);
+
+  useEffect(() => {
+    if (openPoolRequestStatus === 'success') {
+      setOpenTxModal(true);
+      toast.success('Pool request created successfully');
+    }
+    if (openPoolRequestStatus === 'error') {
+      toast.error('Pool request failed');
+    }
+    if (openPoolRequestStatus === 'pending') {
+      toast.info('Pool request is pending');
+    }
+  }, [openPoolRequestStatus]);
+
   const interest = useCalculateInterest({
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
     rate: form.watch('interestRate'),
@@ -109,7 +151,6 @@ const LendingReqModal = () => {
     principal: parseFloat(form.watch('loanAmount')?.toString() || '0'),
     rate: form.watch('interestRate'),
   });
-  const waitTransactionReceipt = useWaitForTransactionReceipt({ hash });
 
   React.useEffect(() => {
     const subscription = form.watch((value, { name }) => {
@@ -235,11 +276,6 @@ const LendingReqModal = () => {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  useEffect(() => {
-    if (hash != undefined) {
-      setOpenTxModal(true);
-    }
-  }, [waitTransactionReceipt?.status, transactionReceipt?.data, form,hash]);
   return (
     <Dialog open={open} setOpen={setOpen}>
       <DialogTrigger>

@@ -65,7 +65,6 @@ const MyPoolspage = () => {
             symbol: <ArbIcon />,
             address: '0xdb722ad58d55ce8fdca16c86462bcba8739e3e58',
           };
-
           switch (poolDetail?.loanToken.toLowerCase()) {
             case '0xd34738726c013a0184965a5c6603c0aa7bcf6b80':
               currency = {
@@ -176,20 +175,16 @@ const MyPoolspage = () => {
             loanCurrencyAddress: currency.address,
             repaymentCurrencyAddress: repaymentCurrency.address,
             pool_state: PoolState.Defaulted,
+            borrower: poolDetail?.borrower,
+            vault: poolDetail?.vault,
           };
         }
       );
     };
 
-    if (allLenderPoolDetails) {
-      const lenderData = formatPoolDetails(allLenderPoolDetails, 2);
-      setData(prevData => [...prevData, ...lenderData]);
-    }
-
-    if (allBorrowerPoolDetails) {
-      const borrowerData = formatPoolDetails(allBorrowerPoolDetails, 1);
-      setData(prevData => [...prevData, ...borrowerData]);
-    }
+    const lenderData = formatPoolDetails(allLenderPoolDetails || [], 2);
+    const borrowerData = formatPoolDetails(allBorrowerPoolDetails || [], 1);
+    setData([...lenderData, ...borrowerData]);
   }, [allLenderPoolDetails, allBorrowerPoolDetails, totalPoolCount, apy]);
 
   useEffect(() => {

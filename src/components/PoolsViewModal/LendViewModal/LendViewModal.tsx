@@ -465,12 +465,15 @@ function setLender(address _lender) external {
                 description="Are you sure you want to claim the rewards?"
                 title="Claim Rewards"
                 actionFunction={() => {
-                  writeContract({
-                    abi: VaultManagerABI,
-                    address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
-                    functionName: 'distributeInterest',
-                    args: [row.original.pool, account?.address],
-                  });
+                  if (newLoanState <= 1) {
+                    toast.error('Waiting for borrower to give interest');
+                  } else
+                    writeContract({
+                      abi: VaultManagerABI,
+                      address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
+                      functionName: 'distributeInterest',
+                      args: [row.original.pool, account?.address],
+                    });
                   console.log('claim interest', account?.address);
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"

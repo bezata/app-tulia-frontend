@@ -11,6 +11,11 @@ export const RewardManagerABI = [
     type: 'constructor',
   },
   {
+    inputs: [],
+    name: 'ReentrancyGuardReentrantCall',
+    type: 'error',
+  },
+  {
     anonymous: false,
     inputs: [
       {

@@ -82,6 +82,11 @@ export const TuliaPoolABI = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'ReentrancyGuardReentrantCall',
+    type: 'error',
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -442,6 +447,19 @@ export const TuliaPoolABI = [
         internalType: 'enum TuliaPool.LoanState',
         name: '',
         type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getRemainingRepaymentPeriod',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',

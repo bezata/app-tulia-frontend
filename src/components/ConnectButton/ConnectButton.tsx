@@ -28,7 +28,7 @@ const CustomConnectButton = () => {
 
     writeContract({
       abi: BulkMinterABI,
-      address: '0xf237f2ecdD431bd18286f16AC7c9F485ccD701aF' as any,
+      address: '0x351a05e30621Ffda54199B083C6c5c53C81153D1' as any,
       functionName: 'mintAll',
       args: [mintAmount],
     });

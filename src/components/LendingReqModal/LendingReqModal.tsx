@@ -227,7 +227,7 @@ const LendingReqModal = () => {
     const loanAmount = parseEther(String(data?.loanAmount));
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0xE432eccc97AC669Eb614C87FEb69370257D92682',
+      address: '0xEC240Eeb8ab92c520DD7898f7DBd21de6630C634',
       functionName: 'createTuliaPool',
       args: [
         account?.address as any,

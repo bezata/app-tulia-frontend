@@ -66,7 +66,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   );
   const { data: vaultManagerReward } = useReadContract({
     abi: VaultManagerABI,
-    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+    address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
     functionName: 'calculateClaimableInterest',
     args: [row.original.pool],
   });
@@ -464,7 +464,7 @@ function setLender(address _lender) external {
                 actionFunction={() => {
                   writeContract({
                     abi: VaultManagerABI,
-                    address: '0xd2C97CFa8eb4386b99987f02161724ffB59994fa',
+                    address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
                     functionName: 'distributeInterest',
                     args: [row.original.pool, account?.address],
                   });
@@ -486,7 +486,7 @@ function setLender(address _lender) external {
                 actionFunction={() => {
                   writeContract({
                     abi: RewardManagerABI,
-                    address: '0xF8eC96336DaB85600Ac9Bb2AAaeE2FeC17fc6A01',
+                    address: '0xa5Fe443f5D1e2Af4D62583308Dc428494C19C915',
                     functionName: 'claimRewards',
                     args: [row.original.pool, true],
                   });

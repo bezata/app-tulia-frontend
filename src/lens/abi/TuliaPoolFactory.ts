@@ -3,75 +3,6 @@ export const TuliaPoolFactoryABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'lender',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'loanTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'assetToken',
-        type: 'address',
-      },
-      {
-        internalType: 'contract IERC20',
-        name: 'repaymentTokenAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'loanAmount',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'interestRate',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: 'repaymentPeriod',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract IInterestModel',
-        name: 'interestModel',
-        type: 'address',
-      },
-      {
-        internalType: 'enum IPoolOrganizer.PoolType',
-        name: 'poolType',
-        type: 'uint8',
-      },
-      {
-        internalType: 'uint256',
-        name: 'optionalFlashLoanFeeRate',
-        type: 'uint256',
-      },
-    ],
-    name: 'createTuliaPool',
-    outputs: [
-      {
-        internalType: 'address',
-        name: 'poolAddress',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'vaultAddress',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: '_poolOrganizer',
         type: 'address',
       },
@@ -138,6 +69,75 @@ export const TuliaPoolFactoryABI = [
     ],
     name: 'VaultCreated',
     type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'lender',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'loanTokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'assetToken',
+        type: 'address',
+      },
+      {
+        internalType: 'contract IERC20',
+        name: 'repaymentTokenAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'loanAmount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'interestRate',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'repaymentPeriod',
+        type: 'uint256',
+      },
+      {
+        internalType: 'contract IInterestModel',
+        name: 'interestModel',
+        type: 'address',
+      },
+      {
+        internalType: 'enum IPoolOrganizer.PoolType',
+        name: 'poolType',
+        type: 'uint8',
+      },
+      {
+        internalType: 'uint256',
+        name: 'optionalFlashLoanFeeRate',
+        type: 'uint256',
+      },
+    ],
+    name: 'createTuliaPool',
+    outputs: [
+      {
+        internalType: 'address',
+        name: 'poolAddress',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'vaultAddress',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [],

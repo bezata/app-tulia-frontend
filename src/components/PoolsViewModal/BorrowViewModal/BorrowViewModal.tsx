@@ -31,6 +31,7 @@ import {
   useCalculateRewardApy,
   useCheckCoinAllowance,
   useCheckVaultAllowance,
+  useGetRemainingRepaymentPeriod,
 } from '@/lens/lens';
 import { TuliaVaultABI } from '@/lens/abi/TuliaVault';
 
@@ -45,6 +46,10 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   const [approvalNeededForVault, setApprovalNeededForVault] =
     useState<boolean>(false);
   const [vaultAllowance, setVaultAllowance] = useState<number>(0);
+  const [formattedRepaymentTime, setFormattedRepaymentTime] =
+    useState<string>('');
+
+  console.log(vaultAllowance);
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
@@ -75,7 +80,6 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
-
   const currentClaimableInterest = useCalculateClaimableInterest({
     pool: row.original.pool,
     isLender: isLender,
@@ -87,24 +91,21 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   }, [currentClaimableInterest]);
 
-  const checkAllowance = useCheckCoinAllowance(
-    row.original.loanCurrencyAddress as any,
-    row.original.pool as any
+  const checkVaultAllowance = useCheckVaultAllowance(
+    row.original.pool as any,
+    row.original.vault as any
   );
 
-  const checkVaultAllowance = useCheckVaultAllowance(row.original.pool as any);
   useEffect(() => {
     const fetchAllowance = async () => {
-      const currentAllowance = checkAllowance;
+      const currentAllowance = checkVaultAllowance;
       if (currentAllowance) {
         setAllowance(Number(currentAllowance));
-        setApprovalNeeded(
-          Number(currentAllowance) < Number(row.original.amount)
-        );
+        setApprovalNeeded(Number(currentAllowance) < 0);
       }
     };
     fetchAllowance();
-  }, [checkAllowance, row.original.amount]);
+  }, [checkVaultAllowance]);
 
   useEffect(() => {
     const fetchVaultAllowance = async () => {
@@ -165,7 +166,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     setUiCollateral(Number(netTotal));
     return total;
   };
-
+  console.log(row.original.pool);
   useEffect(() => {
     calculateCollateral(row.original.amount, Number(row.original.interestRate));
   }, [row.original.amount, row.original.interestRate]);
@@ -173,6 +174,24 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   useEffect(() => {
     setApprovalNeeded(allowance < row.original.amount);
   }, [allowance, row.original.amount]);
+
+  // Function to format the remaining time in seconds to a human-readable format
+  const formatDuration = (seconds: number): string => {
+    const days: number = Math.floor(seconds / (3600 * 24) / 86400);
+    const hours: number = Math.floor((seconds % (3600 * 24)) / 3600);
+    const minutes: number = Math.floor((seconds % 3600) / 60);
+
+    return `${days}d ${hours}h ${minutes}m `;
+  };
+
+  const latestRepayment = useGetRemainingRepaymentPeriod(row.original.pool);
+
+  useEffect(() => {
+    if (latestRepayment !== undefined) {
+      const formatted = formatDuration(Number(latestRepayment));
+      setFormattedRepaymentTime(formatted);
+    }
+  }, [latestRepayment]);
 
   return (
     <Dialog>
@@ -214,16 +233,22 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
               Loan Information
             </span>
           </div>
-          <div className="col-span-6 flex flex-col">
+          <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Wallet Address</span>
             <span className="text-sm text-gray-400">
               {row.original.wallet_address}
             </span>
           </div>
-          <div className="col-span-6 flex flex-col">
+          <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Coin Amount</span>
             <span className="text-sm text-gray-400">
               {formatEther(BigInt(row.original.amount))} {row.original.Token}
+            </span>{' '}
+          </div>
+          <div className="col-span-4 flex flex-col">
+            <span className="text-sm font-semibold">Repayment Time Left </span>
+            <span className="text-sm text-gray-400">
+              {formattedRepaymentTime}
             </span>
           </div>
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -406,7 +431,9 @@ function setLender(address _lender) external {
                   functionName: 'claimRewards',
                   args: [row.original.pool, isLender],
                 });
-                console.log('claim rewards');
+                toast.info(
+                  `Claiming ${claimableInterest} ${row.original.borrowTokenName} `
+                );
               }}
               actionButtonStyle="!bg-primary/50 hover:!bg-primary/20"
               cancelText="Cancel"
@@ -423,12 +450,16 @@ function setLender(address _lender) external {
               description="Are you sure you want to repay the loan?"
               title="Repay Loan"
               actionFunction={() => {
-                if (Number(vaultAllowance) >= row.original.amount) {
+                if (Number(checkVaultAllowance) < 1) {
+                  handleVaultApprove();
+                  toast.info('Approve the vault');
+                } else {
                   writeContract({
                     abi: TuliaPoolABI,
                     address: row.original.pool as any,
                     functionName: 'repay',
                   });
+                  toast.info('Repaying loan');
                 }
               }}
               actionButtonStyle="!bg-emerald-700 hover:bg-emerald-800"

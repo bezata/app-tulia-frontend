@@ -319,6 +319,7 @@ return (
           <div className="col-span-12 flex flex-col">
             {approvalNeeded ? (
               <Button
+                disabled={approveStatus === 'pending'}
                 onClick={() =>
                   approve({
                     address: row.original.repaymentCurrencyAddress as any,
@@ -344,6 +345,7 @@ return (
                   ) : (
                     <Button
                       onClick={handleAcceptLendRequest}
+                      disabled={fundLoanStatus === 'pending'}
                       className="capitalize tulia_main_button w-full"
                     >
                       Accept Lend Request

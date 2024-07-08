@@ -48,6 +48,20 @@ export const useGetAllBorrowerPoolDetails = () => {
   return borrowerPoolDetails as any;
 };
 
+export const useGetRemainingRepaymentPeriod = (pool: any) => {
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const queryClient = useQueryClient();
+  const { data: periodData, queryKey } = useReadContract({
+    abi: TuliaPoolABI,
+    address: pool as any,
+    functionName: 'getRemainingRepaymentPeriod',
+  });
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey });
+  }, [blockNumber]);
+  return Math.floor(Number(periodData)) as any;
+};
+
 export const useCalculateRewardApy = ({
   loanAmount,
   durationSeconds,
@@ -132,11 +146,14 @@ export const useCheckCoinAllowance = (
   return allowance as number | undefined;
 };
 
-export const useCheckVaultAllowance = (poolAddress: string) => {
+export const useCheckVaultAllowance = (
+  poolAddress: string,
+  vaultAddress: string
+) => {
   const account = useAccount();
   const { data: vaultAllowance } = useReadContract({
     abi: TuliaVaultABI,
-    address: poolAddress as any,
+    address: vaultAddress as any,
     functionName: 'allowance',
     args: [account?.address as any, poolAddress as any],
   });

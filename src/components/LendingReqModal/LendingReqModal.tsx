@@ -227,7 +227,7 @@ const LendingReqModal = () => {
     const loanAmount = parseEther(String(data?.loanAmount));
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0x7203f256cD3b44f04d769c9327094846d9506903',
+      address: '0x0B085914C6aD14B2e0a6F52dC76e60128d318282',
       functionName: 'createTuliaPool',
       args: [
         account?.address as any,
@@ -693,7 +693,11 @@ contract MockFlashBorrower is IERC3156FlashBorrower {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" className="bg-tulia_primary/50">
+              <Button
+                disabled={openPoolRequestStatus === 'pending'}
+                type="submit"
+                className="bg-tulia_primary/50"
+              >
                 Create <PlusCircle className="w-4 h-4 inline-block ml-2" />
               </Button>
             </div>

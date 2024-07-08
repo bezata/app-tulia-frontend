@@ -31,7 +31,7 @@ import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 import { useCalculateClaimableInterest } from '@/lens/lens';
 import { useReadContract } from 'wagmi';
-import { useGetLoanState } from '@/lens/lens';
+import { useGetLoanState, useGetRemainingRepaymentPeriod } from '@/lens/lens';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -44,11 +44,12 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     data: hash,
     error: contractError,
   } = useWriteContract();
-  
+
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
     durationSeconds: Number(currentLoanState),
   });
+
   const [apy, setApy] = useState<number>(0);
   const [allowance, setAllowance] = useState<number>(0);
   const [approvalNeeded, setApprovalNeeded] = useState<boolean>(false);
@@ -56,12 +57,16 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const [claimableInterest, setClaimableInterest] = useState<number>(0);
   const [currentVaultManagerReward, setCurrentVaultManagerReward] =
     useState<number>(0);
+  const [formattedRepaymentTime, setFormattedRepaymentTime] =
+    useState<string>('');
   const [uiLoanState, setUiLoanState] = useState<string>('');
+
   const [newLoanState, setNewLoanState] = useState<number>(0);
   const {
     writeContract: approve,
     isSuccess: approveSuccess,
     error: approveError,
+    status: approveStatus,
   } = useWriteContract();
   const checkAllowance = useCheckCoinAllowance(
     row.original.Token as any,
@@ -83,15 +88,19 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   }, [newLoanState]);
 
+  const latestRepayment = useGetRemainingRepaymentPeriod(row.original.pool);
+
   useEffect(() => {
     setNewLoanState(currentLoanState as number);
   }, [currentLoanState]);
+
   const {
     writeContract: activateLoan,
     data: activateLoanHash,
     status: activeLoanStatus,
     error: activeLoanError,
   } = useWriteContract();
+
   useEffect(() => {
     if (activeLoanStatus === 'success') {
       setActivateLoanCheck('success');
@@ -121,6 +130,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       setApy(Number(calculateRewardAPY));
     }
   }, [calculateRewardAPY]);
+
   useEffect(() => {
     if (vaultManagerReward) {
       setCurrentVaultManagerReward(Number(vaultManagerReward));
@@ -143,6 +153,22 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   useEffect(() => {
     calculateCollateral(row.original.amount, Number(row.original.interestRate));
   }, [row.original.amount, row.original.interestRate]);
+
+  // Function to format the remaining time in seconds to a human-readable format
+  const formatDuration = (seconds: number): string => {
+    const days: number = Math.floor(seconds / (3600 * 24) / 86400);
+    const hours: number = Math.floor((seconds % (3600 * 24)) / 3600);
+    const minutes: number = Math.floor((seconds % 3600) / 60);
+
+    return `${days}d ${hours}h ${minutes}m `;
+  };
+
+  useEffect(() => {
+    if (latestRepayment !== undefined) {
+      const formatted = formatDuration(Number(latestRepayment));
+      setFormattedRepaymentTime(formatted);
+    }
+  }, [latestRepayment]);
 
   useEffect(() => {
     if (row.original.loan_state === 'Funded') {
@@ -182,7 +208,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
 
   const currentClaimableInterest = useCalculateClaimableInterest({
     pool: row.original.pool,
-    isLender: isLender,
+    isLender: true,
   });
 
   useEffect(() => {
@@ -225,6 +251,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <Button
             onClick={handleApprove}
             className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+            disabled={approveStatus === 'pending'}
           >
             Approve Transaction
           </Button>
@@ -288,6 +315,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </div>
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Remaining Time</span>
+            <span className="text-sm text-gray-400">
+              {formattedRepaymentTime}
+            </span>
           </div>
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
             {/* Interest Details */}
@@ -344,18 +374,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
               {uiCollateral} {row.original.borrowTokenName}
             </span>
           </div>
-          {/* <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Loan State</span>
-            {row.original.state === PoolState.Active ? (
-              <span className="text-sm text-green-500">Active</span>
-            ) : row.original.state === PoolState.Closed ? (
-              <span className="text-sm text-red-500">Closed</span>
-            ) : row.original.state === PoolState.Pending ? (
-              <span className="text-sm text-yellow-500">Pending</span>
-            ) : (
-              <span className="text-sm text-blue-500">Defaulted</span>
-            )}
-          </div> */}
           <div className="col-span-4 flex flex-col">
             <span className="text-sm font-semibold">Repayment Period</span>
             <span className="text-sm text-gray-400">
@@ -474,7 +492,9 @@ function setLender(address _lender) external {
                       functionName: 'distributeInterest',
                       args: [row.original.pool, account?.address],
                     });
-                  console.log('claim interest', account?.address);
+                  toast.info(
+                    `Claiming ${formatEther(BigInt(currentVaultManagerReward))} ${row.original.borrowTokenName}`
+                  );
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"
@@ -496,7 +516,9 @@ function setLender(address _lender) external {
                     functionName: 'claimRewards',
                     args: [row.original.pool, true],
                   });
-
+                  toast.info(
+                    `Claiming ${Number(claimableInterest) / 10000000} ${row.original.borrowTokenName}`
+                  );
                   console.log('claim rewards');
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
@@ -513,8 +535,20 @@ function setLender(address _lender) external {
               actionText="Default The Loan"
               description="Are you sure you want to default the loan? Collateral amount and remaining interest will return to you."
               title="Default Loan Deal"
-              actionFunction={() => {}}
-              actionButtonStyle="!bg-green-900 hover:!bg-green-950"
+              actionFunction={() => {
+                if (latestRepayment !== 0) {
+                  toast.error(
+                    `There is still ${formattedRepaymentTime} remaining before you can default the loan.`
+                  );
+                } else {
+                  writeContract({
+                    abi: TuliaPoolABI,
+                    address: row.original.pool as any,
+                    functionName: 'checkAndHandleDefault',
+                  });
+                }
+              }}
+              actionButtonStyle="!bg-green-900 hover:bg-green-950"
               cancelText="Cancel"
             />
             <Alert

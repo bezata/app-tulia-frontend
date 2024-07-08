@@ -1,48 +1,21 @@
 export const VaultManagerABI = [
   {
-    inputs: [],
-    name: 'AccessControlBadConfirmation',
-    type: 'error',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'neededRole',
-        type: 'bytes32',
-      },
-    ],
-    name: 'AccessControlUnauthorizedAccount',
-    type: 'error',
-  },
-  {
     anonymous: false,
     inputs: [
       {
         indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
       },
       {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'previousAdminRole',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'newAdminRole',
-        type: 'bytes32',
+        indexed: false,
+        internalType: 'bool',
+        name: 'status',
+        type: 'bool',
       },
     ],
-    name: 'RoleAdminChanged',
+    name: 'InterestAccrualToggled',
     type: 'event',
   },
   {
@@ -50,24 +23,18 @@ export const VaultManagerABI = [
     inputs: [
       {
         indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
         internalType: 'address',
-        name: 'account',
+        name: 'pool',
         type: 'address',
       },
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
       },
     ],
-    name: 'RoleGranted',
+    name: 'InterestDeposited',
     type: 'event',
   },
   {
@@ -75,34 +42,65 @@ export const VaultManagerABI = [
     inputs: [
       {
         indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
         internalType: 'address',
-        name: 'account',
+        name: 'pool',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'sender',
+        name: 'to',
         type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
       },
     ],
-    name: 'RoleRevoked',
+    name: 'InterestPaid',
     type: 'event',
   },
   {
-    inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'to',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'InterestRefunded',
+    type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+    ],
+    name: 'calculateClaimableInterest',
     outputs: [
       {
-        internalType: 'bytes32',
+        internalType: 'uint256',
         name: '',
-        type: 'bytes32',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -111,36 +109,12 @@ export const VaultManagerABI = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRoleAdmin',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
         internalType: 'address',
-        name: 'account',
+        name: 'pool',
         type: 'address',
       },
     ],
-    name: 'grantRole',
+    name: 'deregisterVault',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -148,21 +122,67 @@ export const VaultManagerABI = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
       },
       {
         internalType: 'address',
-        name: 'account',
+        name: 'to',
         type: 'address',
       },
     ],
-    name: 'hasRole',
+    name: 'distributeInterest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'lender',
+        type: 'address',
+      },
+    ],
+    name: 'handleDefault',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'interestInfo',
     outputs: [
       {
+        internalType: 'uint256',
+        name: 'totalInterest',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'paymentStartBlock',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'interestPaid',
+        type: 'uint256',
+      },
+      {
         internalType: 'bool',
-        name: '',
+        name: 'isAccruing',
         type: 'bool',
       },
     ],
@@ -172,17 +192,17 @@ export const VaultManagerABI = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
       },
       {
         internalType: 'address',
-        name: 'callerConfirmation',
+        name: 'borrower',
         type: 'address',
       },
     ],
-    name: 'renounceRole',
+    name: 'refundRemainingInterest',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -190,38 +210,14 @@ export const VaultManagerABI = [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
         internalType: 'address',
-        name: 'account',
+        name: 'pool',
         type: 'address',
       },
     ],
-    name: 'revokeRole',
+    name: 'registerPoolVault',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes4',
-        name: 'interfaceId',
-        type: 'bytes4',
-      },
-    ],
-    name: 'supportsInterface',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
 ];

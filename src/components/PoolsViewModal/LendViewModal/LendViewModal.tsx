@@ -304,28 +304,32 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
               {formatEther(BigInt(row.original.amount))} {row.original.Token}
             </span>
           </div>
-          <div className="col-span-12 border-gray-500 pb-2 border-b-[0.5px]">
-            <span className="font-bold">
-              <UserCheck size={20} className="inline-block mr-2" />
-              Borrower&apos;s Information
-            </span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Wallet Address</span>
-            <span className="text-sm text-gray-400">
-              {row.original.borrower.slice(0, 7)}
-            </span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Loan Status</span>
-            <span className="text-sm text-gray-400">{uiLoanState}</span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Remaining Time</span>
-            <span className="text-sm text-gray-400">
-              {formattedRepaymentTime}
-            </span>
-          </div>
+          {row.original.poolType !== 1 && (
+            <>
+              <div className="col-span-12 border-gray-500 pb-2 border-b-[0.5px]">
+                <span className="font-bold">
+                  <UserCheck size={20} className="inline-block mr-2" />
+                  Borrower&apos;s Information
+                </span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Wallet Address</span>
+                <span className="text-sm text-gray-400">
+                  {row.original.borrower.slice(0, 7)}
+                </span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Loan Status</span>
+                <span className="text-sm text-gray-400">{uiLoanState}</span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Remaining Time</span>
+                <span className="text-sm text-gray-400">
+                  {formattedRepaymentTime}
+                </span>
+              </div>
+            </>
+          )}
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
             {/* Interest Details */}
             <span className="font-bold">
@@ -333,25 +337,35 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
               Interest Details
             </span>
           </div>
-          <div className="col-span-3 flex flex-col">
+          <div
+            className={`${row.original.poolType !== 1 ? 'col-span-3' : 'col-span-6'} flex flex-col`}
+          >
             <span className="text-sm font-semibold">Interest Rate</span>
             <span className="text-sm text-gray-400">
               {Number(row.original.interestRate)}%
             </span>
           </div>
-          <div className="col-span-3 flex flex-col">
-            <span className="text-sm font-semibold ">Claimable Interest</span>
-            <span className="text-sm text-purple-400">
-              {formattedInterest.slice(0, 5)} {row.original.borrowTokenName}{' '}
-            </span>
-          </div>
-          <div className="col-span-3 flex flex-col">
-            <span className="text-sm font-semibold">Interest Modal</span>
-            <span className="text-sm text-gray-400">
-              {row.original.interest_modal}
-            </span>
-          </div>
-          <div className="col-span-3 flex flex-col">
+          {row.original.poolType !== 1 && (
+            <>
+              <div className="col-span-3 flex flex-col">
+                <span className="text-sm font-semibold ">
+                  Claimable Interest
+                </span>
+                <span className="text-sm text-purple-400">
+                  {formattedInterest.slice(0, 5)} {row.original.borrowTokenName}{' '}
+                </span>
+              </div>
+              <div className="col-span-3 flex flex-col">
+                <span className="text-sm font-semibold">Interest Modal</span>
+                <span className="text-sm text-gray-400">
+                  {row.original.interest_modal}
+                </span>
+              </div>
+            </>
+          )}
+          <div
+            className={`${row.original.poolType !== 1 ? 'col-span-3' : 'col-span-6'} flex flex-col`}
+          >
             <span className="text-sm font-semibold">Claimable Rewards </span>
             <span className="text-sm text-green-500 ">
               {formatEther(BigInt(claimableInterest)).toString().slice(0, 8)}{' '}
@@ -369,56 +383,62 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             </span>
           </div>
           {/* Loan Details */}
-          <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
-            <span className="font-bold">
-              <LucideBanknote size={20} className="inline-block mr-2" />
-              Loan Details
-            </span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Collateral Amount</span>
-            <span className="text-sm text-gray-400">
-              {uiCollateral} {row.original.borrowTokenName}
-            </span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Repayment Period</span>
-            <span className="text-sm text-gray-400">
-              {Number(row.original.repaymentPeriod) / 86400} Days
-            </span>
-          </div>
+          {row.original.poolType !== 1 && (
+            <>
+              <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
+                <span className="font-bold">
+                  <LucideBanknote size={20} className="inline-block mr-2" />
+                  Loan Details
+                </span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Collateral Amount</span>
+                <span className="text-sm text-gray-400">
+                  {uiCollateral} {row.original.borrowTokenName}
+                </span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Repayment Period</span>
+                <span className="text-sm text-gray-400">
+                  {Number(row.original.repaymentPeriod) / 86400} Days
+                </span>
+              </div>
+            </>
+          )}
           <div className="col-span-12 flex gap-2 flex-col">
             <div className="col-span-12 flex flex-row border-gray-500 pb-2 border-b-[0.5px] gap-4">
-              <Alert
-                actionButton={
-                  <Button
-                    disabled={contractStatus === 'pending'}
-                    className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]"
-                  >
-                    Claim Interest <Gift size={16} className="ml-2" />
-                  </Button>
-                }
-                actionText="Claim Interest"
-                description="Are you sure you want to claim the rewards?"
-                title="Claim Rewards"
-                actionFunction={() => {
-                  if (newLoanState <= 1) {
-                    toast.error('Waiting for borrower to give interest');
-                  } else
-                    writeContract({
-                      abi: VaultManagerABI,
-                      address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
-                      functionName: 'distributeInterest',
-                      args: [row.original.pool, account?.address],
-                    });
-                  toast.info(
-                    `Claiming ${formatEther(BigInt(currentVaultManagerReward)).toString()} ${row.original.borrowTokenName}`
-                  );
-                }}
-                actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
-                triggerClassName="w-full"
-                cancelText="Cancel"
-              />
+              {row.original.poolType !== 1 && (
+                <Alert
+                  actionButton={
+                    <Button
+                      disabled={contractStatus === 'pending'}
+                      className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]"
+                    >
+                      Claim Interest <Gift size={16} className="ml-2" />
+                    </Button>
+                  }
+                  actionText="Claim Interest"
+                  description="Are you sure you want to claim the rewards?"
+                  title="Claim Rewards"
+                  actionFunction={() => {
+                    if (newLoanState <= 1) {
+                      toast.error('Waiting for borrower to give interest');
+                    } else
+                      writeContract({
+                        abi: VaultManagerABI,
+                        address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
+                        functionName: 'distributeInterest',
+                        args: [row.original.pool, account?.address],
+                      });
+                    toast.info(
+                      `Claiming ${formatEther(BigInt(currentVaultManagerReward)).toString()} ${row.original.borrowTokenName}`
+                    );
+                  }}
+                  actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
+                  triggerClassName="w-full"
+                  cancelText="Cancel"
+                />
+              )}
               <Alert
                 actionButton={
                   <Button
@@ -447,7 +467,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 cancelText="Cancel"
               />
             </div>
-            {isAccrue === false && (
+            {isAccrue === false && row.original.poolType !== 1 && (
               <Alert
                 actionButton={
                   <Button
@@ -472,34 +492,36 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 cancelText="Cancel"
               />
             )}
-            <Alert
-              actionButton={
-                <Button
-                  disabled={contractStatus === 'pending'}
-                  className="capitalize border-tulia_primary bg-green-900 hover:bg-green-950 w-full"
-                >
-                  Default Loan
-                </Button>
-              }
-              actionText="Default The Loan"
-              description="Are you sure you want to default the loan? Collateral amount and remaining interest will return to you."
-              title="Default Loan Deal"
-              actionFunction={() => {
-                if (latestRepayment !== 0) {
-                  toast.error(
-                    `There is still ${formattedRepaymentTime} remaining before you can default the loan.`
-                  );
-                } else {
-                  writeContract({
-                    abi: TuliaPoolABI,
-                    address: row.original.pool as any,
-                    functionName: 'checkAndHandleDefault',
-                  });
+            {row.original.poolType !== 1 && (
+              <Alert
+                actionButton={
+                  <Button
+                    disabled={contractStatus === 'pending'}
+                    className="capitalize border-tulia_primary bg-green-900 hover:bg-green-950 w-full"
+                  >
+                    Default Loan
+                  </Button>
                 }
-              }}
-              actionButtonStyle="!bg-green-900 hover:bg-green-950"
-              cancelText="Cancel"
-            />
+                actionText="Default The Loan"
+                description="Are you sure you want to default the loan? Collateral amount and remaining interest will return to you."
+                title="Default Loan Deal"
+                actionFunction={() => {
+                  if (latestRepayment !== 0) {
+                    toast.error(
+                      `There is still ${formattedRepaymentTime} remaining before you can default the loan.`
+                    );
+                  } else {
+                    writeContract({
+                      abi: TuliaPoolABI,
+                      address: row.original.pool as any,
+                      functionName: 'checkAndHandleDefault',
+                    });
+                  }
+                }}
+                actionButtonStyle="!bg-green-900 hover:bg-green-950"
+                cancelText="Cancel"
+              />
+            )}
             <Alert
               actionButton={
                 <Button

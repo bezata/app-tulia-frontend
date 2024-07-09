@@ -70,7 +70,6 @@ const LendingReqModal = () => {
   } = useWriteContract();
   const [open, setOpen] = React.useState(false);
   const [openTxModal, setOpenTxModal] = useState<boolean>(false);
-  const [collateral, setCollateral] = React.useState(0);
   const [uiCollateral, setUiCollateral] = React.useState(0);
   const [rewardApy, setRewardApy] = React.useState(0);
   const [feeAmount, setFeeAmount] = useState(0);
@@ -163,7 +162,7 @@ const LendingReqModal = () => {
           parseFloat(value.loanAmount?.toString() || '0'),
           parseFloat(value.interestRate?.toString() || '0')
         );
-        setCollateral(calculatedCollateral);
+
         form.setValue('collateral', calculatedCollateral);
       }
     });
@@ -227,7 +226,7 @@ const LendingReqModal = () => {
     const loanAmount = parseEther(String(data?.loanAmount));
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0x0B085914C6aD14B2e0a6F52dC76e60128d318282',
+      address: '0x570Ee18AC439bD39Fd322004D1672507DA0D9C67',
       functionName: 'createTuliaPool',
       args: [
         account?.address as any,
@@ -260,7 +259,7 @@ const LendingReqModal = () => {
     setOpen(false);
     form.reset();
     setRewardApy(0);
-    setCollateral(0);
+
   };
 
   const transactionReceipt = useTransaction({ hash });

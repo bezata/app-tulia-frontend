@@ -24,6 +24,25 @@ export const RewardManagerABI = [
         name: 'pool',
         type: 'address',
       },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'borrower',
+        type: 'address',
+      },
+    ],
+    name: 'BorrowerRegistered',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
     ],
     name: 'PoolDeregistered',
     type: 'event',
@@ -173,6 +192,95 @@ export const RewardManagerABI = [
         name: 'pool',
         type: 'address',
       },
+    ],
+    name: 'getRewardDetails',
+    outputs: [
+      {
+        components: [
+          {
+            internalType: 'contract IERC20',
+            name: 'rewardToken',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'rewardsAccrued',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'lastRewardBlock',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'rewardRate',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'totalInterestRewards',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'lenderClaimedRewards',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'borrowerClaimedRewards',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'borrower',
+            type: 'address',
+          },
+          {
+            internalType: 'bool',
+            name: 'isFlashPool',
+            type: 'bool',
+          },
+          {
+            internalType: 'bool',
+            name: 'isAccruing',
+            type: 'bool',
+          },
+        ],
+        internalType: 'struct RewardManager.RewardDetails',
+        name: '',
+        type: 'tuple',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'borrower',
+        type: 'address',
+      },
+    ],
+    name: 'registerBorrower',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pool',
+        type: 'address',
+      },
       {
         internalType: 'address',
         name: 'rewardToken',
@@ -235,6 +343,11 @@ export const RewardManagerABI = [
         type: 'uint256',
       },
       {
+        internalType: 'address',
+        name: 'borrower',
+        type: 'address',
+      },
+      {
         internalType: 'bool',
         name: 'isFlashPool',
         type: 'bool',
@@ -248,4 +361,4 @@ export const RewardManagerABI = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;

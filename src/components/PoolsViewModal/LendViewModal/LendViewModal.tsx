@@ -16,7 +16,7 @@ import {
   Percent,
   UserCheck,
 } from 'lucide-react';
-import { InterestModal, PoolState } from '@/components/MyPoolsTable/columns';
+import { InterestModal } from '@/components/MyPoolsTable/columns';
 import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
@@ -32,18 +32,39 @@ import { toast } from 'sonner';
 import { useCalculateClaimableInterest } from '@/lens/lens';
 import { useReadContract } from 'wagmi';
 import { useGetLoanState, useGetRemainingRepaymentPeriod } from '@/lens/lens';
+import { useBlockNumber } from 'wagmi';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const queryClient = useQueryClient();
   const currentLoanState = useGetLoanState(row.original.pool);
-  const [isLender, setIsLender] = useState(false);
-  const [isFunded, setIsFunded] = useState(false);
+  const [isAccrue, setIsAccrue] = useState(false);
   const [uiCollateral, setUiCollateral] = useState<number>(0);
   const {
     writeContract,
     data: hash,
     error: contractError,
+    status: contractStatus,
   } = useWriteContract();
+
+  const { data: acrruesReward, queryKey } = useReadContract({
+    abi: RewardManagerABI,
+    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+    functionName: 'getRewardDetails',
+    args: [row.original.pool as any],
+  });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey });
+  }, [blockNumber]);
+
+  useEffect(() => {
+    if (acrruesReward) {
+      setIsAccrue(acrruesReward?.isAccruing);
+    }
+  }, [acrruesReward]);
 
   const calculateRewardAPY = useCalculateRewardApy({
     loanAmount: BigInt(row.original.amount),
@@ -74,7 +95,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   );
   const { data: vaultManagerReward } = useReadContract({
     abi: VaultManagerABI,
-    address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
+    address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
     functionName: 'calculateClaimableInterest',
     args: [row.original.pool],
   });
@@ -171,22 +192,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   }, [latestRepayment]);
 
   useEffect(() => {
-    if (row.original.loan_state === 'Funded') {
-      setIsFunded(true);
-    } else if (row.original.loan_state === 'Pending') {
-      setIsFunded(false);
-    }
-  }, [row.original.loan_state]);
-
-  useEffect(() => {
-    if (String(account?.address) === String(row.original.wallet_address)) {
-      setIsLender(true);
-    } else {
-      setIsLender(false);
-    }
-  }, [account?.status, account?.address, row.original.wallet_address]);
-
-  useEffect(() => {
     const fetchAllowance = async () => {
       const currentAllowance = checkAllowance;
       if (currentAllowance) {
@@ -242,8 +247,10 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   }, [allowance, row.original.amount]);
 
-  const formattedInterest = formatEther(BigInt(currentVaultManagerReward));
-
+  const formattedInterest = formatEther(
+    BigInt(currentVaultManagerReward)
+  ).toString();
+  console.log(formattedInterest);
   return (
     <Dialog>
       {newLoanState === 0 ? (
@@ -335,7 +342,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold ">Claimable Interest</span>
             <span className="text-sm text-purple-400">
-              {formattedInterest.slice(0, 8)} {row.original.borrowTokenName}{' '}
+              {formattedInterest.slice(0, 5)} {row.original.borrowTokenName}{' '}
             </span>
           </div>
           <div className="col-span-3 flex flex-col">
@@ -347,8 +354,8 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           <div className="col-span-3 flex flex-col">
             <span className="text-sm font-semibold">Claimable Rewards </span>
             <span className="text-sm text-green-500 ">
-              {Number(claimableInterest) / 10000000}{' '}
-              {row.original.borrowTokenName}
+              {formatEther(BigInt(claimableInterest)).toString().slice(0, 8)}{' '}
+              {row.original.Token}
             </span>{' '}
             <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
               <Image
@@ -475,7 +482,10 @@ function setLender(address _lender) external {
             <div className="col-span-12 flex flex-row border-gray-500 pb-2 border-b-[0.5px] gap-4">
               <Alert
                 actionButton={
-                  <Button className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]">
+                  <Button
+                    disabled={contractStatus === 'pending'}
+                    className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]"
+                  >
                     Claim Interest <Gift size={16} className="ml-2" />
                   </Button>
                 }
@@ -488,12 +498,12 @@ function setLender(address _lender) external {
                   } else
                     writeContract({
                       abi: VaultManagerABI,
-                      address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
+                      address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
                       functionName: 'distributeInterest',
                       args: [row.original.pool, account?.address],
                     });
                   toast.info(
-                    `Claiming ${formatEther(BigInt(currentVaultManagerReward))} ${row.original.borrowTokenName}`
+                    `Claiming ${formatEther(BigInt(currentVaultManagerReward)).toString()} ${row.original.borrowTokenName}`
                   );
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
@@ -502,7 +512,10 @@ function setLender(address _lender) external {
               />
               <Alert
                 actionButton={
-                  <Button className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]">
+                  <Button
+                    disabled={contractStatus === 'pending'}
+                    className="capitalize border-tulia_primary bg-primary/50 hover:bg-primary/20 w-[100%]"
+                  >
                     Claim Rewards <Gift size={16} className="ml-2" />
                   </Button>
                 }
@@ -512,23 +525,50 @@ function setLender(address _lender) external {
                 actionFunction={() => {
                   writeContract({
                     abi: RewardManagerABI,
-                    address: '0xa5Fe443f5D1e2Af4D62583308Dc428494C19C915',
+                    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
                     functionName: 'claimRewards',
-                    args: [row.original.pool, true],
+                    args: [row.original.pool as any, true],
                   });
                   toast.info(
-                    `Claiming ${Number(claimableInterest) / 10000000} ${row.original.borrowTokenName}`
+                    `Claiming ${formatEther(BigInt(claimableInterest)).toString()} ${row.original.Token}`
                   );
-                  console.log('claim rewards');
                 }}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"
                 cancelText="Cancel"
               />
             </div>
+            {isAccrue === false && (
+              <Alert
+                actionButton={
+                  <Button
+                    disabled={contractStatus === 'pending'}
+                    className="capitalize border-tulia_primary bg-purple-900 hover:bg-purple-950 w-full"
+                  >
+                    Activate Reward Mechanism
+                  </Button>
+                }
+                actionText="Do you want to activate the reward mechanism?"
+                description="It should be automatically but if it didn't you can activate it manually."
+                title="Activate Reward Mechanism"
+                actionFunction={() => {
+                  writeContract({
+                    abi: RewardManagerABI,
+                    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+                    functionName: 'accrueRewards',
+                    args: [row.original.pool as any],
+                  });
+                }}
+                actionButtonStyle="!bg-purple-900 hover:bg-purple-950"
+                cancelText="Cancel"
+              />
+            )}
             <Alert
               actionButton={
-                <Button className="capitalize border-tulia_primary bg-green-900 hover:bg-green-950 w-full">
+                <Button
+                  disabled={contractStatus === 'pending'}
+                  className="capitalize border-tulia_primary bg-green-900 hover:bg-green-950 w-full"
+                >
                   Default Loan
                 </Button>
               }
@@ -553,7 +593,10 @@ function setLender(address _lender) external {
             />
             <Alert
               actionButton={
-                <Button className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full">
+                <Button
+                  disabled={contractStatus === 'pending'}
+                  className="capitalize border-tulia_primary bg-red-900 hover:bg-red-950 w-full"
+                >
                   Close Deal
                 </Button>
               }

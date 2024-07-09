@@ -37,7 +37,7 @@ export const useGetAllBorrowerPoolDetails = () => {
 
   const { data: borrowerPoolDetails, queryKey } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xC7356Ea7460A0e56c0bEAa91e82Ce0F4846db3DE',
+    address: '0x86D7CBd50D2d775A630B487E28eabF121b08f3B0',
     functionName: 'getBorrowerPoolDetails',
     args: [account?.address as any],
   });
@@ -68,7 +68,7 @@ export const useCalculateRewardApy = ({
 }: AdvancedAPYManagerProps) => {
   const { data: apy } = useReadContract({
     abi: AdvancedAPYManagerABI,
-    address: '0x7957228108834EEF881655A1f58f3a950c3d3c71',
+    address: '0x4e6acfc41ca9c367Af36352023f985f0B4DDEd28',
     functionName: 'calculateAPY',
     args: [loanAmount as any, durationSeconds as any],
   });
@@ -81,7 +81,7 @@ export const useGetTotalPoolCount = () => {
   const queryClient = useQueryClient();
   const { data: totalPoolCount, queryKey } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xC7356Ea7460A0e56c0bEAa91e82Ce0F4846db3DE',
+    address: '0x86D7CBd50D2d775A630B487E28eabF121b08f3B0',
     functionName: 'getTotalPools',
   });
 
@@ -96,7 +96,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xC7356Ea7460A0e56c0bEAa91e82Ce0F4846db3DE',
+    address: '0x86D7CBd50D2d775A630B487E28eabF121b08f3B0',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -109,7 +109,7 @@ export const useGetAllPoolAddresses = () => {
   const { data: blockNumber } = useBlockNumber({ watch: true });
   const { data: allPoolAddresses, queryKey } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xC7356Ea7460A0e56c0bEAa91e82Ce0F4846db3DE',
+    address: '0x86D7CBd50D2d775A630B487E28eabF121b08f3B0',
     functionName: 'getAllPoolAddresses',
   });
 
@@ -124,7 +124,7 @@ export const useGetAllLenderPoolDetails = () => {
   const account = useAccount();
   const { data: allLenderPoolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0xC7356Ea7460A0e56c0bEAa91e82Ce0F4846db3DE',
+    address: '0x86D7CBd50D2d775A630B487E28eabF121b08f3B0',
     functionName: 'getAllLenderPoolDetails',
     args: [account?.address as any],
   });
@@ -200,7 +200,7 @@ export const useGetAllPoolDetails = () => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
         abi: PoolOrganizerABI,
-        address: '0xC7356Ea7460A0e56c0bEAa91e82Ce0F4846db3DE',
+        address: '0x86D7CBd50D2d775A630B487E28eabF121b08f3B0',
         functionName: 'getPoolDetails',
         args: [address],
       }));
@@ -242,7 +242,7 @@ export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
 export const useCalculateClaimableInterest = ({ pool, isLender }: any) => {
   const { data } = useReadContract({
     abi: RewardManagerABI,
-    address: '0xa5Fe443f5D1e2Af4D62583308Dc428494C19C915',
+    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
     functionName: 'calculateClaimableRewards',
     args: [pool, isLender],
   });
@@ -250,16 +250,39 @@ export const useCalculateClaimableInterest = ({ pool, isLender }: any) => {
   return { interest: data as number | undefined };
 };
 
+export const useActivateRewardMechanism = ({ pool }: any) => {
+  const { writeContract, data: hash } = useWriteContract();
+  writeContract({
+    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+    abi: RewardManagerABI,
+    functionName: 'accrueRewards',
+    args: [pool],
+  });
+
+  return hash as string | undefined;
+};
+
 export const useVaultManagerInterest = ({ pool }: any) => {
   const { data } = useReadContract({
     abi: VaultManagerABI,
-    address: '0x8D3520C41d6eca54ab638d85F22a414fB2264114',
+    address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
     functionName: 'calculateClaimableInterest',
     args: [pool],
   });
 
   return { interest: data as number | undefined };
 };
+export const useAccruingRewardCheck = ({ pool }: any) => {
+  const { data: accrueRewardINFO } = useReadContract({
+    abi: RewardManagerABI,
+    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+    functionName: 'getRewardDetails',
+    args: [pool],
+  });
+
+  return accrueRewardINFO as any;
+};
+
 
 export const useCalculateCompoundInterest = ({
   principal,

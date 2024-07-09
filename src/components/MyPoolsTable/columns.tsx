@@ -241,7 +241,7 @@ export const columns: ColumnDef<IPoolsdata>[] = [
       if (row.original.poolType === 1) {
         return (
           <div className="flex items-center ml-12">
-            <span>Flash Loan</span>
+            <span>-</span>
           </div>
         );
       }
@@ -270,6 +270,13 @@ export const columns: ColumnDef<IPoolsdata>[] = [
   {
     accessorKey: 'interest_modal',
     header: 'Interest Modal',
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.original.poolType === 1 ? 'Flash Loan' : 'Simple'}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'loan_state',

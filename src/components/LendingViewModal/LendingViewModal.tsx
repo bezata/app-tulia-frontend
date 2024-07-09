@@ -190,10 +190,10 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
           <Dialog>
             <DialogTrigger
               type="button"
-              className="w-full mt-2 bg-tulia_primary/50"
+              className="w-full mt-2 rounded-md bg-tulia_primary/50 hover:bg-tulia_primary/30 p-2"
             >
-              <CodeIcon className="w-4 h-4 inline-block mr-2" />
-              View Flash Loan Code
+              <CodeIcon className="w-4 h-4 inline-block mr-1" />
+              View Code
             </DialogTrigger>
             <DialogContent className="max-w-4xl h-[520px] overflow-y-auto">
               <DialogTitle>Flash Loan Contract</DialogTitle>

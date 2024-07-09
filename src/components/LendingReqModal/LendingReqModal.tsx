@@ -27,7 +27,6 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import {
   Form,
   FormControl,
@@ -54,10 +53,14 @@ const schema = z.object({
     value: z.string(),
     symbol: z.any(),
   }),
-  loanAmount: z.string().refine(v => parseFloat(v) > 0),
+  loanAmount: z
+    .string()
+    .refine(v => parseFloat(v) > 0, "Loan amount can't be 0"),
   interestModal: z.nativeEnum(InterestModal),
-  interestRate: z.string().refine(v => parseFloat(v) > 0),
-  endDate: z.string().refine(v => parseFloat(v) > 0),
+  interestRate: z
+    .string()
+    .refine(v => parseFloat(v) > 0 && parseFloat(v) <= 100, 'Invalid rate'),
+  endDate: z.string().refine(v => parseFloat(v) > 0, 'Repayment days required'),
   interestAddress: z.string().optional(),
 });
 
@@ -300,7 +303,7 @@ const LendingReqModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid grid-cols-12 gap-2 md:max-h-full max-h-96 overflow-y-auto">
-              <div className="grid grid-cols-2 gap-4 md:col-span-8 col-span-12 border-r-0 md:pr-4 pr-0 md:pb-0 pb-4 md:border-r border-tulia_primary">
+              <div className="grid grid-cols-2 ml-1 mb-1 gap-4 md:col-span-8 col-span-12 border-r-0 md:pr-4 pr-0 md:pb-0 pb-4 md:border-r border-tulia_primary">
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="lendCoin">Lend Coin</Label>
                   <ComboBoxResponsive
@@ -470,7 +473,24 @@ const LendingReqModal = () => {
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
-                          <Input type="number" defaultValue={0} {...field} />
+                          <Input
+                            defaultValue={0}
+                            maxLength={6}
+                            {...field}
+                            onKeyDown={e => {
+                              // Allow numbers, backspace, delete, tab, escape, enter, and dot
+                              if (
+                                !/^[0-9.]$/.test(e.key) &&
+                                e.key !== 'Backspace' &&
+                                e.key !== 'Tab' &&
+                                e.key !== 'Enter' &&
+                                e.key !== 'Escape' &&
+                                e.key !== 'Delete'
+                              ) {
+                                e.preventDefault();
+                              }
+                            }}
+                          />
                           <span className="absolute right-8 text-gray-500 top-2">
                             {'%'}
                           </span>

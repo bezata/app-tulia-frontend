@@ -182,6 +182,7 @@ const MyPoolspage = () => {
             pool_state: PoolState.Defaulted,
             borrower: poolDetail?.borrower,
             vault: poolDetail?.vault,
+            poolType: poolDetail?.poolType,
           };
         }
       );

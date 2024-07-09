@@ -9,5 +9,6 @@ export interface PoolDetail {
   loanToken: string;
   repaymentToken: string;
   pool: string;
+  poolType: number;
 
 }

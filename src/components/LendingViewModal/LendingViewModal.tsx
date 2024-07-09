@@ -26,6 +26,8 @@ import { TokenABI } from '@/lens/abi/Token';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import TransactionProcessModal from '../TransactionProcessModal/TransactionProcessModal';
 import { useAccount } from 'wagmi';
+import { CodeIcon } from 'lucide-react';
+import { CopyBlock } from 'react-code-blocks';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
@@ -161,228 +163,307 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       }, 5000);
     }
   }, [openTransactionModal, router]);
-const handleAcceptLendRequest = () => {
-  setLoading(true);
-  const currentAllowance = checkAllowance;
-  setAllowance(Number(currentAllowance));
+  const handleAcceptLendRequest = () => {
+    setLoading(true);
+    const currentAllowance = checkAllowance;
+    setAllowance(Number(currentAllowance));
 
-  if (Number(currentAllowance) < loanAmount) {
-    toast.error('Insufficient allowance');
-    setApprovalNeeded(true);
-  }
-  if (approveSuccess == true) {
-    setLoading(false);
-    setApprovalNeeded(false);
-  }
-};
+    if (Number(currentAllowance) < loanAmount) {
+      toast.error('Insufficient allowance');
+      setApprovalNeeded(true);
+    }
+    if (approveSuccess == true) {
+      setLoading(false);
+      setApprovalNeeded(false);
+    }
+  };
 
-return (
-  <>
-    <TransactionProcessModal
-      hash={hash}
-      setOpen={setOpenTransactionModal}
-      open={openTransactionModal}
-    />
-    <Dialog>
-      <DialogTrigger
-        onClick={() => {
-          if (account?.address === row.original.wallet_address) {
-            toast.error('You cannot lend to yourself!');
-          }
-        }}
-      >
-        <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
-          Request Details
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>View Lend</DialogTitle>
-          <DialogDescription>
-            View the details of the lend position.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid grid-cols-12 gap-2">
-          <div className="col-span-12 border-gray-500 pb-2 border-b-[0.5px]">
-            <span className="font-bold">
-              <UserCheck size={20} className="inline-block mr-2" />
-              Lender&apos;s Information
-            </span>
-          </div>
-          <div className="col-span-6 flex flex-col">
-            <span className="text-sm font-semibold">Wallet Address</span>
-            <span className="text-sm text-gray-400">
-              {row.original.wallet_address.slice(0, 7)}
-            </span>
-          </div>
-          <div className="col-span-6 flex flex-col">
-            <span className="text-sm font-semibold">Loan Amount</span>
-            <span className="text-sm text-gray-400">
-              {formatEther(BigInt(row.original.amount))} {row.original.Token}
-            </span>
-          </div>
-          <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
-            <span className="font-bold">
-              <Percent size={20} className="inline-block mr-2" />
-              Interest Details
-            </span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Interest Rate</span>
-            <span className="text-sm text-gray-400">
-              {`${String(row.original.interestRate)}%`}
-            </span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold">Interest Modal</span>
-            <span>Simple</span>
-          </div>
-          <div className="col-span-4 flex flex-col">
-            <span className="text-sm font-semibold text-primary">
-              Interest Discount
-            </span>
-            <span className="text-sm text-green-500">
-              {String(apy / 10000)}% {row.original.Token}
-            </span>
-          </div>
-          <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
-            <span className="font-bold">
-              <LucideBanknote size={20} className="inline-block mr-2" />
-              Payment Details
-            </span>
-          </div>
-          <div className="col-span-6 flex flex-col">
-            <span className="text-sm font-semibold">Collateral Amount</span>
-            <span className="text-sm text-gray-400">
-              {formatEther(BigInt(uiCollateral))}
-              {``} {row.original.borrowTokenName}
-            </span>
-          </div>
-          <div className="col-span-6 flex flex-col">
-            <span className="text-sm font-semibold">Debt Payment Period</span>
-            <span className="text-sm text-gray-400">
-              {`${String(Number(row.original.repaymentPeriod) / 86400)} Days`}
-            </span>
-          </div>
-          <div className="col-span-6 flex flex-col">
-            <span className="text-sm font-semibold">Lend Coin</span>
-            <span className="text-sm text-gray-400">
-              <div className="flex items-center ml-5 gap-4">
-                {row.original.loanToken === 'ETH' && (
-                  <EthIcon width={24} height={24} />
-                )}
-                {row.original.loanToken === 'BTC' && (
-                  <BtcIcon width={24} height={24} />
-                )}
-                {row.original.loanToken === 'USDC' && (
-                  <USDCIcon width={24} height={24} />
-                )}
-                {row.original.loanToken === 'ARB' && (
-                  <ArbIcon width={24} height={24} />
-                )}
-                {row.original.loanToken === 'DAI' && (
-                  <DaiIcon width={24} height={24} />
-                )}
-                {row.original.loanToken === 'UNI' && (
-                  <UniIcon width={24} height={24} />
-                )}
-                <span>{row.original.loanToken}</span>
-              </div>
-            </span>
-          </div>
-          <div className="col-span-6 flex flex-col">
-            <span className="text-sm font-semibold">Borrow Coin</span>
-            <span className="text-sm text-gray-400">
-              <div className="flex items-center ml-9  gap-4">
-                {row.original.borrowToken === 'ETH' && (
-                  <EthIcon width={24} height={24} />
-                )}
-                {row.original.borrowToken === 'BTC' && (
-                  <BtcIcon width={24} height={24} />
-                )}
-                {row.original.borrowToken === 'USDC' && (
-                  <USDCIcon width={24} height={24} />
-                )}
-                {row.original.borrowToken === 'ARB' && (
-                  <ArbIcon width={24} height={24} />
-                )}
-                {row.original.borrowToken === 'DAI' && (
-                  <DaiIcon width={24} height={24} />
-                )}
-                {row.original.borrowToken === 'UNI' && (
-                  <UniIcon width={24} height={24} />
-                )}
-                <span>{row.original.borrowToken}</span>
-              </div>
-            </span>
-          </div>
-          <div className="col-span-12 flex flex-col">
-            {approvalNeeded ? (
-              <Button
-                disabled={approveStatus === 'pending'}
-                onClick={() =>
-                  approve({
-                    address: row.original.repaymentCurrencyAddress as any,
-                    abi: TokenABI,
-                    functionName: 'approve',
-                    args: [
-                      row.original.pool,
-                      parseEther(String(1000000000), 'wei'),
-                    ],
-                  })
-                }
-                className="capitalize tulia_main_button w-full"
-              >
-                Approve Transaction
-              </Button>
-            ) : (
-              <Alert
-                actionButton={
-                  loading ? (
-                    <Button className="capitalize tulia_main_button w-full">
-                      <LoaderIcon size={16} className="animate-spin mr-2" />
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleAcceptLendRequest}
-                      disabled={fundLoanStatus === 'pending'}
-                      className="capitalize tulia_main_button w-full"
-                    >
-                      Accept Lend Request
-                    </Button>
-                  )
-                }
-                title="Accept Lend Request"
-                disabled={loading}
-                description="Are you sure you want to accept this lend request?"
-                cancelText="Cancel"
-                actionText="Accept"
-                cancelFunction={() => {
-                  setLoading(false);
-                }}
-                actionFunction={() => {
-                  if (currentLoanState === 'Pending') {
-                    toast.error('Loan needs to be activated by lender!');
-                    setLoading(false);
-                  }
-                  if (account?.address === row.original.wallet_address) {
-                    toast.error('You cannot lend to yourself!');
-                  } else {
-                    fundLoan();
-                    setLoading(true);
-                    setTimeout(() => {
-                      setLoading(false);
-                    }, 2000);
-                  }
-                }}
+  return (
+    <>
+      <TransactionProcessModal
+        hash={hash}
+        setOpen={setOpenTransactionModal}
+        open={openTransactionModal}
+      />
+      {row.original.poolType === 1 ? (
+        <div>
+          <Dialog>
+            <DialogTrigger
+              type="button"
+              className="w-full mt-2 bg-tulia_primary/50"
+            >
+              <CodeIcon className="w-4 h-4 inline-block mr-2" />
+              View Flash Loan Code
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl h-[520px] overflow-y-auto">
+              <DialogTitle>Flash Loan Contract</DialogTitle>
+              <DialogDescription>
+                This is the flash loan contract that you can use to initiate a
+                flash loan request.
+              </DialogDescription>
+              <CopyBlock
+                language="solidity"
+                wrapLongLines
+                showLineNumbers
+                text={`
+        // SPDX-License-Identifier: MIT
+pragma solidity 0.8.24;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
+
+contract MockFlashLoanBorrower is IERC3156FlashBorrower {
+    using SafeERC20 for IERC20;
+
+    IERC3156FlashLender public lender;
+    bytes32 public constant CALLBACK_SUCCESS = keccak256("ERC3156FlashBorrower.onFlashLoan");
+
+    // Constructor to set the lender
+    constructor(address _lender) {
+        lender = IERC3156FlashLender(_lender);
+    }
+
+    // Function to initiate a flash loan
+    function initiateFlashLoan(address token, uint256 amount) external {
+        // Initiating a flash loan
+        lender.flashLoan(this, token, amount, bytes("Arbitrary data"));
+    }
+
+    // Callback function that runs after receiving the flash loan
+    function onFlashLoan(
+        address initiator,
+        address token,
+        uint256 amount,
+        uint256 fee,
+        bytes calldata data
+    ) external override returns (bytes32) {
+        require(msg.sender == address(lender), "Only lender can call this function");
+        require(initiator == address(this), "Untrusted loan initiator");
+
+        // Here you can place your arbitrary logic with the borrowed amount
+        // For instance, conducting an arbitrage, performing swaps, or other operations
+
+        // Total amount that needs to be repaid to the flash loan provider
+        uint256 totalRepayment = amount + fee;
+        IERC20(token).safeIncreaseAllowance(address(lender), totalRepayment);
+        IERC20(token).safeTransferFrom(address(this), address(lender), totalRepayment);
+
+        return CALLBACK_SUCCESS;  // Signalling that the flash loan was handled successfully
+    }
+}
+
+          `}
               />
-            )}
-          </div>
+            </DialogContent>
+          </Dialog>
         </div>
-      </DialogContent>
-    </Dialog>
-  </>
-);
+      ) : (
+        <Dialog>
+          <DialogTrigger
+            onClick={() => {
+              if (account?.address === row.original.wallet_address) {
+                toast.error('You cannot lend to yourself!');
+              }
+            }}
+          >
+            <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
+              Request Details
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>View Lend</DialogTitle>
+              <DialogDescription>
+                View the details of the lend position.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-12 gap-2">
+              <div className="col-span-12 border-gray-500 pb-2 border-b-[0.5px]">
+                <span className="font-bold">
+                  <UserCheck size={20} className="inline-block mr-2" />
+                  Lender&apos;s Information
+                </span>
+              </div>
+              <div className="col-span-6 flex flex-col">
+                <span className="text-sm font-semibold">Wallet Address</span>
+                <span className="text-sm text-gray-400">
+                  {row.original.wallet_address.slice(0, 7)}
+                </span>
+              </div>
+              <div className="col-span-6 flex flex-col">
+                <span className="text-sm font-semibold">Loan Amount</span>
+                <span className="text-sm text-gray-400">
+                  {formatEther(BigInt(row.original.amount))}{' '}
+                  {row.original.Token}
+                </span>
+              </div>
+              <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
+                <span className="font-bold">
+                  <Percent size={20} className="inline-block mr-2" />
+                  Interest Details
+                </span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Interest Rate</span>
+                <span className="text-sm text-gray-400">
+                  {`${String(row.original.interestRate)}%`}
+                </span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold">Interest Modal</span>
+                <span>Simple</span>
+              </div>
+              <div className="col-span-4 flex flex-col">
+                <span className="text-sm font-semibold text-primary">
+                  Interest Discount
+                </span>
+                <span className="text-sm text-green-500">
+                  {String(apy / 10000)}% {row.original.Token}
+                </span>
+              </div>
+              <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
+                <span className="font-bold">
+                  <LucideBanknote size={20} className="inline-block mr-2" />
+                  Payment Details
+                </span>
+              </div>
+              <div className="col-span-6 flex flex-col">
+                <span className="text-sm font-semibold">Collateral Amount</span>
+                <span className="text-sm text-gray-400">
+                  {formatEther(BigInt(uiCollateral))}
+                  {``} {row.original.borrowTokenName}
+                </span>
+              </div>
+              <div className="col-span-6 flex flex-col">
+                <span className="text-sm font-semibold">
+                  Debt Payment Period
+                </span>
+                <span className="text-sm text-gray-400">
+                  {`${String(Number(row.original.repaymentPeriod) / 86400)} Days`}
+                </span>
+              </div>
+              <div className="col-span-6 flex flex-col">
+                <span className="text-sm font-semibold">Lend Coin</span>
+                <span className="text-sm text-gray-400">
+                  <div className="flex items-center ml-5 gap-4">
+                    {row.original.loanToken === 'ETH' && (
+                      <EthIcon width={24} height={24} />
+                    )}
+                    {row.original.loanToken === 'BTC' && (
+                      <BtcIcon width={24} height={24} />
+                    )}
+                    {row.original.loanToken === 'USDC' && (
+                      <USDCIcon width={24} height={24} />
+                    )}
+                    {row.original.loanToken === 'ARB' && (
+                      <ArbIcon width={24} height={24} />
+                    )}
+                    {row.original.loanToken === 'DAI' && (
+                      <DaiIcon width={24} height={24} />
+                    )}
+                    {row.original.loanToken === 'UNI' && (
+                      <UniIcon width={24} height={24} />
+                    )}
+                    <span>{row.original.loanToken}</span>
+                  </div>
+                </span>
+              </div>
+              <div className="col-span-6 flex flex-col">
+                <span className="text-sm font-semibold">Borrow Coin</span>
+                <span className="text-sm text-gray-400">
+                  <div className="flex items-center ml-9  gap-4">
+                    {row.original.borrowToken === 'ETH' && (
+                      <EthIcon width={24} height={24} />
+                    )}
+                    {row.original.borrowToken === 'BTC' && (
+                      <BtcIcon width={24} height={24} />
+                    )}
+                    {row.original.borrowToken === 'USDC' && (
+                      <USDCIcon width={24} height={24} />
+                    )}
+                    {row.original.borrowToken === 'ARB' && (
+                      <ArbIcon width={24} height={24} />
+                    )}
+                    {row.original.borrowToken === 'DAI' && (
+                      <DaiIcon width={24} height={24} />
+                    )}
+                    {row.original.borrowToken === 'UNI' && (
+                      <UniIcon width={24} height={24} />
+                    )}
+                    <span>{row.original.borrowToken}</span>
+                  </div>
+                </span>
+              </div>
+              <div className="col-span-12 flex flex-col">
+                {approvalNeeded ? (
+                  <Button
+                    disabled={approveStatus === 'pending'}
+                    onClick={() =>
+                      approve({
+                        address: row.original.repaymentCurrencyAddress as any,
+                        abi: TokenABI,
+                        functionName: 'approve',
+                        args: [
+                          row.original.pool,
+                          parseEther(String(1000000000), 'wei'),
+                        ],
+                      })
+                    }
+                    className="capitalize tulia_main_button w-full"
+                  >
+                    Approve Transaction
+                  </Button>
+                ) : (
+                  <Alert
+                    actionButton={
+                      loading ? (
+                        <Button className="capitalize tulia_main_button w-full">
+                          <LoaderIcon size={16} className="animate-spin mr-2" />
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleAcceptLendRequest}
+                          disabled={fundLoanStatus === 'pending'}
+                          className="capitalize tulia_main_button w-full"
+                        >
+                          Accept Lend Request
+                        </Button>
+                      )
+                    }
+                    title="Accept Lend Request"
+                    disabled={loading}
+                    description="Are you sure you want to accept this lend request?"
+                    cancelText="Cancel"
+                    actionText="Accept"
+                    cancelFunction={() => {
+                      setLoading(false);
+                    }}
+                    actionFunction={() => {
+                      if (currentLoanState === 'Pending') {
+                        toast.error('Loan needs to be activated by lender!');
+                        setLoading(false);
+                      }
+                      if (account?.address === row.original.wallet_address) {
+                        toast.error('You cannot lend to yourself!');
+                      } else {
+                        fundLoan();
+                        setLoading(true);
+                        setTimeout(() => {
+                          setLoading(false);
+                        }, 2000);
+                      }
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  );
 };
 
 export default LendingViewModal;

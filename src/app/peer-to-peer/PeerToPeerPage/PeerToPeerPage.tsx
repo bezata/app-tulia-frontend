@@ -164,6 +164,7 @@ const PeerToPeerPage = () => {
             borrowTokenName: repaymentCurrency?.label,
             loanCurrencyAddress: currency?.address,
             repaymentCurrencyAddress: repaymentCurrency?.address,
+            poolType: (poolDetail as PoolDetail)?.poolType,
           };
         }
       );
@@ -171,7 +172,7 @@ const PeerToPeerPage = () => {
       setData(formattedData);
     }
   }, [allPoolDetails, totalPoolCount, apy]);
-
+  
   const { section } = useAppSelector(state => state.example);
   const [filteredData, setFilteredData] = React.useState<ILendingData[]>(data);
   const dispatch = useAppDispatch();

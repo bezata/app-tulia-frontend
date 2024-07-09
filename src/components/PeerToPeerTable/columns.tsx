@@ -31,6 +31,7 @@ export type ILendingData = {
   pool: string;
   repaymentCurrencyAddress: string;
   loanCurrencyAddress: string;
+  poolType: number;
 };
 
 const LoanStateCell: React.FC<{ pool: string }> = ({ pool }) => {
@@ -222,6 +223,16 @@ export const columns: ColumnDef<ILendingData>[] = [
       </Button>
     ),
     cell: ({ row }) => {
+      // If poolType is 1, directly return "Flash Loan"
+      if (row.original.poolType === 1) {
+        return (
+          <div className="flex items-center ml-12">
+            <span>Flash Loan</span>
+          </div>
+        );
+      }
+
+      // Calculate the repayment period in days if poolType is not 1
       const repaymentPeriodInDays =
         Number(row.original.repaymentPeriod) / 86400;
       let displayRepaymentPeriod = repaymentPeriodInDays.toFixed(2);
@@ -234,12 +245,10 @@ export const columns: ColumnDef<ILendingData>[] = [
 
       return (
         <div className="flex items-center ml-12">
-          <div>
-            <span>
-              {displayRepaymentPeriod} day
-              {displayRepaymentPeriod !== '1' ? 's' : ''}
-            </span>
-          </div>
+          <span>
+            {displayRepaymentPeriod} day
+            {displayRepaymentPeriod !== '1' ? 's' : ''}
+          </span>
         </div>
       );
     },

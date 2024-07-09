@@ -12,4 +12,5 @@ export interface PoolDetail {
   funded: boolean;
   borrower: string;
   vault: string;
+  poolType: number;
 }

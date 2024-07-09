@@ -259,10 +259,8 @@ const LendingReqModal = () => {
     setOpen(false);
     form.reset();
     setRewardApy(0);
-
   };
 
-  const transactionReceipt = useTransaction({ hash });
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'loanAmount' || name === 'interestRate') {
@@ -484,13 +482,38 @@ const LendingReqModal = () => {
                   )}
                 />
                 {/* calendars */}
+                {form.watch('interestModal') === InterestModal.FlashLoan && (
+                  <FormField
+                    control={form.control}
+                    name="endDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1 col-span-2">
+                        <FormLabel htmlFor="endDate">Loan Duration</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              min={1}
+                              type="number"
+                              defaultValue={0}
+                              {...field}
+                            />
+                            <span className="absolute right-8 text-gray-500 top-2">
+                              {'Days'}
+                            </span>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
                 {form.watch('interestModal') !== InterestModal.FlashLoan && (
                   <FormField
                     control={form.control}
                     name="endDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col gap-1 col-span-2">
-                        <FormLabel htmlFor="endDate">Repayment Date</FormLabel>
+                        <FormLabel htmlFor="endDate">Repayment Days</FormLabel>
                         <FormControl>
                           <div className="relative">
                             <Input

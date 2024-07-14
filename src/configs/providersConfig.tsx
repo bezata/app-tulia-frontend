@@ -25,7 +25,7 @@ export const wagmiConfig = createConfig({
   transports: {
     [mainnet.id]: http(),
     [arbitrumSepolia.id]: http(),
-    [polygon.id]: http('https://polygon-rpc.com'),
+    [polygon.id]: http(),
   },
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),

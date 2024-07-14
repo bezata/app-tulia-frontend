@@ -163,16 +163,23 @@ export const useGetAllLenderPoolDetails = () => {
 };
 
 export const useCheckCoinAllowance = (
+
   coinAddress: string,
   approveAddress: 'string'
 ) => {
+  const { data: blockNumber } = useBlockNumber({ watch: true });
+  const queryClient = useQueryClient();
   const account = useAccount();
-  const { data: allowance } = useReadContract({
+  const { data: allowance, queryKey } = useReadContract({
     abi: TokenABI,
     address: coinAddress as any,
     functionName: 'allowance',
     args: [account?.address as any, approveAddress as any],
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey });
+  }, [blockNumber]);
 
   return allowance as number | undefined;
 };

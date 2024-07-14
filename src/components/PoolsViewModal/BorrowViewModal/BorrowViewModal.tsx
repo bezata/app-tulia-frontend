@@ -148,6 +148,20 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   }, [latestRepayment]);
 
+  useEffect(() => {
+    switch (contractStatus) {
+      case 'pending':
+        toast.info('Transaction is pending...');
+        break;
+      case 'error':
+        toast.error('Transaction failed.');
+        break;
+      case 'success':
+        toast.success('Transaction successful!');
+        break;
+    }
+  }, [contractStatus]);
+
   return (
     <Dialog>
       {row.original.loan_state === 'Pending' ? (
@@ -309,59 +323,59 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
                       wrapLongLines
                       showLineNumbers
                       text={`
-               SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+                        SPDX-License-Identifier: MIT
+                        pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
-import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
+                        import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+                        import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+                        import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+                        import "@openzeppelin/contracts/interfaces/IERC3156FlashLender.sol";
 
-contract MockFlashBorrower is IERC3156FlashBorrower {
-using SafeERC20 for IERC20;
+                        contract MockFlashBorrower is IERC3156FlashBorrower {
+                        using SafeERC20 for IERC20;
 
-IERC3156FlashLender public lender;
-address public admin;
+                        IERC3156FlashLender public lender;
+                        address public admin;
 
-constructor(address _lender) {
-    lender = IERC3156FlashLender(_lender);
-    admin = msg.sender;
-}
+                        constructor(address _lender) {
+                            lender = IERC3156FlashLender(_lender);
+                            admin = msg.sender;
+                        }
 
- This function initiates a flash loan request
-function requestFlashLoan(address token, uint256 amount, bytes calldata data) external {
-    require(msg.sender == admin, "Only admin can initiate flash loan");
-    lender.flashLoan(this, token, amount, data);
-}
+                        This function initiates a flash loan request
+                        function requestFlashLoan(address token, uint256 amount, bytes calldata data) external {
+                            require(msg.sender == admin, "Only admin can initiate flash loan");
+                            lender.flashLoan(this, token, amount, data);
+                        }
 
- This is the callback function that the lender will call
-function onFlashLoan(
-    address initiator,
-    address token,
-    uint256 amount,
-    uint256 fee,
-    bytes calldata data
-) external override returns (bytes32) {
-    require(msg.sender == address(lender), "Only lender can call this function");
-    require(initiator == address(this), "Unrecognized initiator");
+                        This is the callback function that the lender will call
+                        function onFlashLoan(
+                            address initiator,
+                            address token,
+                            uint256 amount,
+                            uint256 fee,
+                            bytes calldata data
+                        ) external override returns (bytes32) {
+                            require(msg.sender == address(lender), "Only lender can call this function");
+                            require(initiator == address(this), "Unrecognized initiator");
 
-     Placeholder for custom logic to utilize the flash loaned amount
-     Example: arbitrage, collateral swap, etc.
-     data can be used to pass custom parameters needed for the operation
+                            Placeholder for custom logic to utilize the flash loaned amount
+                            Example: arbitrage, collateral swap, etc.
+                            data can be used to pass custom parameters needed for the operation
 
-     Repay the flash loan
-    uint256 totalRepayment = amount + fee;
-    IERC20(token).safeTransfer(msg.sender, totalRepayment);
+                            Repay the flash loan
+                            uint256 totalRepayment = amount + fee;
+                            IERC20(token).safeTransfer(msg.sender, totalRepayment);
 
-    return keccak256("ERC3156FlashBorrower.onFlashLoan");
-}
+                            return keccak256("ERC3156FlashBorrower.onFlashLoan");
+                        }
 
-function setLender(address _lender) external {
-    require(msg.sender == admin, "Only admin can set lender");
-    lender = IERC3156FlashLender(_lender);
-}
-}
-`}
+                        function setLender(address _lender) external {
+                            require(msg.sender == admin, "Only admin can set lender");
+                            lender = IERC3156FlashLender(_lender);
+                        }
+                        }
+                      `}
                     />
                   </DialogContent>
                 </Dialog>

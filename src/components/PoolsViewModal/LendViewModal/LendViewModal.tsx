@@ -21,7 +21,11 @@ import { CopyBlock } from 'react-code-blocks';
 import Alert from '@/components/Alert/Alert';
 import Image from 'next/image';
 import { formatEther, parseEther } from 'viem';
-import { useCalculateRewardApy, useCheckCoinAllowance } from '@/lens/lens';
+import {
+  useCalculateRewardApy,
+  useCheckCoinAllowance,
+  useGetFlashPoolLoanState,
+} from '@/lens/lens';
 import { useWriteContract } from 'wagmi';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import { RewardManagerABI } from '@/lens/abi/RewardManager';
@@ -46,6 +50,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const { data: blockNumber } = useBlockNumber({ watch: true });
   const queryClient = useQueryClient();
   const currentLoanState = useGetLoanState(row.original.pool);
+  const currentFlashPoolState: ReturnType<typeof useGetFlashPoolLoanState> =
+    useGetFlashPoolLoanState(row.original.pool);
+
   const [isAccrue, setIsAccrue] = useState(false);
   const [uiCollateral, setUiCollateral] = useState<number>(0);
   const {
@@ -90,7 +97,10 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     useState<string>('');
   const [uiLoanState, setUiLoanState] = useState<string>('');
 
-  const [newLoanState, setNewLoanState] = useState<number>(0);
+  const [newLoanState, setNewLoanState] = useState<number | undefined>(
+    currentFlashPoolState || currentLoanState || 0
+  );
+
   const {
     writeContract: approve,
     isSuccess: approveSuccess,
@@ -120,8 +130,10 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const latestRepayment = useGetRemainingRepaymentPeriod(row.original.pool);
 
   useEffect(() => {
-    setNewLoanState(currentLoanState as number);
-  }, [currentLoanState]);
+    setNewLoanState(
+      row.original.poolType === 1 ? currentFlashPoolState : currentLoanState
+    );
+  }, [currentLoanState, currentFlashPoolState]);
 
   const {
     writeContract: activateLoan,
@@ -308,6 +320,20 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     }
   };
 
+  useEffect(() => {
+    switch (contractStatus) {
+      case 'pending':
+        toast.info('Transaction is pending...');
+        break;
+      case 'error':
+        toast.error('Transaction failed.');
+        break;
+      case 'success':
+        toast.success('Transaction successful!');
+        break;
+    }
+  }, [contractStatus]);
+
   return (
     <Dialog>
       {newLoanState === 0 ? (
@@ -492,6 +518,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                   description="Are you sure you want to claim the rewards?"
                   title="Claim Rewards"
                   actionFunction={() => {
+                    // @ts-ignore
                     if (newLoanState <= 1) {
                       toast.error('Waiting for borrower to give interest');
                     } else

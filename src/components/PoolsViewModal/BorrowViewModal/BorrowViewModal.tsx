@@ -382,7 +382,7 @@ function setLender(address _lender) external {
               actionFunction={() => {
                 writeContract({
                   abi: RewardManagerABI,
-                  address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+                  address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
                   functionName: 'claimRewards',
                   args: [row.original.pool as any, false],
                 });

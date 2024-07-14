@@ -12,7 +12,7 @@ import { Button } from '../ui/button';
 import Image from 'next/image';
 import { ArrowUpDown } from 'lucide-react';
 import { formatEther } from 'viem';
-import { useGetLoanState } from '@/lens/lens';
+import { useGetLoanState, useGetFlashPoolLoanState } from '@/lens/lens';
 import React from 'react';
 import { PoolState } from '../MyPoolsTable/columns';
 
@@ -34,35 +34,55 @@ export type ILendingData = {
   poolType: number;
 };
 
-const LoanStateCell: React.FC<{ pool: string }> = ({ pool }) => {
+const LoanStateCell: React.FC<{ pool: string; poolType: number }> = ({
+  pool,
+  poolType,
+}) => {
   const loanState = useGetLoanState(pool);
+  const flashLoanState = useGetFlashPoolLoanState(pool);
+
   let displayState = '';
 
-  switch (loanState) {
-    case 1:
-      displayState = PoolState.Active;
-      break;
-    case 0:
-      displayState = PoolState.Pending;
-      break;
-    case 2:
-      displayState = PoolState.Funded;
-      break;
-    case 6:
-      displayState = PoolState.Closed;
-      break;
-    case 4:
-      displayState = PoolState.Defaulted;
-      break;
-    case 5:
-      displayState = PoolState.Repaid;
-      break;
-    default:
-      displayState = PoolState.Pending;
+  if (poolType === 1) {
+    switch (flashLoanState) {
+      case 1:
+        displayState = 'Active';
+        break;
+      case 2:
+        displayState = 'Closed';
+        break;
+      default:
+        displayState = 'Pending';
+    }
+  } else {
+    switch (loanState) {
+      case 1:
+        displayState = 'Active';
+        break;
+      case 0:
+        displayState = 'Pending';
+        break;
+      case 2:
+        displayState = 'Funded';
+        break;
+      case 6:
+        displayState = 'Closed';
+        break;
+      case 4:
+        displayState = 'Defaulted';
+        break;
+      case 5:
+        displayState = 'Repaid';
+        break;
+      default:
+        displayState = 'Pending';
+    }
   }
 
   return <span>{displayState}</span>;
 };
+
+export default LoanStateCell;
 
 export const columns: ColumnDef<ILendingData>[] = [
   {
@@ -207,7 +227,12 @@ export const columns: ColumnDef<ILendingData>[] = [
     accessorKey: 'loan_state',
     header: 'Loan State',
     cell: ({ row }) => {
-      return <LoanStateCell pool={row.original.pool} />;
+      return (
+        <LoanStateCell
+          pool={row.original.pool}
+          poolType={row.original.poolType}
+        />
+      );
     },
   },
   {

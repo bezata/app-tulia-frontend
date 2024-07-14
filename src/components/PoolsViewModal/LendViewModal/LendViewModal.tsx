@@ -26,14 +26,20 @@ import { useWriteContract } from 'wagmi';
 import { TuliaPoolABI } from '@/lens/abi/TuliaPool';
 import { RewardManagerABI } from '@/lens/abi/RewardManager';
 import { VaultManagerABI } from '@/lens/abi/VaultManager';
+import { TuliaFlashPool } from '@/lens/abi/TuliaFlashPool';
 import { TokenABI } from '@/lens/abi/Token';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 import { useCalculateClaimableInterest } from '@/lens/lens';
 import { useReadContract } from 'wagmi';
-import { useGetLoanState, useGetRemainingRepaymentPeriod } from '@/lens/lens';
+import {
+  useGetLoanState,
+  useGetRemainingRepaymentPeriod,
+  useGetFlashPoolRewards,
+} from '@/lens/lens';
 import { useBlockNumber } from 'wagmi';
 import { useQueryClient } from '@tanstack/react-query';
+import { FlashPoolRewardManager } from '@/lens/abi/FlashPoolRewardManager';
 
 const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -49,9 +55,11 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     status: contractStatus,
   } = useWriteContract();
 
+  const flashPoolRewards = useGetFlashPoolRewards(row.original.pool);
+
   const { data: acrruesReward, queryKey } = useReadContract({
     abi: RewardManagerABI,
-    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
     functionName: 'getRewardDetails',
     args: [row.original.pool as any],
   });
@@ -175,7 +183,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     calculateCollateral(row.original.amount, Number(row.original.interestRate));
   }, [row.original.amount, row.original.interestRate]);
 
-  // Function to format the remaining time in seconds to a human-readable format
   const formatDuration = (seconds: number): string => {
     const days: number = Math.floor(seconds / (3600 * 24) / 86400);
     const hours: number = Math.floor((seconds % (3600 * 24)) / 3600);
@@ -230,6 +237,14 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     });
   };
 
+  const activatePendingFlashLoan = () => {
+    activateLoan({
+      abi: TuliaFlashPool,
+      address: row.original.pool as any,
+      functionName: 'fundLoan',
+    });
+  };
+
   const handleApprove = () => {
     approve({
       address: row.original.loanCurrencyAddress as any,
@@ -250,7 +265,49 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   const formattedInterest = formatEther(
     BigInt(currentVaultManagerReward)
   ).toString();
-  console.log(formattedInterest);
+
+  const handleClaimRewards = () => {
+    if (row.original.poolType === 1) {
+      writeContract({
+        abi: FlashPoolRewardManager,
+        address: '0xf422034e0e404e930FCD37c5e5b3FF5f3a2AB1E5',
+        functionName: 'claimRewards',
+        args: [row.original.pool as any],
+      });
+      toast.info(
+        `Claiming ${formatEther(BigInt(flashPoolRewards)).toString()} ${row.original.Token}`
+      );
+    } else {
+      writeContract({
+        abi: RewardManagerABI,
+        address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+        functionName: 'claimRewards',
+        args: [row.original.pool as any, true],
+      });
+      toast.info(
+        `Claiming ${formatEther(BigInt(claimableInterest)).toString()} ${row.original.Token}`
+      );
+    }
+  };
+
+  const handleCloseDeal = () => {
+    if (row.original.poolType === 1) {
+      writeContract({
+        abi: TuliaFlashPool,
+        address: row.original.pool as any,
+        functionName: 'closeLoan',
+      });
+      toast.info('Flash loan deal closing.');
+    } else {
+      writeContract({
+        abi: TuliaPoolABI,
+        address: row.original.pool as any,
+        functionName: 'reclaimLoanAndClosePool',
+      });
+      toast.info('Loan deal closing.');
+    }
+  };
+
   return (
     <Dialog>
       {newLoanState === 0 ? (
@@ -261,6 +318,13 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             disabled={approveStatus === 'pending'}
           >
             Approve Transaction
+          </Button>
+        ) : row.original.poolType === 1 ? (
+          <Button
+            onClick={activatePendingFlashLoan}
+            className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+          >
+            Activate Flash Loan
           </Button>
         ) : (
           <Button
@@ -277,7 +341,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
           </Button>
         </DialogTrigger>
       )}
-
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Manage Your Lending Pool</DialogTitle>
@@ -331,7 +394,6 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             </>
           )}
           <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
-            {/* Interest Details */}
             <span className="font-bold">
               <Percent size={20} className="inline-block mr-2" />
               Interest Details
@@ -367,11 +429,20 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
             className={`${row.original.poolType !== 1 ? 'col-span-3' : 'col-span-6'} flex flex-col`}
           >
             <span className="text-sm font-semibold">Claimable Rewards </span>
-            <span className="text-sm text-green-500 ">
-              {formatEther(BigInt(claimableInterest)).toString().slice(0, 8)}{' '}
-              {row.original.Token}
-            </span>{' '}
-            <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent  rounded-sm">
+            {row.original.poolType === 1 ? (
+              <span className="text-sm text-green-500 ">
+                {formatEther(BigInt(flashPoolRewards || 0))
+                  .toString()
+                  .slice(0, 8)}{' '}
+                {row.original.Token}
+              </span>
+            ) : (
+              <span className="text-sm text-green-500 ">
+                {formatEther(BigInt(claimableInterest)).toString().slice(0, 8)}{' '}
+                {row.original.Token}
+              </span>
+            )}
+            <span className="flex px-1 items-center min-w-16 w-16 border text-xs text-purple-500 border-white/[0.2] bg-transparent rounded-sm">
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -379,10 +450,10 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 height={20}
                 className="flex"
               />
-              {apy / 10000}%
+              {10}%
             </span>
           </div>
-          {/* Loan Details */}
+
           {row.original.poolType !== 1 && (
             <>
               <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">
@@ -451,17 +522,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 actionText="Claim Rewards"
                 description="Are you sure you want to claim the rewards?"
                 title="Claim Rewards"
-                actionFunction={() => {
-                  writeContract({
-                    abi: RewardManagerABI,
-                    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
-                    functionName: 'claimRewards',
-                    args: [row.original.pool as any, true],
-                  });
-                  toast.info(
-                    `Claiming ${formatEther(BigInt(claimableInterest)).toString()} ${row.original.Token}`
-                  );
-                }}
+                actionFunction={handleClaimRewards}
                 actionButtonStyle="!bg-primary/50 hover:!bg-primary/20 !w-full"
                 triggerClassName="w-full"
                 cancelText="Cancel"
@@ -483,7 +544,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 actionFunction={() => {
                   writeContract({
                     abi: RewardManagerABI,
-                    address: '0xDC1dbDf0A97BF4456B7582978fD5CDefc79C5173',
+                    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
                     functionName: 'accrueRewards',
                     args: [row.original.pool as any],
                   });
@@ -534,17 +595,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
               actionText="Close Deal"
               description="Are you sure you want to reclaim the loan deal? Funded amount will be returned to the lender and the pool will be closed."
               title="Close Loan Deal"
-              actionFunction={() => {
-                if (Number(newLoanState) > 1) {
-                  toast.error('Loan is not in a state to be closed.');
-                } else {
-                  writeContract({
-                    abi: TuliaPoolABI,
-                    address: row.original.pool as any,
-                    functionName: 'reclaimLoanAndClosePool',
-                  });
-                }
-              }}
+              actionFunction={handleCloseDeal}
               actionButtonStyle="!bg-red-900 hover:!bg-red-950"
               cancelText="Cancel"
             />

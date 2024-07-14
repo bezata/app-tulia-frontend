@@ -16,6 +16,11 @@ export const TuliaPoolFactoryABI = [
         name: '_vaultManager',
         type: 'address',
       },
+      {
+        internalType: 'address',
+        name: '_flashPoolRewardManager',
+        type: 'address',
+      },
     ],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -137,6 +142,19 @@ export const TuliaPoolFactoryABI = [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'flashPoolRewardManager',
+    outputs: [
+      {
+        internalType: 'contract IFlashPoolRewardManager',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {

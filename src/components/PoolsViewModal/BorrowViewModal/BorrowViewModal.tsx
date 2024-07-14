@@ -423,6 +423,9 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
                 if (Number(vaultAllowances?.toString()) < 10) {
                   handleVaultApprove();
                   toast.info('Approve the vault first...');
+                }
+                if (latestRepayment === 0) {
+                  toast.error('Loan has expired');
                 } else {
                   writeContract({
                     abi: TuliaPoolABI,

@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { parseEther, formatEther, formatUnits } from 'viem';
+import { parseEther, formatEther, formatUnits, parseUnits } from 'viem';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, CalendarDays } from 'lucide-react';
 import { useTransaction } from 'wagmi';
@@ -219,14 +219,17 @@ const LendingReqModal = () => {
 
   const onSubmit = (data: ILendRequest.ILendRequestInputs) => {
     const endDate = form.watch('endDate');
-
+    const formattedInterestRate = parseUnits(String(data.interestRate), 2);
     const days = parseFloat(endDate);
     const endDateInSeconds = !isNaN(days) ? days * 86400 : 0;
     const optionalFlashLoanFeeRate =
-      data.interestModal === InterestModal.FlashLoan ? data.interestRate : 0;
+      data.interestModal === InterestModal.FlashLoan
+        ? formattedInterestRate
+        : 0;
     const newInterestAddress = updateInterestAddress(data.interestModal);
     const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
     const loanAmount = parseEther(String(data?.loanAmount));
+
     writeContract({
       abi: TuliaPoolFactoryABI,
       address: '0x97Cfdcf8EB4Cb807168C9C2D173bc82cc577F1DE',
@@ -237,7 +240,7 @@ const LendingReqModal = () => {
         data.borrowCoin.value as any,
         data.borrowCoin.value as any,
         loanAmount as any,
-        data.interestRate as any,
+        formattedInterestRate as any,
         endDateInSeconds as any,
         newInterestAddress as any,
         poolType,
@@ -329,9 +332,22 @@ const LendingReqModal = () => {
                       <div className="relative">
                         <FormControl>
                           <Input
-                            type="number"
-                            defaultValue={undefined}
+                            defaultValue={0}
+                            maxLength={6}
                             {...field}
+                            onKeyDown={e => {
+                              // Allow numbers, backspace, delete, tab, escape, enter, and dot
+                              if (
+                                !/^[0-9.]$/.test(e.key) &&
+                                e.key !== 'Backspace' &&
+                                e.key !== 'Tab' &&
+                                e.key !== 'Enter' &&
+                                e.key !== 'Escape' &&
+                                e.key !== 'Delete'
+                              ) {
+                                e.preventDefault();
+                              }
+                            }}
                           />
                         </FormControl>
                         <span className="absolute right-8 text-gray-500 top-2">

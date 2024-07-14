@@ -620,6 +620,9 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                       toast.error(
                         `There is still ${formattedRepaymentTime} remaining before you can default the loan.`
                       );
+                    }
+                    if (row.original.loan_state === 'Active') {
+                      toast.error('Borrower not defined!');
                     } else {
                       writeContract({
                         abi: TuliaPoolABI,

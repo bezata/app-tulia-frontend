@@ -34,6 +34,7 @@ import {
 import { TuliaVaultABI } from '@/lens/abi/TuliaVault';
 import { useBlockNumber } from 'wagmi';
 import { useQueryClient } from '@tanstack/react-query';
+import { addAsteroidPoints } from '@/utils/addAsteroidPoints';
 
 const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   const account = useAccount();
@@ -52,6 +53,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   });
 
   const { writeContract, status: contractStatus } = useWriteContract();
+  const { writeContract: repay, status: repayStatus } = useWriteContract();
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: vaultData });
@@ -60,7 +62,15 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
   useEffect(() => {
     setApy(calculateRewardAPY ?? 0);
   }, [calculateRewardAPY]);
-
+  useEffect(
+    () => {
+      if (repayStatus === 'success') {
+        addAsteroidPoints(account?.address as string, 200, 'repayLoan');
+      }
+    },
+    // @ts-ignore
+    {repayStatus}
+  );
   const currentClaimableInterest = useCalculateClaimableInterest({
     pool: row.original.pool,
     isLender: false,
@@ -427,7 +437,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
                 if (latestRepayment === 0) {
                   toast.error('Loan has expired');
                 } else {
-                  writeContract({
+                  repay({
                     abi: TuliaPoolABI,
                     address: row.original.pool as any,
                     functionName: 'repay',

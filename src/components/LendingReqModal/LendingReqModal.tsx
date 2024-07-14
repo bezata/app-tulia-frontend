@@ -8,10 +8,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { parseEther, formatEther, formatUnits, parseUnits } from 'viem';
+import { parseEther, parseUnits } from 'viem';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, CalendarDays } from 'lucide-react';
-import { useTransaction } from 'wagmi';
+import { PlusCircle } from 'lucide-react';
 import {
   useCalculateInterest,
   useCalculateCompoundInterest,
@@ -41,6 +40,7 @@ import TransactionProcessModal from '../TransactionProcessModal/TransactionProce
 import { useWriteContract } from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import { useRouter } from 'next/navigation';
+import { addAsteroidPoints } from '@/utils/addAsteroidPoints';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -113,6 +113,7 @@ const LendingReqModal = () => {
   useEffect(() => {
     if (openPoolRequest === 'success') {
       setOpenPoolRequestStatus('success');
+      addAsteroidPoints(account?.address as string, 200, 'createdPool');
     }
     if (openPoolRequest === 'error') {
       setOpenPoolRequestStatus('error');
@@ -219,7 +220,7 @@ const LendingReqModal = () => {
 
   const onSubmit = (data: ILendRequest.ILendRequestInputs) => {
     const endDate = form.watch('endDate');
-    const formattedInterestRate = parseUnits(String(data.interestRate), 2);
+    const formattedInterestRate = parseUnits(String(data.interestRate), 0);
     const days = parseFloat(endDate);
     const endDateInSeconds = !isNaN(days) ? days * 86400 : 0;
     const optionalFlashLoanFeeRate =

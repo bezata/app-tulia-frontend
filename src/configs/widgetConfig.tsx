@@ -108,7 +108,7 @@ export const TuliaSwap = (props: SwapWidgetProps) => {
       console.error('Error storing transaction:', error);
     }
   };
-
+  
   useEffect(() => {
     widgetEvents.on(
       WidgetEvent.RouteExecutionCompleted,

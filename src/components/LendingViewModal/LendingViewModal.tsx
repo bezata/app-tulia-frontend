@@ -32,6 +32,7 @@ import TransactionProcessModal from '../TransactionProcessModal/TransactionProce
 import { useAccount } from 'wagmi';
 import { CodeIcon } from 'lucide-react';
 import { CopyBlock } from 'react-code-blocks';
+import { addAsteroidPoints } from '@/utils/addAsteroidPoints';
 
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
@@ -84,6 +85,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   useEffect(() => {
     if (fundLoanStatus === 'success') {
       setLendRequest('success');
+      addAsteroidPoints(account?.address as string, 200, 'acceptLendRequest');
     }
     if (fundLoanStatus === 'error') {
       setLendRequest('error');

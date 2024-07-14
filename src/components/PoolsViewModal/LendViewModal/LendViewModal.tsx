@@ -622,7 +622,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                       );
                     }
                     if (row.original.loan_state === 'Active') {
-                      toast.error('Borrower not defined!');
+                      toast.error('Loan is not in defaultable state!');
                     } else {
                       writeContract({
                         abi: TuliaPoolABI,

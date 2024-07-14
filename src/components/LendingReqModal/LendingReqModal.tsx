@@ -249,17 +249,7 @@ const LendingReqModal = () => {
       ],
     });
 
-    console.log(
-      loanAmount,
-      data.lendCoin.value,
-      data.borrowCoin.value,
-      data.borrowCoin.value,
-      data.interestRate,
-      endDateInSeconds,
-      newInterestAddress,
-      poolType,
-      optionalFlashLoanFeeRate
-    );
+
   };
 
   const onCloseClick = () => {

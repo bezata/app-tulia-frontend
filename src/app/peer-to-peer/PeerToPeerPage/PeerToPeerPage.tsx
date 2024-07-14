@@ -41,7 +41,6 @@ const PeerToPeerPage = () => {
       const formattedData = allPoolDetails.map(
         (detail, index): ILendingData => {
           const poolDetail = detail.result as unknown;
-          console.log(poolDetail, 'poolDetail');
 
           let repaymentCurrency = {
             label: 'ARB',

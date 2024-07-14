@@ -150,9 +150,6 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
 
   useEffect(() => {
     switch (contractStatus) {
-      case 'pending':
-        toast.info('Transaction is pending...');
-        break;
       case 'error':
         toast.error('Transaction failed.');
         break;

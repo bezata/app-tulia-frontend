@@ -19,7 +19,11 @@ import UniIcon from '../../../public/UniIcon';
 import EthIcon from '../../../public/EthIcon';
 import BtcIcon from '../../../public/BtcIcon';
 import { formatEther, parseEther } from 'viem';
-import { useCalculateRewardApy, useCheckCoinAllowance } from '@/lens/lens';
+import {
+  useCalculateRewardApy,
+  useCheckCoinAllowance,
+  useGetFlashPoolLoanState,
+} from '@/lens/lens';
 import { toast } from 'sonner';
 import { useWriteContract } from 'wagmi';
 import { TokenABI } from '@/lens/abi/Token';
@@ -32,6 +36,7 @@ import { CopyBlock } from 'react-code-blocks';
 const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const router = useRouter();
   const account = useAccount();
+  const flashPoolLoanState = useGetFlashPoolLoanState(row.original.pool);
   const loanAmount = Number(row.original.amount);
   const interestRate = Number(row.original.interestRate);
   const [loading, setLoading] = useState<boolean>(false);
@@ -191,6 +196,13 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
             <DialogTrigger
               type="button"
               className="w-full mt-2 rounded-md bg-tulia_primary/50 hover:bg-tulia_primary/30 p-2"
+              onClick={() => {
+                if (flashPoolLoanState?.toString() === '0') {
+                  toast.error(
+                    'Loan needs to be activated by lender be aware of it!'
+                  );
+                }
+              }}
             >
               <CodeIcon className="w-4 h-4 inline-block mr-1" />
               View Code
@@ -268,7 +280,10 @@ contract MockFlashLoanBorrower is IERC3156FlashBorrower {
               }
             }}
           >
-            <Button className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30">
+            <Button
+              disabled={row.original.loan_state === 'Funded'}
+              className="capitalize border-tulia_primary bg-tulia_primary/50 hover:bg-tulia_primary/30"
+            >
               Request Details
             </Button>
           </DialogTrigger>

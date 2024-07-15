@@ -1,6 +1,7 @@
 'use client';
 
 import { Inter } from 'next/font/google';
+import Head from 'next/head';
 import './globals.css';
 import MainLayout from '@/components/MainLayout/MainLayout';
 import { Toaster } from '@/components/ui/sonner';
@@ -15,7 +16,7 @@ const defaultSEO = {
   description:
     'Experience the future of DeFi with Tulia Protocol — a unique peer-to-peer lending platform where you control the terms. Create and manage your own lending pools, earn pre-loan interest, and customize your investment strategy. Dive into our secure, user-driven ecosystem, and leverage cutting-edge features like ERC-4626 compliance and multi-model interest rates. Join Tulia on testnet today and transform how you lend and earn.',
   url: 'https://app.tulia.finance',
-  image: '/public/logo.png',
+  image: '/favicon.ico',
 };
 
 export default function RootLayout({
@@ -33,6 +34,7 @@ export default function RootLayout({
         <meta property="og:url" content={defaultSEO.url} />
         <meta property="og:image" content={defaultSEO.image} />
         <meta name="twitter:card" content="summary_large_image" />
+        <link rel="icon" href="/logo.ico" sizes="any" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

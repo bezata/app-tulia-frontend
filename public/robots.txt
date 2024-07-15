@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://app.tulia.finance
+
+# Sitemaps
+Sitemap: https://app.tulia.finance/sitemap.xml

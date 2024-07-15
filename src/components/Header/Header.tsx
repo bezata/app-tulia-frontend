@@ -44,7 +44,7 @@ const navigationMenuItems: IHeader.INavigation[] = [
   },
   {
     title: 'Airdrop',
-    slug: 'https://airdrop.tulia.finance/',
+    slug: 'https:/airdrop.tulia.finance/',
     target: '_blank',
   },
 ];
@@ -70,7 +70,7 @@ const Header = () => {
                     className="cursor-pointer flex-shrink-0"
                   />
                 </DrawerTitle>
-                <DrawerDescription className="text-center">
+                <DrawerDescription>
                   Tulia - Discover our planet with a new perspective
                 </DrawerDescription>
               </DrawerHeader>
@@ -82,7 +82,7 @@ const Header = () => {
                         <Link
                           href={item.slug || ''}
                           target={item?.target}
-                          className={`${navigationMenuTriggerStyle()} duration-500 px-5 `}
+                          className={`${navigationMenuTriggerStyle()} duration-500 px-5 border`}
                         >
                           {item.title}
                         </Link>

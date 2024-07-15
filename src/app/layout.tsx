@@ -16,7 +16,7 @@ const defaultSEO = {
   description:
     'Experience the future of DeFi with Tulia Protocol — a unique peer-to-peer lending platform where you control the terms. Create and manage your own lending pools, earn pre-loan interest, and customize your investment strategy. Dive into our secure, user-driven ecosystem, and leverage cutting-edge features like ERC-4626 compliance and multi-model interest rates. Join Tulia on testnet today and transform how you lend and earn.',
   url: 'https://app.tulia.finance',
-  image: '/logo.png',
+  image: '/favicon.ico',
 };
 
 export default function RootLayout({

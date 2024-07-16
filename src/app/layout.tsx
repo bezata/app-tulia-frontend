@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { Providers } from '@/configs/providersConfig';
 import StoreProvider from './StoreProvider';
 import { SessionProvider } from 'next-auth/react';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -51,7 +52,10 @@ export default function RootLayout({
         <SessionProvider>
           <StoreProvider>
             <Providers>
-              <MainLayout>{children}</MainLayout>
+              <MainLayout>
+                {children}
+                <GoogleAnalytics gaId="G-MK95TFT1EJ" />
+              </MainLayout>
               <Toaster />
             </Providers>
           </StoreProvider>

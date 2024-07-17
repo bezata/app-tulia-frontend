@@ -175,7 +175,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       toast.success('Loan activated successfully');
     }
     if (activateLoanCheck === 'error') {
-      toast.error('Error activating loan');
+      toast.error('Please get test tokens!');
     }
     if (activateLoanCheck === 'pending') {
       toast.info('Loan activation pending');

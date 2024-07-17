@@ -337,7 +337,7 @@ contract MockFlashLoanBorrower is IERC3156FlashBorrower {
                   Interest Discount
                 </span>
                 <span className="text-sm text-green-500">
-                  {String(apy / 10000)}% {row.original.Token}
+                  {'10'}% {row.original.Token}
                 </span>
               </div>
               <div className="col-span-12 flex flex-col border-gray-500 pb-2 border-b-[0.5px]">

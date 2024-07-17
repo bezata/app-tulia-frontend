@@ -57,13 +57,13 @@ const MyPoolspage = () => {
         (poolDetail: PoolDetail, index: number): IPoolsdata => {
     
           let repaymentCurrency = {
-            label: 'MockARB',
+            label: 'mARB',
             symbol: <ArbIcon />,
             address: '0xd4a2b111c346200b131d668594bfaf52dee8fae7',
           };
           
           let currency = {
-            label: 'MockETH',
+            label: 'mETH',
             symbol: <EthIcon />,
             address: '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186',
           };
@@ -72,49 +72,49 @@ const MyPoolspage = () => {
           switch (poolDetail?.loanToken.toLowerCase()) {
             case '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186':
               currency = {
-                label: 'MockETH',
+                label: 'mETH',
                 symbol: <EthIcon />,
                 address: '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186',
               };
               break;
             case '0xaf8442cfc7491b9cc6fc2ce94199084d39e85a09':
               currency = {
-                label: 'MockWBTC',
+                label: 'mWBTC',
                 symbol: <BtcIcon />,
                 address: '0xaf8442cfc7491b9cc6fc2ce94199084d39e85a09',
               };
               break;
             case '0x485d5df7178c2413771914df0910b326c308b5c3':
               currency = {
-                label: 'MockUSDC',
+                label: 'mUSDC',
                 symbol: <USDCIcon />,
                 address: '0x485d5df7178c2413771914df0910b326c308b5c3',
               };
               break;
             case '0xd4a2b111c346200b131d668594bfaf52dee8fae7':
               currency = {
-                label: 'MockARB',
+                label: 'mARB',
                 symbol: <ArbIcon />,
                 address: '0xd4a2b111c346200b131d668594bfaf52dee8fae7',
               };
               break;
             case '0xdafb89d8dd8ecdd369e02542e965e23a3bc4b074':
               currency = {
-                label: 'MockDAI',
+                label: 'mDAI',
                 symbol: <DaiIcon />,
                 address: '0xdafb89d8dd8ecdd369e02542e965e23a3bc4b074',
               };
               break;
             case '0x8c9ae3da7c53470d86edf14771586431136dd270':
               currency = {
-                label: 'MockUNI',
+                label: 'mUNI',
                 symbol: <UniIcon />,
                 address: '0x8c9ae3da7c53470d86edf14771586431136dd270',
               };
               break;
             case '0xf401b345175e19b9705fb186b474982c76e7b80f':
               currency = {
-                label: 'MockTulia',
+                label: 'mTulia',
                 symbol: <EthIcon />, // Replace with appropriate Tulia icon if available
                 address: '0xf401b345175e19b9705fb186b474982c76e7b80f',
               };
@@ -125,42 +125,42 @@ const MyPoolspage = () => {
           switch (poolDetail?.repaymentToken.toLowerCase()) {
             case '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186':
               repaymentCurrency = {
-                label: 'MockETH',
+                label: 'mETH',
                 symbol: <EthIcon />,
                 address: '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186',
               };
               break;
             case '0xaf8442cfc7491b9cc6fc2ce94199084d39e85a09':
               repaymentCurrency = {
-                label: 'MockWBTC',
+                label: 'mWBTC',
                 symbol: <BtcIcon />,
                 address: '0xaf8442cfc7491b9cc6fc2ce94199084d39e85a09',
               };
               break;
             case '0x485d5df7178c2413771914df0910b326c308b5c3':
               repaymentCurrency = {
-                label: 'MockUSDC',
+                label: 'mUSDC',
                 symbol: <USDCIcon />,
                 address: '0x485d5df7178c2413771914df0910b326c308b5c3',
               };
               break;
             case '0xd4a2b111c346200b131d668594bfaf52dee8fae7':
               repaymentCurrency = {
-                label: 'MockARB',
+                label: 'mARB',
                 symbol: <ArbIcon />,
                 address: '0xd4a2b111c346200b131d668594bfaf52dee8fae7',
               };
               break;
             case '0xdafb89d8dd8ecdd369e02542e965e23a3bc4b074':
               repaymentCurrency = {
-                label: 'MockDAI',
+                label: 'mDAI',
                 symbol: <DaiIcon />,
                 address: '0xdafb89d8dd8ecdd369e02542e965e23a3bc4b074',
               };
               break;
             case '0x8c9ae3da7c53470d86edf14771586431136dd270':
               repaymentCurrency = {
-                label: 'MockUNI',
+                label: 'mUNI',
                 symbol: <UniIcon />,
                 address: '0x8c9ae3da7c53470d86edf14771586431136dd270',
               };

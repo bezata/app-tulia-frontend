@@ -3,32 +3,6 @@ export const BulkMinterABI = [
     inputs: [
       {
         internalType: 'address',
-        name: 'token',
-        type: 'address',
-      },
-    ],
-    name: 'addToken',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256[]',
-        name: 'amounts',
-        type: 'uint256[]',
-      },
-    ],
-    name: 'mintAll',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: 'initialOwner',
         type: 'address',
       },
@@ -78,21 +52,14 @@ export const BulkMinterABI = [
     type: 'event',
   },
   {
-    inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'address',
-        name: 'newOwner',
+        name: 'token',
         type: 'address',
       },
     ],
-    name: 'transferOwnership',
+    name: 'addToken',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -111,6 +78,19 @@ export const BulkMinterABI = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'uint256[]',
+        name: 'amounts',
+        type: 'uint256[]',
+      },
+    ],
+    name: 'mintAll',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     name: 'owner',
     outputs: [
@@ -121,6 +101,13 @@ export const BulkMinterABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -140,6 +127,19 @@ export const BulkMinterABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ] as const;

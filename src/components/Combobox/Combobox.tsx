@@ -29,32 +29,32 @@ import UniIcon from '../../../public/UniIcon';
 const cryptoCurrencies: ILendRequest.CryptoCurrency[] = [
   {
     label: 'ETH',
-    value: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
+    value: '0x46EAE7F1f2155D3A7f799C96a2c52e0a634Ed186',
     symbol: <EthIcon />,
   },
   {
     label: 'WBTC',
-    value: '0x6ff9e328b50f1d81ec7a828EB1C7F27b4A3e0e09',
+    value: '0xAF8442cfC7491b9cC6FC2CE94199084d39e85A09',
     symbol: <BtcIcon />,
   },
   {
     label: 'USDC',
-    value: '0x15E38De09a6453Ae9D1acc591b47baa5dA5C03dE',
+    value: '0x485D5Df7178C2413771914df0910b326c308b5c3',
     symbol: <USDCIcon />,
   },
   {
     label: 'ARB',
-    value: '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e',
+    value: '0xD4a2b111c346200b131D668594BfaF52dee8FAE7',
     symbol: <ArbIcon />,
   },
   {
     label: 'DAI',
-    value: '0x90bD86E8E74D6A28a4cDEABf3c6Db2890818AD7B',
+    value: '0xdAFb89D8Dd8eCdd369e02542E965E23A3bC4b074',
     symbol: <DaiIcon />,
   },
   {
     label: 'UNI',
-    value: '0x087E9fb036843d25E6F7bC6D6531258A10749fE7',
+    value: '0x8c9ae3da7C53470d86EDF14771586431136DD270',
     symbol: <UniIcon />,
   },
 ];

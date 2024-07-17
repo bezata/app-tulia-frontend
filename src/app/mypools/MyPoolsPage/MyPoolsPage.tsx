@@ -50,7 +50,7 @@ const MyPoolspage = () => {
   useEffect(() => {
     setPoolCount(totalPoolCount as any);
   }, [totalPoolCount]);
-
+  
   useEffect(() => {
     const formatPoolDetails = (poolDetails: PoolDetail[], type: 1 | 2) => {
       return poolDetails.map(

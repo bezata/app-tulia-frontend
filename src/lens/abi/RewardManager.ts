@@ -239,11 +239,6 @@ export const RewardManagerABI = [
           },
           {
             internalType: 'bool',
-            name: 'isFlashPool',
-            type: 'bool',
-          },
-          {
-            internalType: 'bool',
             name: 'isAccruing',
             type: 'bool',
           },
@@ -285,11 +280,6 @@ export const RewardManagerABI = [
         internalType: 'address',
         name: 'rewardToken',
         type: 'address',
-      },
-      {
-        internalType: 'bool',
-        name: 'isFlashPool',
-        type: 'bool',
       },
     ],
     name: 'registerPool',
@@ -346,11 +336,6 @@ export const RewardManagerABI = [
         internalType: 'address',
         name: 'borrower',
         type: 'address',
-      },
-      {
-        internalType: 'bool',
-        name: 'isFlashPool',
-        type: 'bool',
       },
       {
         internalType: 'bool',

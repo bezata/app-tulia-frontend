@@ -99,7 +99,7 @@ export const useCalculateRewardApy = ({
 }: AdvancedAPYManagerProps) => {
   const { data: apy } = useReadContract({
     abi: AdvancedAPYManagerABI,
-    address: '0x84F2b371A76F1178E5f0560f36b39118FD4aAdb9 ',
+    address: '0x84F2b371A76F1178E5f0560f36b39118FD4aAdb9',
     functionName: 'calculateAPY',
     args: [loanAmount as any, durationSeconds as any],
   });

@@ -336,7 +336,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
       );
     }
   };
-
+  console.log(row.original.pool);
   const handleCloseDeal = () => {
     if (row.original.poolType === 1) {
       closeDeal({

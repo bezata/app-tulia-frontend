@@ -99,12 +99,12 @@ const LendingReqModal = () => {
     defaultValues: {
       lendCoin: {
         label: 'WETH',
-        value: '0x2ABFB11CBF39B135237bdF6c04782718253bA7D4',
+        value: '0x46EAE7F1f2155D3A7f799C96a2c52e0a634Ed186',
         symbol: <EthIcon />,
       },
       borrowCoin: {
         label: 'ARB',
-        value: '0x416A4cA8a82c6aDc2fD49a417C4D5f9CcfbbDE1e',
+        value: '0xD4a2b111c346200b131D668594BfaF52dee8FAE7',
         symbol: <ArbIcon />,
       },
       loanAmount: undefined,

@@ -22,13 +22,12 @@ import UniIcon from '../../../../public/UniIcon';
 
 
 const PeerToPeerPage = () => {
-  //NOTE: state tutmak lazim direk variable ile tutamayiz.
-
   const apy =
     useCalculateRewardApy({
       loanAmount: BigInt(10000),
       durationSeconds: 1000,
     }) ?? 0;
+  console.log(apy);
   const allPoolDetails = useGetAllPoolDetails();
   const [data, setData] = useState<ILendingData[]>([]);
   const totalPoolCount = useGetTotalPoolCount();
@@ -179,7 +178,7 @@ const PeerToPeerPage = () => {
       setData(formattedData);
     }
   }, [allPoolDetails, totalPoolCount, apy]);
-  
+
   const { section } = useAppSelector(state => state.example);
   const [filteredData, setFilteredData] = React.useState<ILendingData[]>(data);
   const dispatch = useAppDispatch();

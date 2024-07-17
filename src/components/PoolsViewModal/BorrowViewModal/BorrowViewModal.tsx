@@ -403,7 +403,7 @@ const BorrowViewModal = ({ row }: IPoolsViewModalProps) => {
               actionFunction={() => {
                 writeContract({
                   abi: RewardManagerABI,
-                  address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+                  address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
                   functionName: 'claimRewards',
                   args: [row.original.pool as any, false],
                 });

@@ -81,7 +81,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   );
   const { data: acrruesReward, queryKey } = useReadContract({
     abi: RewardManagerABI,
-    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+    address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
     functionName: 'getRewardDetails',
     args: [row.original.pool as any],
   });
@@ -129,7 +129,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
   );
   const { data: vaultManagerReward } = useReadContract({
     abi: VaultManagerABI,
-    address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
+    address: '0x5a27651600F4115FE966b9bb72DB3F28e2bBAb54',
     functionName: 'calculateClaimableInterest',
     args: [row.original.pool],
   });
@@ -317,7 +317,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     if (row.original.poolType === 1) {
       writeContract({
         abi: FlashPoolRewardManager,
-        address: '0xf422034e0e404e930FCD37c5e5b3FF5f3a2AB1E5',
+        address: '0x076f592c1371F41140b45328c1cc7644823E2D8C',
         functionName: 'claimRewards',
         args: [row.original.pool as any],
       });
@@ -327,7 +327,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
     } else {
       writeContract({
         abi: RewardManagerABI,
-        address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+        address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
         functionName: 'claimRewards',
         args: [row.original.pool as any, true],
       });
@@ -557,7 +557,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                     } else
                       writeContract({
                         abi: VaultManagerABI,
-                        address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
+                        address: '0x5a27651600F4115FE966b9bb72DB3F28e2bBAb54',
                         functionName: 'distributeInterest',
                         args: [row.original.pool, account?.address],
                       });
@@ -604,7 +604,7 @@ const LendViewModal = ({ row }: IPoolsViewModalProps) => {
                 actionFunction={() => {
                   writeContract({
                     abi: RewardManagerABI,
-                    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+                    address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
                     functionName: 'accrueRewards',
                     args: [row.original.pool as any],
                   });

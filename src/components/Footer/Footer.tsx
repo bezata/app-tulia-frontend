@@ -1,24 +1,29 @@
 import Link from "next/link";
 import React from "react";
 import { FaLinkedin } from "react-icons/fa";
-import { FaXTwitter, FaDiscord } from "react-icons/fa6";
-import { SocialMediaLink } from "./IFooter";
+import { FaXTwitter, FaDiscord, FaTelegram } from 'react-icons/fa6';
+import { SocialMediaLink } from './IFooter';
 
 const socialMediaLinks: SocialMediaLink[] = [
   {
-    name: "LinkedIn",
-    url: "https://www.linkedin.com/company/tulias/",
+    name: 'LinkedIn',
+    url: 'https://www.linkedin.com/company/tulias/',
     icon: <FaLinkedin className="text-lg hover:text-gray-400 transition-all" />,
   },
   {
-    name: "Twitter",
-    url: "https://www.linkedin.com/company/tulias/",
+    name: 'Twitter',
+    url: 'https://x.com/TuliaProtocol',
     icon: <FaXTwitter className="text-lg hover:text-gray-400 transition-all" />,
   },
   {
-    name: "Discord",
-    url: "https://www.linkedin.com/company/tulias/",
+    name: 'Discord',
+    url: 'https://discord.gg/y6AhXZy3Hx',
     icon: <FaDiscord className="text-lg hover:text-gray-400 transition-all" />,
+  },
+  {
+    name: 'Telegram',
+    url: 'https://t.me/Tulia_Finance',
+    icon: <FaTelegram className="text-lg hover:text-gray-400 transition-all" />,
   },
 ];
 

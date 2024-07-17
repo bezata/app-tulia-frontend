@@ -27,7 +27,6 @@ const PeerToPeerPage = () => {
       loanAmount: BigInt(10000),
       durationSeconds: 1000,
     }) ?? 0;
-  console.log(apy);
   const allPoolDetails = useGetAllPoolDetails();
   const [data, setData] = useState<ILendingData[]>([]);
   const totalPoolCount = useGetTotalPoolCount();

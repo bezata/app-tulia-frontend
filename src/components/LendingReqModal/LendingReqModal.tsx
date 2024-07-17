@@ -64,7 +64,7 @@ const schema = z.object({
   endDate: z.string().refine(v => parseFloat(v) > 0, 'Repayment days required'),
   interestAddress: z.string().optional(),
 });
-
+// BECAUSE OF TULIAPOOLFACTORY BIGGER THAN 24KB SIZE CAN'T BE DEPLOYED WITH CREATE2 IT STUCK AT 24KB LIMIT
 const contractAddresses = {
   '421614': '0xF05570Baff1e3918986b37E8Fc0a755123C8b304',
   '17000': '0x2F2c167eFaF016bB179b6A97f98234aC26E4d6bb',

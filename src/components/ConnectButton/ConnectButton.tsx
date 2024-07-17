@@ -24,11 +24,11 @@ const CustomConnectButton = () => {
 
   const handleGetTestTokens = () => {
     const tokenGweiAmount = parseEther('100');
-    const mintAmount = Array(6).fill(tokenGweiAmount);
+    const mintAmount = Array(7).fill(tokenGweiAmount);
 
     writeContract({
       abi: BulkMinterABI,
-      address: '0x351a05e30621Ffda54199B083C6c5c53C81153D1' as any,
+      address: '0x8f03dCBc73694719afAAFC41f75a10EB89175262' as any,
       functionName: 'mintAll',
       args: [mintAmount],
     });

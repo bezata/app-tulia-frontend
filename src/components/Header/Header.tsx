@@ -51,7 +51,7 @@ const navigationMenuItems: IHeader.INavigation[] = [
 
 const Header = () => {
   return (
-    <div className="w-full px-8 min-h-[5rem] py-2">
+    <div className="w-full px-8 min-h-[5rem] py-2 ">
       <div className="flex justify-between items-center">
         <div className="flex items-center justify-center basis-1/12">
           {/* <Link href="/"> */}
@@ -70,7 +70,7 @@ const Header = () => {
                     className="cursor-pointer flex-shrink-0"
                   />
                 </DrawerTitle>
-                <DrawerDescription>
+                <DrawerDescription className="text-center">
                   Tulia - Discover our planet with a new perspective
                 </DrawerDescription>
               </DrawerHeader>
@@ -82,7 +82,7 @@ const Header = () => {
                         <Link
                           href={item.slug || ''}
                           target={item?.target}
-                          className={`${navigationMenuTriggerStyle()} duration-500 px-5 border`}
+                          className={`${navigationMenuTriggerStyle()} duration-500 px-5 `}
                         >
                           {item.title}
                         </Link>
@@ -107,7 +107,7 @@ const Header = () => {
           {/* </Link> */}
         </div>
         <div className="basis-10/12 lg:hidden flex items-center justify-left flex-1">
-          <Link href="/">
+          <Link href="https://tulia.finance/" target="_blank">
             <Image
               src="/logo.png"
               alt="Tulia"
@@ -117,7 +117,7 @@ const Header = () => {
             />
           </Link>
         </div>
-        <div className="basis-9/12 hidden lg:block">
+        <div className="basis-10/12 hidden lg:block">
           <NavigationMenu>
             <NavigationMenuList>
               {navigationMenuItems.map((item, index) => (

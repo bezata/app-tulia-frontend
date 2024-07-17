@@ -38,7 +38,7 @@ export const useGetAllBorrowerPoolDetails = () => {
 
   const { data: borrowerPoolDetails, queryKey } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x15c02996bD57E2bFE19b4B853F405F98d214c13d',
+    address: '0x2dE66006A9769438613042ad6DB03293F1E739Bc',
     functionName: 'getBorrowerPoolDetails',
     args: [account?.address as any],
   });
@@ -53,7 +53,7 @@ export const useGetFlashPoolRewards = (pool: any) => {
   const queryClient = useQueryClient();
   const { data: flashPoolRewards, queryKey } = useReadContract({
     abi: FlashPoolRewardManager,
-    address: '0xf422034e0e404e930FCD37c5e5b3FF5f3a2AB1E5',
+    address: '0x076f592c1371F41140b45328c1cc7644823E2D8C',
     functionName: 'calculateClaimableInterest',
     args: [pool],
   });
@@ -99,7 +99,7 @@ export const useCalculateRewardApy = ({
 }: AdvancedAPYManagerProps) => {
   const { data: apy } = useReadContract({
     abi: AdvancedAPYManagerABI,
-    address: '0x4e6acfc41ca9c367Af36352023f985f0B4DDEd28',
+    address: '0x84F2b371A76F1178E5f0560f36b39118FD4aAdb9 ',
     functionName: 'calculateAPY',
     args: [loanAmount as any, durationSeconds as any],
   });
@@ -112,7 +112,7 @@ export const useGetTotalPoolCount = () => {
   const queryClient = useQueryClient();
   const { data: totalPoolCount, queryKey } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x15c02996bD57E2bFE19b4B853F405F98d214c13d',
+    address: '0x2dE66006A9769438613042ad6DB03293F1E739Bc',
     functionName: 'getTotalPools',
   });
 
@@ -127,7 +127,7 @@ export const useGetTotalPoolCount = () => {
 export const useGetPoolDetails = (poolAddress: string) => {
   const { data: poolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x15c02996bD57E2bFE19b4B853F405F98d214c13d',
+    address: '0x2dE66006A9769438613042ad6DB03293F1E739Bc',
     functionName: 'getPoolDetails',
     args: [poolAddress as any],
   });
@@ -140,7 +140,7 @@ export const useGetAllPoolAddresses = () => {
   const { data: blockNumber } = useBlockNumber({ watch: true });
   const { data: allPoolAddresses, queryKey } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x15c02996bD57E2bFE19b4B853F405F98d214c13d',
+    address: '0x2dE66006A9769438613042ad6DB03293F1E739Bc',
     functionName: 'getAllPoolAddresses',
   });
 
@@ -155,7 +155,7 @@ export const useGetAllLenderPoolDetails = () => {
   const account = useAccount();
   const { data: allLenderPoolDetails } = useReadContract({
     abi: PoolOrganizerABI,
-    address: '0x15c02996bD57E2bFE19b4B853F405F98d214c13d',
+    address: '0x2dE66006A9769438613042ad6DB03293F1E739Bc',
     functionName: 'getAllLenderPoolDetails',
     args: [account?.address as any],
   });
@@ -163,7 +163,6 @@ export const useGetAllLenderPoolDetails = () => {
 };
 
 export const useCheckCoinAllowance = (
-
   coinAddress: string,
   approveAddress: 'string'
 ) => {
@@ -238,7 +237,7 @@ export const useGetAllPoolDetails = () => {
     if (allPoolAddresses && allPoolAddresses.length > 0) {
       const newContractsConfig = allPoolAddresses.map(address => ({
         abi: PoolOrganizerABI,
-        address: '0x15c02996bD57E2bFE19b4B853F405F98d214c13d',
+        address: '0x2dE66006A9769438613042ad6DB03293F1E739Bc',
         functionName: 'getPoolDetails',
         args: [address],
       }));
@@ -269,7 +268,7 @@ export const useGetAllFundedPoolDetails = () => {
 export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
   const { data } = useReadContract({
     abi: SimpleInterestABI,
-    address: '0x06D98c1AA31d84c51F150d6cC929E3095796Fae2',
+    address: '0x7BD46bF5df17E7fe9F998fe9185b63D1324bA65c',
     functionName: 'calculateInterest',
     args: [principal, rate],
   });
@@ -280,7 +279,7 @@ export const useCalculateInterest = ({ principal, rate }: CalculationProps) => {
 export const useCalculateClaimableInterest = ({ pool, isLender }: any) => {
   const { data } = useReadContract({
     abi: RewardManagerABI,
-    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+    address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
     functionName: 'calculateClaimableRewards',
     args: [pool, isLender],
   });
@@ -291,7 +290,7 @@ export const useCalculateClaimableInterest = ({ pool, isLender }: any) => {
 export const useActivateRewardMechanism = ({ pool }: any) => {
   const { writeContract, data: hash } = useWriteContract();
   writeContract({
-    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+    address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
     abi: RewardManagerABI,
     functionName: 'accrueRewards',
     args: [pool],
@@ -303,7 +302,7 @@ export const useActivateRewardMechanism = ({ pool }: any) => {
 export const useVaultManagerInterest = ({ pool }: any) => {
   const { data } = useReadContract({
     abi: VaultManagerABI,
-    address: '0xb3A0398630831D7b39d6eE2292F6274DeC5427AE',
+    address: '0x5a27651600F4115FE966b9bb72DB3F28e2bBAb54',
     functionName: 'calculateClaimableInterest',
     args: [pool],
   });
@@ -313,7 +312,7 @@ export const useVaultManagerInterest = ({ pool }: any) => {
 export const useAccruingRewardCheck = ({ pool }: any) => {
   const { data: accrueRewardINFO } = useReadContract({
     abi: RewardManagerABI,
-    address: '0x141ae66f56f8B3FA01d5Ce08806568378c956483',
+    address: '0x82B7B9715273f7063AeD2c1b5136e241bc342d34',
     functionName: 'getRewardDetails',
     args: [pool],
   });

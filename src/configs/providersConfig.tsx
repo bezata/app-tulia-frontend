@@ -2,7 +2,15 @@
 
 import * as React from 'react';
 
-import { arbitrumSepolia, mainnet, polygon } from 'wagmi/chains';
+import {
+  arbitrumSepolia,
+  holesky,
+  optimismSepolia,
+  polygonAmoy,
+  baseSepolia,
+  bscTestnet,
+  avalancheFuji,
+} from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { createConfig, http } from 'wagmi';
@@ -11,7 +19,15 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { siweConfig } from '../configs/siweConfig';
 
 export const projectId = `${process.env.NEXT_PUBLIC_PROJECT_ID}`;
-export const chains = [mainnet, arbitrumSepolia, polygon] as const;
+export const chains = [
+  arbitrumSepolia,
+  holesky,
+  optimismSepolia,
+  polygonAmoy,
+  baseSepolia,
+  bscTestnet,
+  avalancheFuji,
+] as const;
 
 const metadata = {
   name: 'Tulia',
@@ -21,11 +37,23 @@ const metadata = {
 };
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, arbitrumSepolia, polygon],
+  chains: [
+    arbitrumSepolia,
+    holesky,
+    optimismSepolia,
+    polygonAmoy,
+    baseSepolia,
+    bscTestnet,
+    avalancheFuji,
+  ],
   transports: {
-    [mainnet.id]: http(),
+    [holesky.id]: http(),
     [arbitrumSepolia.id]: http(),
-    [polygon.id]: http(),
+    [polygonAmoy.id]: http(),
+    [optimismSepolia.id]: http(),
+    [baseSepolia.id]: http(),
+    [bscTestnet.id]: http(),
+    [avalancheFuji.id]: http(),
   },
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),

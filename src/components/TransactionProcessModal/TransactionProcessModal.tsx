@@ -9,6 +9,7 @@ import {
 import { ExternalLink, Send } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
+import { useChainId } from 'wagmi';
 
 interface TransactionProcessModalProps {
   hash: `0x${string}` | undefined;
@@ -16,11 +17,24 @@ interface TransactionProcessModalProps {
   open?: boolean;
 }
 
+const blockExplorers: { [key: number]: string } = {
+  421614: 'https://sepolia.arbiscan.io/tx/',
+  17000: 'https://holesky.etherscan.io/tx/',
+  43113: 'https://testnet.snowtrace.io/tx/',
+  80002: 'https://www.oklink.com/tr/amoy/tx/',
+  11155420: 'https://sepolia-optimism.etherscan.io/tx/',
+  84532: 'https://sepolia.basescan.org/tx/',
+  97: 'https://testnet.bscscan.com/tx/',
+};
+
 const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
   hash,
   setOpen,
   open,
 }: TransactionProcessModalProps) => {
+  const chainID = useChainId();
+  const explorerURL = blockExplorers[chainID] || 'https://etherscan.io/tx/';
+
   return (
     <Dialog.Root open={open}>
       <Dialog.Portal>
@@ -51,12 +65,12 @@ const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
               Transaction is being processed
             </p>
             <Link
-              href={`https://sepolia.arbiscan.io/tx/${hash}`}
+              href={`${explorerURL}${hash}`}
               target="_blank"
               className="mt-4 flex items-center gap-2"
             >
               <p className="text-blue-400 hover:underline transition-all underline-offset-2 text-center py-4 flex items-center gap-2">
-                View on Etherscan <ExternalLink size={16} />
+                View on Block Explorer <ExternalLink size={16} />
               </p>
               <p className="text-gray-400 text-sm">{hash?.slice(0, 20)}</p>
             </Link>

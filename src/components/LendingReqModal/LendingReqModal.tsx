@@ -41,6 +41,7 @@ import { useWriteContract } from 'wagmi';
 import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import { useRouter } from 'next/navigation';
 import { addAsteroidPoints } from '@/utils/addAsteroidPoints';
+import { useChainId } from 'wagmi';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -64,6 +65,16 @@ const schema = z.object({
   interestAddress: z.string().optional(),
 });
 
+const contractAddresses = {
+  '421614': '0xF05570Baff1e3918986b37E8Fc0a755123C8b304',
+  '17000': '0x2F2c167eFaF016bB179b6A97f98234aC26E4d6bb',
+  '43113': '0x011E58b4D5cbB14D052273EEbcFa80b6B6C06fd3',
+  '80002': '0x0e41936CFDc3cD1932c77729c510B3a5196162A2',
+  '11155420': '0x971690F3F7C708E62ea7f03f24eEa5A939a923a4',
+  '84532': '0x2F2c167eFaF016bB179b6A97f98234aC26E4d6bb',
+  '97': '0x2F2c167eFaF016bB179b6A97f98234aC26E4d6bb',
+} as const;
+
 const LendingReqModal = () => {
   const router = useRouter();
   const {
@@ -71,6 +82,8 @@ const LendingReqModal = () => {
     data: hash,
     status: openPoolRequest,
   } = useWriteContract();
+  const chainID = useChainId();
+
   const [open, setOpen] = React.useState(false);
   const [openTxModal, setOpenTxModal] = useState<boolean>(false);
   const [uiCollateral, setUiCollateral] = React.useState(0);
@@ -230,10 +243,12 @@ const LendingReqModal = () => {
     const newInterestAddress = updateInterestAddress(data.interestModal);
     const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
     const loanAmount = parseEther(String(data?.loanAmount));
+    const contractAddress =
+      contractAddresses[chainID.toString() as keyof typeof contractAddresses];
 
     writeContract({
       abi: TuliaPoolFactoryABI,
-      address: '0x97Cfdcf8EB4Cb807168C9C2D173bc82cc577F1DE',
+      address: contractAddress,
       functionName: 'createTuliaPool',
       args: [
         account?.address as any,
@@ -248,8 +263,6 @@ const LendingReqModal = () => {
         optionalFlashLoanFeeRate as any,
       ],
     });
-
-
   };
 
   const onCloseClick = () => {

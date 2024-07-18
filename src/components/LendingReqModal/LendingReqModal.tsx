@@ -83,8 +83,9 @@ const LendingReqModal = () => {
     data: hash,
     status: openPoolRequest,
   } = useWriteContract();
-  const chainID = useChainId();
 
+
+  const account = useAccount();
   const [open, setOpen] = React.useState(false);
   const [openTxModal, setOpenTxModal] = useState<boolean>(false);
   const [uiCollateral, setUiCollateral] = React.useState(0);
@@ -93,11 +94,11 @@ const LendingReqModal = () => {
   const [openPoolRequestStatus, setOpenPoolRequestStatus] = useState('idle');
   const [userChainID, setUserChainID] = useState(421614);
   useEffect(() => {
-    if (chainID) {
-      setUserChainID(chainID);
+    if (account?.chainId) {
+      setUserChainID(account?.chainId);
     }
-  }, [chainID]);
-  const account = useAccount();
+  }, [account?.chainId]);
+
 
   const newDate = new Date();
   newDate.setDate(newDate.getDate() + 1);

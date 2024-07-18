@@ -61,6 +61,7 @@ createWeb3Modal({
   enableAnalytics: true,
   enableOnramp: true,
   allowUnsupportedChain: true,
+
 });
 
 if (!projectId) throw new Error('Project ID is not defined');

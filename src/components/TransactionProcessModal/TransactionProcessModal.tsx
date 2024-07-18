@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import { useChainId } from 'wagmi';
 import { useState, useEffect } from 'react';
+import { useAccount } from 'wagmi';
 
 interface TransactionProcessModalProps {
   hash: `0x${string}` | undefined;
@@ -33,14 +34,15 @@ const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
   setOpen,
   open,
 }: TransactionProcessModalProps) => {
-  const chainID = useChainId();
+  const account = useAccount();
+
   const [userChainID, setUserChainID] = useState(421614);
   const explorerURL = blockExplorers[userChainID] || 'https://etherscan.io/tx/';
   useEffect(() => {
-    if (chainID) {
-      setUserChainID(chainID);
+    if (account?.chainId) {
+      setUserChainID(account?.chainId);
     }
-  }, [chainID]);
+  }, [account?.chainId]);
   return (
     <Dialog.Root open={open}>
       <Dialog.Portal>

@@ -10,6 +10,7 @@ import {
   baseSepolia,
   bscTestnet,
   avalancheFuji,
+  mainnet,
 } from 'wagmi/chains';
 import { createClient } from 'viem';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -35,6 +36,7 @@ export const chains: Chain[] = [
   baseSepolia,
   bscTestnet,
   avalancheFuji,
+  mainnet,
 ] as const;
 
 const metadata = {

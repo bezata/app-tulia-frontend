@@ -20,6 +20,12 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { siweConfig } from '../configs/siweConfig';
 import { Chain } from 'wagmi/chains';
 
+declare module 'wagmi' {
+  interface Register {
+    config: typeof wagmiConfig;
+  }
+}
+
 export const projectId = `${process.env.NEXT_PUBLIC_PROJECT_ID}`;
 export const chains: Chain[] = [
   arbitrumSepolia,
@@ -53,7 +59,7 @@ export const wagmiConfig = createConfig({
   ],
   ssr: false,
 });
-
+ 
 createWeb3Modal({
   wagmiConfig: wagmiConfig,
   siweConfig,

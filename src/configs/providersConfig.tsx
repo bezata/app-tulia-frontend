@@ -51,6 +51,7 @@ export const wagmiConfig = createConfig({
       appLogoUrl: metadata.icons[0],
     }),
   ],
+  ssr: false,
 });
 
 createWeb3Modal({

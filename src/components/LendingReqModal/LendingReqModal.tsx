@@ -244,7 +244,9 @@ const LendingReqModal = () => {
     const poolType = data.interestModal === InterestModal.FlashLoan ? 1 : 0;
     const loanAmount = parseEther(String(data?.loanAmount));
     const contractAddress =
-      contractAddresses[chainID.toString() as keyof typeof contractAddresses];
+      contractAddresses[
+        chainID?.toString() as keyof typeof contractAddresses
+      ] || '0xF05570Baff1e3918986b37E8Fc0a755123C8b304';
 
     writeContract({
       abi: TuliaPoolFactoryABI,

@@ -65,7 +65,7 @@ const TransactionProcessModal: React.FC<TransactionProcessModalProps> = ({
               Transaction is being processed
             </p>
             <Link
-              href={`${explorerURL}${hash}`}
+              href={`${explorerURL?.toString()}${hash}`}
               target="_blank"
               className="mt-4 flex items-center gap-2"
             >

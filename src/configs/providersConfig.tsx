@@ -11,6 +11,10 @@ import {
   bscTestnet,
   avalancheFuji,
   mainnet,
+  polygon,
+  bsc,
+  arbitrum,
+  optimism,
 } from 'wagmi/chains';
 import { createClient } from 'viem';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -37,6 +41,10 @@ export const chains: Chain[] = [
   bscTestnet,
   avalancheFuji,
   mainnet,
+  polygon,
+  bsc,
+  arbitrum,
+  optimism
 ] as const;
 
 const metadata = {

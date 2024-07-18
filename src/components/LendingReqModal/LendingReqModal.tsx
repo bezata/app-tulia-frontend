@@ -42,6 +42,7 @@ import { TuliaPoolFactoryABI } from '@/lens/abi/TuliaPoolFactory';
 import { useRouter } from 'next/navigation';
 import { addAsteroidPoints } from '@/utils/addAsteroidPoints';
 import { useChainId } from 'wagmi';
+import { ChainId } from '@lifi/types';
 
 const schema = z.object({
   lendCoin: z.object({
@@ -90,6 +91,12 @@ const LendingReqModal = () => {
   const [rewardApy, setRewardApy] = React.useState(0);
   const [feeAmount, setFeeAmount] = useState(0);
   const [openPoolRequestStatus, setOpenPoolRequestStatus] = useState('idle');
+  const [userChainID, setUserChainID] = useState(421614);
+  useEffect(() => {
+    if (chainID) {
+      setUserChainID(chainID);
+    }
+  }, [chainID]);
   const account = useAccount();
 
   const newDate = new Date();
@@ -245,7 +252,7 @@ const LendingReqModal = () => {
     const loanAmount = parseEther(String(data?.loanAmount));
     const contractAddress =
       contractAddresses[
-        chainID?.toString() as keyof typeof contractAddresses
+        userChainID?.toString() as keyof typeof contractAddresses
       ] || '0xF05570Baff1e3918986b37E8Fc0a755123C8b304';
 
     writeContract({

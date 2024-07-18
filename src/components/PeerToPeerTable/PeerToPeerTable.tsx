@@ -59,7 +59,7 @@ export function PeerToPeerTable<TData, TValue>({
               ></TableCell>
             </TableRow>
           )}
-          {account.status === 'connected' &&
+          {account?.status === 'connected' &&
             table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
@@ -78,7 +78,7 @@ export function PeerToPeerTable<TData, TValue>({
             ))}
         </TableHeader>
         <TableBody>
-          {account.status === 'disconnected' && (
+          {account?.status === 'disconnected' && (
             <TableRow>
               <TableCell
                 colSpan={columns.length}
@@ -95,7 +95,7 @@ export function PeerToPeerTable<TData, TValue>({
               </TableCell>
             </TableRow>
           )}
-          {account.status === 'connected' &&
+          {account?.status === 'connected' &&
             (table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow

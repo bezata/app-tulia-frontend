@@ -92,7 +92,7 @@ export const columns: ColumnDef<ILendingData>[] = [
       return (
         <div className="flex items-center justify-center">
           <div>
-            <span>{row.original.lending_id}</span>
+            <span>{row.original?.lending_id}</span>
           </div>
         </div>
       );
@@ -105,7 +105,7 @@ export const columns: ColumnDef<ILendingData>[] = [
       return (
         <div className="flex items-center ">
           <div>
-            <span>{row.original.wallet_address?.slice(0, 7)}</span>
+            <span>{row.original?.wallet_address?.slice(0, 7)}</span>
           </div>
         </div>
       );
@@ -117,25 +117,25 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-1">
-          {row.original.loanToken === 'ETH' && (
+          {row.original?.loanToken === 'ETH' && (
             <EthIcon width={24} height={24} />
           )}
-          {row.original.loanToken === 'BTC' && (
+          {row.original?.loanToken === 'BTC' && (
             <BtcIcon width={24} height={24} />
           )}
-          {row.original.loanToken === 'USDC' && (
+          {row.original?.loanToken === 'USDC' && (
             <USDCIcon width={24} height={24} />
           )}
-          {row.original.loanToken === 'ARB' && (
+          {row.original?.loanToken === 'ARB' && (
             <ArbIcon width={24} height={24} />
           )}
-          {row.original.loanToken === 'DAI' && (
+          {row.original?.loanToken === 'DAI' && (
             <DaiIcon width={24} height={24} />
           )}
-          {row.original.loanToken === 'UNI' && (
+          {row.original?.loanToken === 'UNI' && (
             <UniIcon width={24} height={24} />
           )}
-          <span>{row.original.loanToken}</span>
+          <span>{row.original?.loanToken}</span>
         </div>
       );
     },
@@ -146,25 +146,25 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex items-center gap-1">
-          {row.original.borrowToken === 'ETH' && (
+          {row.original?.borrowToken === 'ETH' && (
             <EthIcon width={24} height={24} />
           )}
-          {row.original.borrowToken === 'BTC' && (
+          {row.original?.borrowToken === 'BTC' && (
             <BtcIcon width={24} height={24} />
           )}
-          {row.original.borrowToken === 'USDC' && (
+          {row.original?.borrowToken === 'USDC' && (
             <USDCIcon width={24} height={24} />
           )}
-          {row.original.borrowToken === 'ARB' && (
+          {row.original?.borrowToken === 'ARB' && (
             <ArbIcon width={24} height={24} />
           )}
-          {row.original.borrowToken === 'DAI' && (
+          {row.original?.borrowToken === 'DAI' && (
             <DaiIcon width={24} height={24} />
           )}
-          {row.original.borrowToken === 'UNI' && (
+          {row.original?.borrowToken === 'UNI' && (
             <UniIcon width={24} height={24} />
           )}
-          <span>{row.original.borrowToken}</span>
+          <span>{row.original?.borrowToken}</span>
         </div>
       );
     },
@@ -184,7 +184,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <p className="text-gray-400 text-left ml-4">
-          {formatEther(BigInt(row.original.amount))} {row.original.Token}
+          {formatEther(BigInt(row.original?.amount))} {row.original?.Token}
         </p>
       );
     },
@@ -205,7 +205,7 @@ export const columns: ColumnDef<ILendingData>[] = [
       return (
         <div className="flex flex-col gap-2  ">
           <div className="px-3  ml-9">
-            <span>{`${String(row.original.interestRate)} %`}</span>
+            <span>{`${String(row.original?.interestRate)} %`}</span>
           </div>
           <div className="flex px-3  ml-4 ">
             <span className="text-purple-400 flex  px-1 items-center min-w-16 w-16 border text-xs border-white/[0.2] bg-transparent  rounded-sm">
@@ -216,7 +216,7 @@ export const columns: ColumnDef<ILendingData>[] = [
                 height={20}
                 className="flex"
               />
-              {`${String(row.original.numericValue)}%`}
+              {`${String(row.original?.numericValue)}%`}
             </span>
           </div>
         </div>
@@ -229,8 +229,8 @@ export const columns: ColumnDef<ILendingData>[] = [
     cell: ({ row }) => {
       return (
         <LoanStateCell
-          pool={row.original.pool}
-          poolType={row.original.poolType}
+          pool={row.original?.pool}
+          poolType={row.original?.poolType}
         />
       );
     },
@@ -249,7 +249,7 @@ export const columns: ColumnDef<ILendingData>[] = [
     ),
     cell: ({ row }) => {
       // If poolType is 1, directly return "Flash Loan"
-      if (row.original.poolType === 1) {
+      if (row.original?.poolType === 1) {
         return (
           <div className="flex items-center ml-12">
             <span>Flash Loan</span>
@@ -259,7 +259,7 @@ export const columns: ColumnDef<ILendingData>[] = [
 
       // Calculate the repayment period in days if poolType is not 1
       const repaymentPeriodInDays =
-        Number(row.original.repaymentPeriod) / 86400;
+        Number(row.original?.repaymentPeriod) / 86400;
       let displayRepaymentPeriod = repaymentPeriodInDays.toFixed(2);
 
       if (displayRepaymentPeriod.endsWith('.00')) {

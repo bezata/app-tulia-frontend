@@ -11,15 +11,17 @@ import {
   bscTestnet,
   avalancheFuji,
 } from 'wagmi/chains';
+import { createClient } from 'viem';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { createConfig, http } from 'wagmi';
 import { injected, walletConnect, coinbaseWallet } from 'wagmi/connectors';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { siweConfig } from '../configs/siweConfig';
+import { Chain } from 'wagmi/chains';
 
 export const projectId = `${process.env.NEXT_PUBLIC_PROJECT_ID}`;
-export const chains = [
+export const chains: Chain[] = [
   arbitrumSepolia,
   holesky,
   optimismSepolia,
@@ -37,23 +39,9 @@ const metadata = {
 };
 
 export const wagmiConfig = createConfig({
-  chains: [
-    arbitrumSepolia,
-    holesky,
-    optimismSepolia,
-    polygonAmoy,
-    baseSepolia,
-    bscTestnet,
-    avalancheFuji,
-  ],
-  transports: {
-    [holesky.id]: http(),
-    [arbitrumSepolia.id]: http(),
-    [polygonAmoy.id]: http(),
-    [optimismSepolia.id]: http(),
-    [baseSepolia.id]: http(),
-    [bscTestnet.id]: http(),
-    [avalancheFuji.id]: http(),
+  chains: [chains[0], ...chains.slice(1)],
+  client({ chain }) {
+    return createClient({ chain, transport: http() });
   },
   connectors: [
     walletConnect({ projectId, metadata, showQrModal: false }),

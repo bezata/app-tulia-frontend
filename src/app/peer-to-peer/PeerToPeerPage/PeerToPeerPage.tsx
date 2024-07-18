@@ -214,7 +214,7 @@ const PeerToPeerPage = () => {
       <div className="mb-4 flex items-center justify-between">
         <LendingReqModal />
         <h2 className="text-md font-bold">
-          All Lending Requests (Total: {Number(poolCount)})
+          All Lending Requests (Total: {Number(poolCount?.toString() || 0)})
         </h2>
       </div>
 

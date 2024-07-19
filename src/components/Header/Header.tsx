@@ -44,7 +44,7 @@ const navigationMenuItems: IHeader.INavigation[] = [
   },
   {
     title: 'Airdrop',
-    slug: 'https:/airdrop.tulia.finance/',
+    slug: 'https://airdrop.tulia.finance/',
     target: '_blank',
   },
 ];

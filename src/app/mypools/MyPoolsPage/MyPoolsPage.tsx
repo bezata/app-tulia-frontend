@@ -174,7 +174,7 @@ const MyPoolspage = () => {
             numericValue: (Number(apy) / 10000) as number | undefined,
             interestRate: poolDetail?.interestRate,
             lending_id: (index + 1)?.toString(),
-            wallet_address: poolDetail?.lender.slice(0, 7),
+            wallet_address: poolDetail?.lender.slice(0, 7) || '0x000',
             Token: currency.label,
             amount: Number(poolDetail?.loanAmount),
             repaymentPeriod: poolDetail?.repaymentPeriod,

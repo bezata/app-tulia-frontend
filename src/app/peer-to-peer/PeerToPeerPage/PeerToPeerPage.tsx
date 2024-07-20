@@ -59,7 +59,7 @@ const PeerToPeerPage = () => {
     if (userChainId && !allowedChainIds.includes(userChainId.toString())) {
       setIsChainValid(false);
       toast(
-        'Network not supported. Please switch your chain to a supported testnet network.',
+        'Network not supported in Open Market Protocol. Please switch your chain to a supported testnet network.',
         {
           action: {
             label: 'Switch Network',

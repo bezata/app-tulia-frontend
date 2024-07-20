@@ -17,11 +17,15 @@ import EthIcon from '../../../../public/EthIcon';
 import USDCIcon from '../../../../public/USDCIcon';
 import ArbIcon from '../../../../public/ArbIcon';
 import DaiIcon from '../../../../public/DaiIcon';
+import { toast } from 'sonner';
+import { useAccount } from 'wagmi';
 import UniIcon from '../../../../public/UniIcon';
-
-
+import { useEffect } from 'react';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 
 const PeerToPeerPage = () => {
+  const account = useAccount();
+  const { open } = useWeb3Modal();
   const apy =
     useCalculateRewardApy({
       loanAmount: BigInt(10000),
@@ -31,9 +35,44 @@ const PeerToPeerPage = () => {
   const [data, setData] = useState<ILendingData[]>([]);
   const totalPoolCount = useGetTotalPoolCount();
   const [poolCount, setPoolCount] = useState<number>(0);
+  const [isChainValid, setIsChainValid] = useState(false);
+  const [userChainId, setUserChainID] = useState<number>(421614);
   React.useEffect(() => {
     setPoolCount(totalPoolCount as any);
   }, [totalPoolCount]);
+  const allowedChainIds = [
+    '421614',
+    '17000',
+    '43113',
+    '80002',
+    '11155420',
+    '84532',
+    '97',
+  ];
+  useEffect(() => {
+    if (account) {
+      setUserChainID(account?.chainId as any);
+    }
+  }, [account.chainId]);
+
+  useEffect(() => {
+    if (userChainId && !allowedChainIds.includes(userChainId.toString())) {
+      setIsChainValid(false);
+      toast(
+        'Network not supported. Please switch your chain to a supported testnet network.',
+        {
+          action: {
+            label: 'Switch Network',
+            onClick: () => open({ view: 'Networks' }),
+          },
+          duration: Infinity, // Keeps the toast open indefinitely
+        }
+      );
+    } else {
+      setIsChainValid(true);
+      toast.dismiss(); // Dismisses the toast when the chain is valid
+    }
+  }, [userChainId]);
   React.useEffect(() => {
     if (allPoolDetails) {
       const formattedData = allPoolDetails.map(

@@ -59,7 +59,7 @@ const PeerToPeerPage = () => {
     if (userChainId && !allowedChainIds.includes(userChainId.toString())) {
       setIsChainValid(false);
       toast(
-        'Network not supported in Open Market Protocol. Please switch your chain to a supported testnet network.',
+        'This network is only supported in Swap App. Please switch your chain to a supported testnet networks.',
         {
           action: {
             label: 'Switch Network',
@@ -73,6 +73,7 @@ const PeerToPeerPage = () => {
       toast.dismiss(); // Dismisses the toast when the chain is valid
     }
   }, [userChainId]);
+  
   React.useEffect(() => {
     if (allPoolDetails) {
       const formattedData = allPoolDetails.map(

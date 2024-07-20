@@ -27,9 +27,12 @@ import EthIcon from '../../../../public/EthIcon';
 import UniIcon from '../../../../public/UniIcon';
 import USDCIcon from '../../../../public/USDCIcon';
 import { useGetLoanState } from '@/lens/lens';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { toast } from 'sonner';
 
 const MyPoolspage = () => {
   const account = useAccount();
+  const { open } = useWeb3Modal();
   const allLenderPoolDetails = useGetAllLenderPoolDetails();
   const allBorrowerPoolDetails = useGetAllBorrowerPoolDetails();
   const totalPoolCount = useGetTotalPoolCount();
@@ -45,29 +48,66 @@ const MyPoolspage = () => {
   const [poolSection, setPoolSection] = useState<'lend' | 'borrow' | null>(
     null
   );
+  const [isChainValid, setIsChainValid] = useState(false);
+  const [userChainId, setUserChainID] = useState<number>(421614);
+  React.useEffect(() => {
+    setPoolCount(totalPoolCount as any);
+  }, [totalPoolCount]);
+  const allowedChainIds = [
+    '421614',
+    '17000',
+    '43113',
+    '80002',
+    '11155420',
+    '84532',
+    '97',
+  ];
+  useEffect(() => {
+    if (account) {
+      setUserChainID(account?.chainId as any);
+    }
+  }, [account.chainId]);
+
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    if (userChainId && !allowedChainIds.includes(userChainId.toString())) {
+      setIsChainValid(false);
+      toast(
+        'This network is only supported in Swap App. Please switch your chain to a supported testnet networks.',
+        {
+          action: {
+            label: 'Switch Network',
+            onClick: () => open({ view: 'Networks' }),
+          },
+          duration: Infinity, // Keeps the toast open indefinitely
+        }
+      );
+    } else {
+      setIsChainValid(true);
+      toast.dismiss(); // Dismisses the toast when the chain is valid
+    }
+  }, [userChainId]);
 
   useEffect(() => {
     setPoolCount(totalPoolCount as any);
   }, [totalPoolCount]);
-  
+
   useEffect(() => {
     const formatPoolDetails = (poolDetails: PoolDetail[], type: 1 | 2) => {
       return poolDetails.map(
         (poolDetail: PoolDetail, index: number): IPoolsdata => {
-    
           let repaymentCurrency = {
             label: 'mARB',
             symbol: <ArbIcon />,
             address: '0xd4a2b111c346200b131d668594bfaf52dee8fae7',
           };
-          
+
           let currency = {
             label: 'mETH',
             symbol: <EthIcon />,
             address: '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186',
           };
-          
+
           // @ts-ignore
           switch (poolDetail?.loanToken.toLowerCase()) {
             case '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186':
@@ -120,7 +160,7 @@ const MyPoolspage = () => {
               };
               break;
           }
-          
+
           // @ts-ignore
           switch (poolDetail?.repaymentToken.toLowerCase()) {
             case '0x46eae7f1f2155d3a7f799c96a2c52e0a634ed186':
@@ -166,7 +206,6 @@ const MyPoolspage = () => {
               };
               break;
           }
-          
 
           const loanState = poolDetail?.funded ? 'Active' : 'Pending';
 

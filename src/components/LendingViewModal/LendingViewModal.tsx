@@ -50,6 +50,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   const [currentLoanState, setLoanState] = useState<string>('');
   const [approveTransactionStatus, setApprove] = useState<string>('');
   const [lendRequestTransactionStatus, setLendRequest] = useState<string>('');
+  const [userWallet, setUserWallet] = useState<string>('0x0000000000000');
 
   const {
     writeContract: approve,
@@ -75,6 +76,12 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
       setApprove('pending');
     }
   }, [approveStatus]);
+  useEffect(() => {
+    if (row.original.wallet_address) {
+      setUserWallet(row.original.wallet_address);
+    }
+  }, [row.original.wallet_address]);
+
   const {
     writeContract: fundLoanTx,
     data: hash,
@@ -318,7 +325,7 @@ contract TuliaFlashLoanBorrower is IERC3156FlashBorrower {
               <div className="col-span-6 flex flex-col">
                 <span className="text-sm font-semibold">Wallet Address</span>
                 <span className="text-sm text-gray-400">
-                  {row.original.wallet_address.slice(0, 7)}
+                  {userWallet.slice(0, 7)}
                 </span>
               </div>
               <div className="col-span-6 flex flex-col">

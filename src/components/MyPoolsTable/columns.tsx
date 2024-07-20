@@ -239,7 +239,7 @@ export const columns: ColumnDef<IPoolsdata>[] = [
     cell: ({ row }) => {
       return (
         <p className="text-gray-400 text-left ml-4">
-          {formatEther(BigInt(row.original.amount))} {row.original.Token}
+          {formatEther(BigInt(row.original?.amount || 1))} {row.original.Token}
         </p>
       );
     },

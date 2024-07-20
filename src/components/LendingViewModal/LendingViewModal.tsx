@@ -116,7 +116,7 @@ const LendingViewModal = ({ row }: ILendingViewModalProps) => {
   }, [loanState]);
 
   const calculateRewardAPY = useCalculateRewardApy({
-    loanAmount: BigInt(loanAmount),
+    loanAmount: BigInt(loanAmount || 1),
     durationSeconds: Number(row.original.repaymentPeriod),
   });
 
@@ -324,7 +324,7 @@ contract TuliaFlashLoanBorrower is IERC3156FlashBorrower {
               <div className="col-span-6 flex flex-col">
                 <span className="text-sm font-semibold">Loan Amount</span>
                 <span className="text-sm text-gray-400">
-                  {formatEther(BigInt(row.original.amount))}{' '}
+                  {formatEther(BigInt(row.original.amount || 1))}{' '}
                   {row.original.Token}
                 </span>
               </div>
@@ -361,7 +361,7 @@ contract TuliaFlashLoanBorrower is IERC3156FlashBorrower {
               <div className="col-span-6 flex flex-col">
                 <span className="text-sm font-semibold">Collateral Amount</span>
                 <span className="text-sm text-gray-400">
-                  {formatEther(BigInt(uiCollateral))}
+                  {formatEther(BigInt(uiCollateral || 1))}
                   {``} {row.original.borrowTokenName}
                 </span>
               </div>

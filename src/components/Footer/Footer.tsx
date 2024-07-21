@@ -50,6 +50,8 @@ const Footer = () => {
           <Link
             href="https://docs.tulia.finance/overview/tulia-testnet-v1.0.0/faq"
             className="hover:text-gray-500 transition-all"
+            target="_blank"
+            rel="noreferrer"
           >
             FAQ
           </Link>

@@ -47,7 +47,10 @@ const Footer = () => {
           <p className="text-xs">© 2024 Tulia</p>
         </div>
         <div>
-          <Link href="/faq" className="hover:text-gray-500 transition-all">
+          <Link
+            href="https://docs.tulia.finance/overview/tulia-testnet-v1.0.0/faq"
+            className="hover:text-gray-500 transition-all"
+          >
             FAQ
           </Link>
         </div>

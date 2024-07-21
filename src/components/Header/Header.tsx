@@ -39,7 +39,7 @@ const navigationMenuItems: IHeader.INavigation[] = [
   },
   {
     title: 'Docs',
-    slug: 'https://www.linkedin.com/company/tulias/',
+    slug: 'https://docs.tulia.finance/',
     target: '_blank',
   },
   {

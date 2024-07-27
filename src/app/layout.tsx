@@ -66,6 +66,10 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  icons: {
+    icon: '/logo.ico',
+    shortcut: '/logo.ico',
+  },
 };
 
 export default function RootLayout({

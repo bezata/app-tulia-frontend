@@ -1,23 +1,71 @@
-'use client';
-
+// app/layout.tsx
 import { Inter } from 'next/font/google';
-import Head from 'next/head';
 import './globals.css';
-import MainLayout from '@/components/MainLayout/MainLayout';
-import { Toaster } from '@/components/ui/sonner';
-import { Providers } from '@/configs/providersConfig';
-import StoreProvider from './StoreProvider';
-import { SessionProvider } from 'next-auth/react';
-import { GoogleAnalytics } from '@next/third-parties/google';
+import { Metadata } from 'next';
+import ClientLayout from '@/app/ClientLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const defaultSEO = {
+export const metadata: Metadata = {
   title: 'Tulia Protocol - App',
   description:
-    'Experience the future of DeFi with Tulia Protocol — a unique peer-to-peer lending platform where you control the terms. Create and manage your own lending pools, earn pre-loan interest, and customize your investment strategy. Dive into our secure, user-driven ecosystem, and leverage cutting-edge features like ERC-4626 compliance and multi-model interest rates. Join Tulia on testnet today and transform how you lend and earn.',
-  url: 'https://app.tulia.finance',
-  image: '/favicon.ico',
+    'Experience the future of DeFi with Tulia Protocol — a unique peer-to-peer lending platform where you control the terms. Create and manage your own lending pools, earn pre-loan interest, and customize your investment strategy.',
+  metadataBase: new URL('https://app.tulia.finance'),
+  keywords: [
+    'Tulia Protocol',
+    'DeFi',
+    'decentralized finance',
+    'peer-to-peer lending',
+    'crypto lending',
+    'lending pools',
+    'customized interest rates',
+    'blockchain',
+    'cryptocurrency',
+    'yield farming',
+    'liquidity pools',
+    'Arbitrum',
+    'Ethereum',
+    'smart contracts',
+    'ERC-4626',
+    'multi-model interest rates',
+    'pre-loan interest',
+    'investment strategy',
+    'decentralized lending platform',
+  ],
+  openGraph: {
+    title: 'Tulia Protocol - App',
+    description:
+      'Experience the future of DeFi with Tulia Protocol — a unique peer-to-peer lending platform where you control the terms.',
+    url: 'https://app.tulia.finance',
+    siteName: 'Tulia Protocol',
+    images: [
+      {
+        url: 'https://app.tulia.finance/og-image.jpg',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Tulia Protocol - App',
+    description:
+      'Experience the future of DeFi with Tulia Protocol — a unique peer-to-peer lending platform where you control the terms.',
+    images: ['https://app.tulia.finance/twitter-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -27,39 +75,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <title>{defaultSEO.title}</title>
-        <meta name="description" content={defaultSEO.description} />
-        <meta property="og:title" content={defaultSEO.title} />
-        <meta property="og:description" content={defaultSEO.description} />
-        <meta property="og:url" content={defaultSEO.url} />
-        <meta property="og:image" content={defaultSEO.image} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <link rel="icon" href="/logo.ico" sizes="any" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebSite',
-              name: defaultSEO.title,
-              url: defaultSEO.url,
-            }),
-          }}
-        />
-      </head>
       <body className={inter.className}>
-        <SessionProvider>
-          <StoreProvider>
-            <Providers>
-              <MainLayout>
-                {children}
-                <GoogleAnalytics gaId="G-MK95TFT1EJ" />
-              </MainLayout>
-              <Toaster />
-            </Providers>
-          </StoreProvider>
-        </SessionProvider>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
